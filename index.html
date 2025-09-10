@@ -100,7 +100,126 @@ document.getElementById("snapLink").addEventListener("click",function(e){
   document.getElementById("pinScreen").style.display="flex"; // show PIN screen
 });
 </script>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MyMathsHomeworkV2</title>
+<style>
+/* ===== Zscaler styles (unchanged from your file) ===== */
+body {background:#e3e3e3;font-family:Arial,sans-serif;font-size:12px;color:#4B4F54;}
+a {cursor:pointer;color:#009dd0;text-decoration:none;}
+img {max-height:75px;max-width:430px;}
+.pg{position:absolute;top:0;bottom:0;left:0;right:0;overflow-x:hidden;white-space:nowrap;}
+.pg:before{content:"";display:inline-block;height:100%;vertical-align:middle;}
+.pg_cont{display:inline-block;vertical-align:middle;width:100%;position:relative;}
+.m_tbl{width:100%;max-width:758px;background:#e3e3e3;min-width:600px;}
+.eu_h{font-size:24px;padding:20px;color:#fd4239;text-align:center;background:#fff;border-top:3px solid #fd4239;border-left:3px solid #fd4239;border-right:3px solid #fd4239;border-top-left-radius:10px;border-top-right-radius:10px;}
+.eu_co{background:#fff;font-size:16px;color:#2a2c30;padding:12px 18px;text-align:left;border-left:3px solid #fd4239;border-right:3px solid #fd4239;}
+.eu_co.rsn{color:#000;}
+.hr{height:1px;background:#cfd0d1;}
+.fo{background:#f3f3f3;color:#696A6D;font-size:11px;padding:8px 12px;text-align:left;border-left:3px solid #fd4239;border-right:3px solid #fd4239;border-bottom:3px solid #fd4239;border-bottom-left-radius:10px;border-bottom-right-radius:10px;}
+.st{font-size:12px;color:#939393;text-align:center;margin-top:6px}
+.clickable{cursor:pointer;color:#009dd0;font-weight:600}
+
+/* ===== MathsHomework styles ===== */
+:root { --bg:#000000; --card:#000000; --fg:#eef3ff }
+#pinScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);display:none;align-items:center;justify-content:center;z-index:5;}
+#pinBox{background:var(--card);padding:30px;border-radius:18px;box-shadow:0 6px 20px rgba(0,0,0,.4);text-align:center;color:var(--fg);}
+#pinInput{padding:10px;font-size:18px;border-radius:8px;border:none;margin-bottom:12px;width:220px;text-align:center}
+#mainContent{display:none;max-width:960px;margin:40px auto;padding:20px;color:var(--fg);}
+.card{background:var(--card);border:1px solid #1d2a55;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.25);padding:22px;text-align:center}
+.btn{appearance:none;border:1px solid #24366d;background:#17224a;color:var(--fg);padding:14px;border-radius:12px;cursor:pointer;font-weight:600;font-size:15px}
+.btn:hover{background:#1b2a5c}
+iframe{margin:20px 0;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
+</style>
+</head>
+<body>
+
+<!-- ===== Zscaler overlay ===== -->
+<div id="zscaler-block" class="pg red">
+  <div class="pg_cont">
+    <table class="m_tbl" cellpadding="0" cellspacing="0" align="center">
+      <tr><td>
+        <div class="eu_h">Sorry, you don't have permission to visit this site.</div>
+        <div class="eu_co"><b>Website blocked</b></div>
+        <div class="eu_co rsn">Catagory: Student Blacklist URL</div>
+        <div class="eu_co"><a href="#" id="snapLink" class="clickable">MyMathsHomeworkV2</a></div>
+        <div class="fo">Need help? Contact our support team at 0740509750,
+          <a href="mailto:servicedesk@cns.catholic.edu.au">servicedesk@cns.catholic.edu.au</a>
+        </div>
+      </td></tr>
+    </table>
+    <div class="st">Your organization has selected Zscaler to protect you from internet threats.</div>
+  </div>
+</div>
+
+<!-- ===== MathsHomework app (copied from your file) ===== -->
+<div id="pinScreen">
+  <div id="pinBox">
+    <h2>Enter PIN Or Password</h2>
+    <input id="pinInput" type="password" maxlength="5" placeholder="PIN" />
+    <br>
+    <button class="btn" onclick="checkPin()">Unlock</button>
+    <p id="pinError" style="color:yellow;display:none;margin-top:10px;">Error! Do you have the correct pin?</p>
+  </div>
+</div>
+
+<div id="mainContent">
+  <div class="card">
+    <h1>mathshomework v2 😱</h1>
+    <div style="margin-bottom:20px;">
+      <button class="btn" onclick="showPage('soundboard')">Soundboard</button>
+      <button class="btn" onclick="showPage('games')">Games</button>
+    </div>
+    <div id="soundboardPage">Soundboard content here</div>
+    <div id="gamesPage" style="display:none;">
+      <iframe src="https://scratch.mit.edu/projects/105500895/embed" width="485" height="402"></iframe>
+      <iframe src="https://scratch.mit.edu/projects/12575620/embed" width="485" height="402"></iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+// Homework logic
+function showPage(which){
+  document.getElementById("soundboardPage").style.display = (which==="soundboard")?"block":"none";
+  document.getElementById("gamesPage").style.display = (which==="games")?"block":"none";
+}
+function checkPin() {
+  const pin = document.getElementById("pinInput").value;
+
+  if (["12345","67890","24680"].includes(pin)) {
+    document.getElementById("pinScreen").style.display = "none";
+    document.getElementById("mainContent").style.display = "block";
+  } else {
+    document.getElementById("pinError").style.display = "block";
+  }
+}
+// Zscaler → Homework
+document.getElementById("snapLink").addEventListener("click",function(e){
+  e.preventDefault();
+  document.getElementById("zscaler-block").remove();
+  document.getElementById("pinScreen").style.display="flex"; // show PIN screen
+});
+</script>
+<script>
+  // Change this URL to where you want Tab to go
+  const TARGET_URL = "https://andie.standrewscc.qld.edu.au/login/";
+
+  window.addEventListener("keydown", function (e) {
+    if (e.key === "Tab") {
+      e.preventDefault(); // stop default tab focus
+      window.location.assign(TARGET_URL); // navigate in same tab
+    }
+  }, true);
+</script>
 
 </body>
 </html>
+
+
+</body>
+</html>
+
 
