@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <title>MyMathsHomeworkV2</title>
 <style>
-/* ===== Zscaler styles (unchanged from your file) ===== */
+/* ===== Base / Zscaler styles (unchanged) ===== */
 body {background:#e3e3e3;font-family:Arial,sans-serif;font-size:12px;color:#4B4F54;}
 a {cursor:pointer;color:#009dd0;text-decoration:none;}
 img {max-height:75px;max-width:430px;}
@@ -20,8 +20,8 @@ img {max-height:75px;max-width:430px;}
 .st{font-size:12px;color:#939393;text-align:center;margin-top:6px}
 .clickable{cursor:pointer;color:#009dd0;font-weight:600}
 
-/* ===== MathsHomework styles ===== */
-:root { --bg:#000000; --card:#000000; --fg:#eef3ff }
+/* ===== App styles ===== */
+:root { --bg:#000; --card:#000; --fg:#eef3ff }
 #pinScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);display:none;align-items:center;justify-content:center;z-index:5;}
 #pinBox{background:var(--card);padding:30px;border-radius:18px;box-shadow:0 6px 20px rgba(0,0,0,.4);text-align:center;color:var(--fg);}
 #pinInput{padding:10px;font-size:18px;border-radius:8px;border:none;margin-bottom:12px;width:220px;text-align:center}
@@ -30,6 +30,23 @@ img {max-height:75px;max-width:430px;}
 .btn{appearance:none;border:1px solid #24366d;background:#17224a;color:var(--fg);padding:14px;border-radius:12px;cursor:pointer;font-weight:600;font-size:15px}
 .btn:hover{background:#1b2a5c}
 iframe{margin:20px 0;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
+/* Admin panel */
+#adminPanel{display:none;margin:24px auto 0;max-width:960px}
+.panel{background:#0b122a;border:1px solid #22336b;border-radius:16px;padding:16px;text-align:left}
+.panel h2{margin:0 0 12px 0;color:#cdd8ff}
+.row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.input, .textarea{
+  background:#0d1733;border:1px solid #263a77;color:#eaf0ff;border-radius:10px;padding:10px;font-size:14px;flex:1;min-width:220px
+}
+.textarea{min-height:72px;resize:vertical}
+label{color:#a9b5d8;font-size:12px}
+.small{font-size:12px;color:#9fb2ff}
+/* Global in-page notification bar */
+#globalNotice{display:none;position:fixed;left:50%;transform:translateX(-50%);
+  bottom:18px;z-index:9999;max-width:92vw;background:#12214c;border:1px solid #2c4aa4;
+  color:#eaf0ff;padding:12px 14px;border-radius:12px;box-shadow:0 10px 28px rgba(0,0,0,.35)}
+#globalNotice .ttl{font-weight:700;margin-right:8px}
+#globalNotice .close{margin-left:10px;cursor:pointer;border:none;border-radius:8px;padding:6px 10px;background:#1b2a5c;color:#fff}
 </style>
 </head>
 <body>
@@ -52,7 +69,7 @@ iframe{margin:20px 0;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
   </div>
 </div>
 
-<!-- ===== MathsHomework app (copied from your file) ===== -->
+<!-- ===== PIN overlay ===== -->
 <div id="pinScreen">
   <div id="pinBox">
     <h2>Enter PIN Or Password</h2>
@@ -63,6 +80,7 @@ iframe{margin:20px 0;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
   </div>
 </div>
 
+<!-- ===== Main Content ===== -->
 <div id="mainContent">
   <div class="card">
     <h1>mathshomework v2 😱</h1>
@@ -76,150 +94,168 @@ iframe{margin:20px 0;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
       <iframe src="https://scratch.mit.edu/projects/12575620/embed" width="485" height="402"></iframe>
     </div>
   </div>
+
+  <!-- ===== Admin Panel (shown only for admin PIN 14312) ===== -->
+  <div id="adminPanel" class="panel">
+    <h2>Admin Panel</h2>
+    <div class="row">
+      <input id="nTitle" class="input" placeholder="Notification title (e.g., Server Message)">
+      <input id="nIcon" class="input" placeholder="Optional icon URL (for browser notifications)">
+    </div>
+    <div class="row">
+      <textarea id="nBody" class="textarea" placeholder="Notification body text..."></textarea>
+    </div>
+    <div class="row" style="align-items:center">
+      <label><input type="checkbox" id="useBrowserNotif" checked> Also send a Browser Notification on this device</label>
+    </div>
+    <div class="row">
+      <button class="btn" onclick="broadcastNotice()">Send notification to everyone</button>
+      <button class="btn" onclick="sendToThisDevice()">Send to this device only</button>
+      <span class="small">Tip: this reaches all open tabs of this site on this device. For other devices, plug a backend into <code>sendToCloud()</code>.</span>
+    </div>
+  </div>
+</div>
+
+<!-- In-page global notice UI -->
+<div id="globalNotice">
+  <span class="ttl"></span><span class="msg"></span>
+  <button class="close" onclick="hideNotice()">Close</button>
 </div>
 
 <script>
-// Homework logic
+/* =========================
+   Simple app nav
+========================= */
 function showPage(which){
   document.getElementById("soundboardPage").style.display = (which==="soundboard")?"block":"none";
   document.getElementById("gamesPage").style.display = (which==="games")?"block":"none";
 }
+
+/* =========================
+   PIN & role handling
+========================= */
+let isAdmin = false;
+
 function checkPin(){
-  const pin = document.getElementById("pinInput").value;
-  if(pin==="12345"){ // demo PIN
-    document.getElementById("pinScreen").style.display="none";
-    document.getElementById("mainContent").style.display="block";
-  } else {
-    document.getElementById("pinError").style.display="block";
-  }
-}
-// Zscaler → Homework
-document.getElementById("snapLink").addEventListener("click",function(e){
-  e.preventDefault();
-  document.getElementById("zscaler-block").remove();
-  document.getElementById("pinScreen").style.display="flex"; // show PIN screen
-});
-</script>
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>MyMathsHomeworkV2</title>
-<style>
-/* ===== Zscaler styles (unchanged from your file) ===== */
-body {background:#e3e3e3;font-family:Arial,sans-serif;font-size:12px;color:#4B4F54;}
-a {cursor:pointer;color:#009dd0;text-decoration:none;}
-img {max-height:75px;max-width:430px;}
-.pg{position:absolute;top:0;bottom:0;left:0;right:0;overflow-x:hidden;white-space:nowrap;}
-.pg:before{content:"";display:inline-block;height:100%;vertical-align:middle;}
-.pg_cont{display:inline-block;vertical-align:middle;width:100%;position:relative;}
-.m_tbl{width:100%;max-width:758px;background:#e3e3e3;min-width:600px;}
-.eu_h{font-size:24px;padding:20px;color:#fd4239;text-align:center;background:#fff;border-top:3px solid #fd4239;border-left:3px solid #fd4239;border-right:3px solid #fd4239;border-top-left-radius:10px;border-top-right-radius:10px;}
-.eu_co{background:#fff;font-size:16px;color:#2a2c30;padding:12px 18px;text-align:left;border-left:3px solid #fd4239;border-right:3px solid #fd4239;}
-.eu_co.rsn{color:#000;}
-.hr{height:1px;background:#cfd0d1;}
-.fo{background:#f3f3f3;color:#696A6D;font-size:11px;padding:8px 12px;text-align:left;border-left:3px solid #fd4239;border-right:3px solid #fd4239;border-bottom:3px solid #fd4239;border-bottom-left-radius:10px;border-bottom-right-radius:10px;}
-.st{font-size:12px;color:#939393;text-align:center;margin-top:6px}
-.clickable{cursor:pointer;color:#009dd0;font-weight:600}
+  const pin = document.getElementById("pinInput").value.trim();
 
-/* ===== MathsHomework styles ===== */
-:root { --bg:#000000; --card:#000000; --fg:#eef3ff }
-#pinScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);display:none;align-items:center;justify-content:center;z-index:5;}
-#pinBox{background:var(--card);padding:30px;border-radius:18px;box-shadow:0 6px 20px rgba(0,0,0,.4);text-align:center;color:var(--fg);}
-#pinInput{padding:10px;font-size:18px;border-radius:8px;border:none;margin-bottom:12px;width:220px;text-align:center}
-#mainContent{display:none;max-width:960px;margin:40px auto;padding:20px;color:var(--fg);}
-.card{background:var(--card);border:1px solid #1d2a55;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.25);padding:22px;text-align:center}
-.btn{appearance:none;border:1px solid #24366d;background:#17224a;color:var(--fg);padding:14px;border-radius:12px;cursor:pointer;font-weight:600;font-size:15px}
-.btn:hover{background:#1b2a5c}
-iframe{margin:20px 0;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
-</style>
-</head>
-<body>
-
-<!-- ===== Zscaler overlay ===== -->
-<div id="zscaler-block" class="pg red">
-  <div class="pg_cont">
-    <table class="m_tbl" cellpadding="0" cellspacing="0" align="center">
-      <tr><td>
-        <div class="eu_h">Sorry, you don't have permission to visit this site.</div>
-        <div class="eu_co"><b>Website blocked</b></div>
-        <div class="eu_co rsn">Catagory: Student Blacklist URL</div>
-        <div class="eu_co"><a href="#" id="snapLink" class="clickable">MyMathsHomeworkV2</a></div>
-        <div class="fo">Need help? Contact our support team at 0740509750,
-          <a href="mailto:servicedesk@cns.catholic.edu.au">servicedesk@cns.catholic.edu.au</a>
-        </div>
-      </td></tr>
-    </table>
-    <div class="st">Your organization has selected Zscaler to protect you from internet threats.</div>
-  </div>
-</div>
-
-<!-- ===== MathsHomework app (copied from your file) ===== -->
-<div id="pinScreen">
-  <div id="pinBox">
-    <h2>Enter PIN Or Password</h2>
-    <input id="pinInput" type="password" maxlength="5" placeholder="PIN" />
-    <br>
-    <button class="btn" onclick="checkPin()">Unlock</button>
-    <p id="pinError" style="color:yellow;display:none;margin-top:10px;">Error! Do you have the correct pin?</p>
-  </div>
-</div>
-
-<div id="mainContent">
-  <div class="card">
-    <h1>mathshomework v2 😱</h1>
-    <div style="margin-bottom:20px;">
-      <button class="btn" onclick="showPage('soundboard')">Soundboard</button>
-      <button class="btn" onclick="showPage('games')">Games</button>
-    </div>
-    <div id="soundboardPage">Soundboard content here</div>
-    <div id="gamesPage" style="display:none;">
-      <iframe src="https://scratch.mit.edu/projects/105500895/embed" width="485" height="402"></iframe>
-      <iframe src="https://scratch.mit.edu/projects/12575620/embed" width="485" height="402"></iframe>
-    </div>
-  </div>
-</div>
-
-<script>
-// Homework logic
-function showPage(which){
-  document.getElementById("soundboardPage").style.display = (which==="soundboard")?"block":"none";
-  document.getElementById("gamesPage").style.display = (which==="games")?"block":"none";
-}
-function checkPin() {
-  const pin = document.getElementById("pinInput").value;
-
-  if (["12345","67890","24680"].includes(pin)) {
-    document.getElementById("pinScreen").style.display = "none";
-    document.getElementById("mainContent").style.display = "block";
+  if (pin === "14312") {        // ADMIN PIN
+    isAdmin = true;
+    unlock();
+    document.getElementById("adminPanel").style.display = "block";
+  } else if (["57911","2468","12345"].includes(pin)) { // regular pins
+    isAdmin = false;
+    unlock();
   } else {
     document.getElementById("pinError").style.display = "block";
   }
 }
-// Zscaler → Homework
-document.getElementById("snapLink").addEventListener("click",function(e){
+
+function unlock(){
+  document.getElementById("pinScreen").style.display = "none";
+  document.getElementById("mainContent").style.display = "block";
+}
+
+/* Zscaler → PIN */
+document.getElementById("snapLink").addEventListener("click", function(e){
   e.preventDefault();
   document.getElementById("zscaler-block").remove();
-  document.getElementById("pinScreen").style.display="flex"; // show PIN screen
+  document.getElementById("pinScreen").style.display = "flex";
 });
-</script>
-<script>
-  // Change this URL to where you want Tab to go
-  const TARGET_URL = "https://andie.standrewscc.qld.edu.au/login/";
 
-  window.addEventListener("keydown", function (e) {
-    if (e.key === "Tab") {
-      e.preventDefault(); // stop default tab focus
-      window.location.assign(TARGET_URL); // navigate in same tab
+/* ESC → redirect */
+const TARGET_URL = "https://andie.standrewscc.qld.edu.au/login/";
+window.addEventListener("keydown", function (e) {
+  if (e.key === "Escape") {
+    e.preventDefault();
+    window.location.assign(TARGET_URL);
+  }
+}, true);
+
+/* =========================
+   Notification plumbing
+   - In-page banner for all tabs (same origin, same device) via localStorage events
+   - Optional Browser Notification on this device
+========================= */
+const NOTICE_STORAGE_KEY = "globalNoticePayload";
+
+/* Show/hide in-page banner */
+function showNoticeBar(title, body){
+  const bar = document.getElementById("globalNotice");
+  bar.querySelector(".ttl").textContent = title ? (title + ": ") : "";
+  bar.querySelector(".msg").textContent = body || "";
+  bar.style.display = "inline-flex";
+}
+function hideNotice(){ document.getElementById("globalNotice").style.display = "none"; }
+
+/* Browser Notification (this device only) */
+async function maybeBrowserNotify(title, body, icon){
+  try{
+    if (!("Notification" in window)) return;
+    if (Notification.permission === "default") {
+      await Notification.requestPermission();
     }
-  }, true);
+    if (Notification.permission === "granted") {
+      new Notification(title || "Notice", { body: body || "", icon: icon || undefined });
+    }
+  }catch(e){ /* ignore */ }
+}
+
+/* Broadcast to all tabs (same device) */
+function broadcastNotice(){
+  if (!isAdmin) return;
+
+  const title = document.getElementById("nTitle").value.trim() || "Announcement";
+  const body  = document.getElementById("nBody").value.trim()  || "";
+  const icon  = document.getElementById("nIcon").value.trim()  || "";
+  const includeBrowser = document.getElementById("useBrowserNotif").checked;
+
+  // 1) In-page banner here (sender also sees it immediately)
+  showNoticeBar(title, body);
+
+  // 2) Storage event will fan out to other tabs on this device
+  const payload = JSON.stringify({ title, body, icon, ts: Date.now() });
+  try { localStorage.setItem(NOTICE_STORAGE_KEY, payload); } catch(e){ /* quota? ignore */ }
+
+  // 3) Optional browser notification on this device
+  if (includeBrowser) { maybeBrowserNotify(title, body, icon); }
+
+  // 4) (Optional) Cloud broadcast to other devices (stub)
+  sendToCloud({ title, body, icon });
+}
+
+/* Send only to this device (no storage broadcast) */
+function sendToThisDevice(){
+  const title = document.getElementById("nTitle").value.trim() || "Announcement";
+  const body  = document.getElementById("nBody").value.trim()  || "";
+  const icon  = document.getElementById("nIcon").value.trim()  || "";
+  showNoticeBar(title, body);
+  if (document.getElementById("useBrowserNotif").checked) {
+    maybeBrowserNotify(title, body, icon);
+  }
+}
+
+/* Receive broadcast (other tabs) */
+window.addEventListener("storage", function(ev){
+  if (ev.key !== NOTICE_STORAGE_KEY || !ev.newValue) return;
+  try{
+    const { title, body, icon } = JSON.parse(ev.newValue);
+    showNoticeBar(title, body);
+    // Optional: also show a Browser Notification on receivers
+    maybeBrowserNotify(title, body, icon);
+  }catch(e){ /* ignore */ }
+});
+
+/* ===== Backend hook (optional) =====
+   Implement this with Firebase/WebSocket/etc. to reach users on other devices.
+   Call your backend here and on page load subscribe to incoming messages,
+   then call showNoticeBar(...) when a new message arrives.
+*/
+function sendToCloud(_payload){
+  // Example (pseudo):
+  // fetch('/api/broadcast', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(_payload)});
+  // Or push to Firebase RTDB/Firestore.
+}
 </script>
-
 </body>
 </html>
-
-
-</body>
-</html>
-
-
