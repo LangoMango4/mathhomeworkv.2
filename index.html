@@ -8,6 +8,25 @@
   :root { --bg:#0b0d12; --card:#0e152d; --fg:#eaf0ff; --accent:#e20000; }
   body { margin:0; font-family:Arial, sans-serif; background:#e3e3e3; color:#4B4F54; }
 
+  /* Zscaler Splash Styles */
+  #zscalerSplash {
+    position:fixed; inset:0; z-index:1000; background:#e3e3e3; display:flex; align-items:center; justify-content:center;
+    font-family:Arial, sans-serif; font-size:12px; color:#4B4F54;
+    transition: opacity 0.4s;
+  }
+  #zscalerSplash[hidden] { display:none !important; }
+  #zscalerSplash .pg { width:100vw; height:100vh; display:flex; align-items:center; justify-content:center; background:none; }
+  #zscalerSplash .pg_cont { width:100%; max-width:800px; }
+  #zscalerSplash .m_tbl { background: #e3e3e3; min-width:300px; width:95%; border-radius: 12px; margin:0 auto; }
+  #zscalerSplash .eu_h { font-size: 24px; color:#fd4239; font-weight:normal; background:white; border-top:3px solid #fd4239; border-left:3px solid #fd4239; border-right:3px solid #fd4239; border-top-left-radius: 10px; border-top-right-radius: 10px; padding:20px 0; text-align:left;}
+  #zscalerSplash .eu_co { font-size:16px; color:#2a2c30; border-left:3px solid #fd4239; border-right:3px solid #fd4239; background:white; padding:10px 20px; }
+  #zscalerSplash .eu_co.rsn { color: #000; }
+  #zscalerSplash .eu_co.snapchat { cursor:pointer; color: #0076A9; text-decoration:underline; font-weight:bold; }
+  #zscalerSplash .eu_co.snapchat:hover { color:#fd4239; }
+  #zscalerSplash .fo { background:#f3f3f3; color:#696A6D; border-bottom:3px solid #fd4239; border-bottom-left-radius:10px; border-bottom-right-radius:10px; padding:10px 0; font-size:11px;}
+  #zscalerSplash .err_cd { font-size:16px; color:#2a2c30; background:white; padding-bottom:16px; }
+  #zscalerSplash .uq_cd { font-size:10px; color:#696A6D; position:absolute; bottom:54px; right:25px; }
+
   /* PIN overlay */
   #pinScreen{position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:#000; z-index:30}
   #pinBox{width:min(92vw,420px); background:#000; color:#eef3ff; padding:30px; border-radius:18px; box-shadow:0 10px 30px rgba(0,0,0,.5); text-align:center}
@@ -101,6 +120,49 @@
 </style>
 </head>
 <body>
+<!-- Zscaler Splash Screen -->
+<div id="zscalerSplash">
+  <div class="pg red">
+    <div class="pg_cont">
+      <div class="logo_container" style="text-align:center;margin-bottom:12px;">
+        <img src="https://login.zscalerone.net/img_logo_new1.png" style="max-height:75px;max-width:430px;" alt="Zscaler" />
+      </div>
+      <table class="m_tbl" cellpadding="0" cellspacing="0" align="center">
+        <tr>
+          <td valign="top" style="position:relative;">
+            <div class="uq_cd">D24</div>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr><td class="eu_h">
+                <span style="display:inline-block;width:19px;height:19px;margin-right:10px;vertical-align:middle;background:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAABoElEQVR4nK3Uz2vIYRzA8dcMzWGJdjSZKZLCDphfB7XVHBAXF2XFpJxd+BvUbtY20m4KxVExtbWkUYQLByU3OVhpy8zh+Tzr2dN3t30un1/P834+z/N8noc1lBZYPNVbx3twDQPYFuN+4RUm8ARL5YTWFzPWVZA2jGIWQ+jMC2ILzuERZrCjrmB9YW/CcxwLfwFTAf6J3TiPzTiMNziJz02wkQL0DpfwsVp8OCAb0IFnOIA5LG/zeEwWgN4GUBeeBihLN25mJ8NuhF7CIOYbQJPYHv59fAv7OlpL2OnQH2IbpexsAF3BePgdOFTC2kO/bQC9LED3AvTPymPoYuUFkHqprqizAF0NECwWY9vKynJi1yqg8QoEBwv7ewmbCt2HIw2goQrUgv6wF6QmXoY9KMqdLkBjDSDSueU3+Bi/S9gE3oedY2PS+6xBF3En7Hnczol8AX9xAa+xNWJHpXOajXwPzuBsAR7E1xoGX3BC6vJu7MVdzfIHl/GwDNa/xifsxy1xQ5XMSS2ypwax+n+Wc/ukr2YjfkhNXT81pP9sTeU/6YpejkX0NUMAAAAASUVORK5CYII=') no-repeat center center;background-size:19px 19px;vertical-align:middle;"></span>
+                Sorry, you don't have permission to visit this site.
+              </td></tr>
+              <tr><td><hr style="margin:0;border-top:0.5px solid #cfd0d1;"></td></tr>
+              <tr>
+                <td class="eu_co"><b>Website blocked</b></td>
+              </tr>
+              <tr>
+                <td class="eu_co rsn">Not allowed the use of this Social Network site</td>
+              </tr>
+              <tr>
+                <td class="eu_co snapchat" id="fakeSnapchat" tabindex="0" onclick="zscalerSplashToLogin()" onkeypress="if(event.key==='Enter'){zscalerSplashToLogin()}">
+                  Snapchat
+                </td>
+              </tr>
+              <tr><td><hr style="margin:0;border-top:0.5px solid #cfd0d1;"></td></tr>
+              <tr><td class="fo">
+                Need help? Contact our support team at 0740509750, <a href="mailto:servicedesk@cns.catholic.edu.au">servicedesk@cns.catholic.edu.au</a>
+              </td></tr>
+              <tr><td class="eu_co" style="font-size:12px;color:#939393;background:#e3e3e3;border:0;text-align:center;">
+                <span style="vertical-align:top;padding-right:5px;"></span>
+                Your organization has selected Zscaler to protect you from internet threats.
+              </td></tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
 
 <!-- Notification (shows at top center) -->
 <div id="notificationBox">
@@ -146,17 +208,13 @@
     <div id="soundboardPage">Soundboard content here</div>
 
     <div id="gamesPage" style="display:none">
-      <!-- your original two -->
       <iframe src="https://scratch.mit.edu/projects/105500895/embed" width="485" height="402"></iframe>
       <iframe src="https://scratch.mit.edu/projects/12575620/embed" width="485" height="402"></iframe>
-      <!-- the three you asked to add -->
       <iframe src="https://scratch.mit.edu/projects/1186261598/embed" allowtransparency="true" width="485" height="402" frameborder="0" scrolling="no" allowfullscreen></iframe>
       <iframe src="https://scratch.mit.edu/projects/17828009/embed" allowtransparency="true" width="485" height="402" frameborder="0" scrolling="no" allowfullscreen></iframe>
       <iframe src="https://scratch.mit.edu/projects/249383463/embed" allowtransparency="true" width="485" height="402" frameborder="0" scrolling="no" allowfullscreen></iframe>
     </div>
   </div>
-
-  <!-- Admin panel (only for 14312) -->
   <div id="adminPanel" class="panel">
     <h2>Admin Panel</h2>
     <div class="row">
@@ -185,17 +243,27 @@
 </div>
 
 <script>
-/* =========================
-   Config & Keys
-========================= */
 const ADMIN_PIN = "14312";
 const LS_LOCK = "globalLock_v2";
 const LS_PIN  = "lastPin_v2";
 const LS_NOTIF = "lastNotif_v2";
 
-/* =========================
-   Basic UI helpers
-========================= */
+// Splash logic
+function zscalerSplashToLogin() {
+  document.getElementById('zscalerSplash').setAttribute('hidden', 'hidden');
+  document.getElementById('pinScreen').style.display = 'flex';
+}
+window.addEventListener("DOMContentLoaded", function() {
+  document.getElementById('pinScreen').style.display = "none";
+  // Notification for admin PINs input
+  const sel = document.getElementById("notifTarget");
+  if (sel) {
+    sel.addEventListener("change", function() {
+      document.getElementById("notifPins").style.display = (this.value==="pins") ? "inline-block" : "none";
+    });
+  }
+});
+
 function showPage(which){
   document.getElementById("soundboardPage").style.display = (which==="soundboard")?"block":"none";
   document.getElementById("gamesPage").style.display = (which==="games")?"block":"none";
@@ -204,15 +272,11 @@ function showPage(which){
 }
 function fmtTime(ts){ try{ return new Date(ts).toLocaleString(); }catch(_){ return ""; }}
 
-/* =========================
-   State
-========================= */
+// App state
 let isAdmin = false;
 let lastPinEntered = localStorage.getItem(LS_PIN) || null;
 
-/* =========================
-   PIN handling
-========================= */
+// PIN handling
 function checkPin(){
   const pin = (document.getElementById("pinInput").value || "").trim();
   if (!pin){ document.getElementById("pinError").style.display="block"; return; }
@@ -226,11 +290,14 @@ function checkPin(){
 
   // Apply current lock state at login
   applyLockUI(readLocalLock());
+  // Show last notification if still relevant after login
+  try {
+    const notif = JSON.parse(localStorage.getItem(LS_NOTIF));
+    if (shouldShowNotification(notif)) showNotification(notif.msg, notif.id);
+  } catch(e){}
 }
 
-/* =========================
-   Notification System
-========================= */
+/* Notification System */
 function showNotification(msg, id) {
   if(!msg) return;
   const box = document.getElementById('notificationBox');
@@ -247,35 +314,25 @@ function hideNotification() {
   box.setAttribute('data-id',"");
   if (window._notifTimeout) clearTimeout(window._notifTimeout);
 }
-// Listen for notification "close" on this tab (from storage/cross-tab)
 window.addEventListener("storage", (ev)=>{
   if (ev.key === LS_NOTIF && ev.newValue) {
     try {
       const notif = JSON.parse(ev.newValue);
-      // Only show if this user is targetted
-      if (shouldShowNotification(notif)) {
-        showNotification(notif.msg, notif.id);
-      }
+      if (shouldShowNotification(notif)) showNotification(notif.msg, notif.id);
     } catch(e){}
   }
 });
 
-/* Should this notification be shown to this user? */
 function shouldShowNotification(notif) {
   if (!notif || !notif.msg) return false;
-  // "everyone"
   if (notif.target === "everyone") return true;
-  // "me" (only show if admin and matching PIN)
-  if (notif.target === "me" && isAdmin) return true;
-  // "pins": array of pins. Only show if current PIN matches (even if not admin)
+  if (notif.target === "me" && lastPinEntered === ADMIN_PIN) return true;
   if (notif.target === "pins" && Array.isArray(notif.pins) && lastPinEntered)
     return notif.pins.map(String).includes(String(lastPinEntered));
   return false;
 }
 
-/* =========================
-   Lock state: local + UI
-========================= */
+/* Lock state: local + UI */
 function readLocalLock(){
   try{
     const raw = localStorage.getItem(LS_LOCK);
@@ -297,8 +354,10 @@ function applyLockUI(lock){
   if (lock.active){
     renderLock(lock);
     document.getElementById("lockOverlay").style.display = "flex";
+    document.getElementById("mainContent").style.filter = "blur(2px)";
   }else{
     document.getElementById("lockOverlay").style.display = "none";
+    document.getElementById("mainContent").style.filter = "";
   }
 }
 
@@ -345,19 +404,12 @@ function adminSendNotification() {
   showNotification(msg, notif.id);
 }
 
-/* Show/hide PINs input for "pins" mode */
-document.addEventListener("DOMContentLoaded", function() {
-  const sel = document.getElementById("notifTarget");
-  if (sel) {
-    sel.addEventListener("change", function() {
-      document.getElementById("notifPins").style.display = (this.value==="pins") ? "inline-block" : "none";
-    });
-  }
-});
-
 /* Load: show PIN and check persisted lock */
 (function init(){
-  document.getElementById("pinScreen").style.display = "flex";
+  // Hide main content until login
+  document.getElementById("mainContent").style.display = "none";
+  // Hide pin screen until splash is done
+  document.getElementById("pinScreen").style.display = "none";
   // If someone else already locked (from same device, before PIN), reflect it visually:
   applyLockUI(readLocalLock());
   // Show last notification if still relevant
@@ -379,32 +431,12 @@ window.addEventListener("storage", (ev)=>{
 /* =========================
    Firebase Realtime Database (cross-device)
 ========================= */
-/*
-  1) Create a Firebase project (free).
-  2) Enable Realtime Database.
-  3) Paste your web app config into firebaseConfig below.
-  4) (Recommended) Database Rules that allow only your admin to write:
-     {
-       "rules": {
-         ".read": true,
-         "globalLock": {
-           ".write": "auth != null && auth.token.admin === true"
-         },
-         "globalNotif": {
-           ".write": "auth != null && auth.token.admin === true"
-         }
-       }
-     }
-     Or restrict by specific user UID if you use Auth.
-*/
-
 let cloudReady = false;
 let db = null;
 let lockRef = null;
 let notifRef = null;
 
 (function initFirebase(){
-  // TODO: paste your Firebase config here (from your Firebase console)
 const firebaseConfig = {
   apiKey: "AIzaSyCpBHXlE-l-tLivrJ6nMsZeJwepFcMSeC4",
   authDomain: "wasda-405c4.firebaseapp.com",
@@ -414,24 +446,18 @@ const firebaseConfig = {
   messagingSenderId: "449102913942",
   appId: "1:449102913942:web:81936de160f8672b2f3db7"
 };
-
-  // Only initialize if user filled config
   if (!firebaseConfig.apiKey || firebaseConfig.apiKey === "YOUR_API_KEY") return;
-
   const app = window.firebase.initializeApp(firebaseConfig);
   db = window.firebase.database();
   lockRef = db.ref("globalLock");
   notifRef = db.ref("globalNotif");
-
   // Listen for lock updates from cloud
   lockRef.on("value", (snap)=>{
     const v = snap.val();
     if (!v) return;
-    // Update local store & UI
     writeLocalLock(v);
     applyLockUI(v);
   });
-
   // Listen for notifications from cloud
   notifRef.on("value", (snap)=>{
     const v = snap.val();
@@ -439,27 +465,19 @@ const firebaseConfig = {
     try { localStorage.setItem(LS_NOTIF, JSON.stringify(v)); } catch(e){}
     if (shouldShowNotification(v)) showNotification(v.msg, v.id);
   });
-
   cloudReady = true;
 })();
-
-// Set lock in cloud (admins only)
 function cloudSetLock(lock){
-  if (!cloudReady || !lockRef) return;   // silently no-op if not configured
-  // Client-side check (real enforcement should be in DB Rules)
+  if (!cloudReady || !lockRef) return;
   if (!isAdmin) return;
-  lockRef.set(lock).catch(()=>{ /* ignore client errors */ });
+  lockRef.set(lock).catch(()=>{});
 }
-
-// Set notification in cloud (admins only)
 function cloudSetNotif(notif){
   if (!cloudReady || !notifRef) return;
   if (!isAdmin) return;
   notifRef.set(notif).catch(()=>{});
 }
 </script>
-
-<!-- Firebase CDN (compat for simple API) -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </body>
