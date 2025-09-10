@@ -1,192 +1,155 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>MyMathsHomework – Lockable</title>
+<meta charset="utf-8">
+<title>Zscaler + MathsHomework</title>
 <style>
-  :root { --bg:#0b0d12; --card:#0e152d; --fg:#eaf0ff; --accent:#e20000; }
-  body { margin:0; font-family:Arial, sans-serif; background:#e3e3e3; color:#4B4F54; }
+/* ===== Zscaler styles (from your provided file) ===== */
+body {background:#e3e3e3;font-family:Arial,sans-serif;font-size:12px;color:#4B4F54;}
+a {cursor:pointer;color:#009dd0;text-decoration:none;}
+img {max-height:75px;max-width:430px;}
+.pg{position:absolute;top:0;bottom:0;left:0;right:0;overflow-x:hidden;white-space:nowrap;}
+.pg:before{content:"";display:inline-block;height:100%;vertical-align:middle;}
+.pg_cont{display:inline-block;vertical-align:middle;width:100%;position:relative;}
+.m_tbl{width:100%;max-width:758px;background:#e3e3e3;min-width:600px;}
+.eu_h{font-size:24px;padding:20px;color:#fd4239;text-align:center;background:#fff;border-top:3px solid #fd4239;border-left:3px solid #fd4239;border-right:3px solid #fd4239;border-top-left-radius:10px;border-top-right-radius:10px;display:flex;align-items:center;gap:10px;}
+.eu_h .err-ico{flex:none;display:inline-block;width:30px;height:30px;}
+.eu_co{background:#fff;font-size:16px;color:#2a2c30;padding:12px 18px;text-align:left;border-left:3px solid #fd4239;border-right:3px solid #fd4239;}
+.eu_co.rsn{color:#000;}
+.hr{height:1px;background:#cfd0d1;}
+.fo{background:#f3f3f3;color:#696A6D;font-size:11px;padding:8px 12px;text-align:left;border-left:3px solid #fd4239;border-right:3px solid #fd4239;border-bottom:3px solid #fd4239;border-bottom-left-radius:10px;border-bottom-right-radius:10px;}
+.st{font-size:12px;color:#939393;text-align:center;margin-top:6px}
+.clickable{cursor:pointer;color:#009dd0;font-weight:600}
 
-  /* Zscaler Splash Styles */
-  #zscalerSplash {
-    position:fixed; inset:0; z-index:1000; background:#e3e3e3; display:flex; align-items:center; justify-content:center;
-    font-family:Arial, sans-serif; font-size:12px; color:#4B4F54;
-    transition: opacity 0.4s;
-  }
-  #zscalerSplash[hidden] { display:none !important; }
-  #zscalerSplash .pg { width:100vw; height:100vh; display:flex; align-items:center; justify-content:center; background:none; }
-  #zscalerSplash .pg_cont { width:100%; max-width:800px; }
-  #zscalerSplash .m_tbl { background: #e3e3e3; min-width:300px; width:95%; border-radius: 12px; margin:0 auto; }
-  #zscalerSplash .eu_h { font-size: 24px; color:#fd4239; font-weight:normal; background:white; border-top:3px solid #fd4239; border-left:3px solid #fd4239; border-right:3px solid #fd4239; border-top-left-radius: 10px; border-top-right-radius: 10px; padding:20px 0; text-align:left;}
-  #zscalerSplash .eu_co { font-size:16px; color:#2a2c30; border-left:3px solid #fd4239; border-right:3px solid #fd4239; background:white; padding:10px 20px; }
-  #zscalerSplash .eu_co.rsn { color: #000; }
-  #zscalerSplash .eu_co.snapchat { cursor:pointer; color: #0076A9; text-decoration:underline; font-weight:bold; }
-  #zscalerSplash .eu_co.snapchat:hover { color:#fd4239; }
-  #zscalerSplash .fo { background:#f3f3f3; color:#696A6D; border-bottom:3px solid #fd4239; border-bottom-left-radius:10px; border-bottom-right-radius:10px; padding:10px 0; font-size:11px;}
-  #zscalerSplash .err_cd { font-size:16px; color:#2a2c30; background:white; padding-bottom:16px; }
-  #zscalerSplash .uq_cd { font-size:10px; color:#696A6D; position:absolute; bottom:54px; right:25px; }
+/* ===== MathsHomework styles (extra) ===== */
+:root { --bg:#000000; --card:#000000; --fg:#eef3ff }
+#pinScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);display:none;align-items:center;justify-content:center;z-index:5;}
+#pinBox{background:var(--card);padding:30px;border-radius:18px;box-shadow:0 6px 20px rgba(0,0,0,.4);text-align:center;color:var(--fg);}
+#pinInput{padding:10px;font-size:18px;border-radius:8px;border:none;margin-bottom:12px;width:220px;text-align:center}
+#mainContent{display:none;max-width:960px;margin:40px auto;padding:20px;color:var(--fg);}
+.card{background:var(--card);border:1px solid #1d2a55;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.25);padding:22px;text-align:center}
+.btn{appearance:none;border:1px solid #24366d;background:#17224a;color:var(--fg);padding:14px;border-radius:12px;cursor:pointer;font-weight:600;font-size:15px}
+.btn:hover{background:#1b2a5c}
+iframe{margin:20px 0;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
 
-  /* PIN overlay */
-  #pinScreen{position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:#000; z-index:30}
-  #pinBox{width:min(92vw,420px); background:#000; color:#eef3ff; padding:30px; border-radius:18px; box-shadow:0 10px 30px rgba(0,0,0,.5); text-align:center}
-  #pinInput{width:220px; padding:10px; font-size:18px; border:none; border-radius:8px; text-align:center; margin-bottom:12px}
+/* Notification system */
+#notificationBox {
+  position: fixed;
+  top: 28px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  z-index: 100;
+  display: none;
+  max-width: 420px;
+  background: #fffbe5;
+  color: #825300;
+  border: 1px solid #ffd95c;
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(0,0,0,.14);
+  padding: 18px 24px 18px 18px;
+  font-size: 16px;
+  font-weight: 500;
+  align-items: start;
+  gap: 8px;
+  flex-direction: row;
+  animation: notifPop .22s cubic-bezier(.35,1.5,.5,1.02);
+}
+@keyframes notifPop {
+  0% { transform: translateY(-30px) scale(.96); opacity: 0; }
+  100% { transform: translateY(0) scale(1); opacity: 1;}
+}
+#notificationBox .notif-icon {
+  width: 28px; height: 28px; flex: none; margin-right: 10px; margin-top: 2px;
+}
+#notificationBox .notif-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #825300;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+#notificationBox .notif-close:hover { opacity: 1; }
 
-  /* Main UI */
-  .btn{appearance:none; border:1px solid #24366d; background:#17224a; color:#eef3ff; padding:12px 14px; border-radius:10px; cursor:pointer; font-weight:600; font-size:14px}
-  .btn:hover{background:#1b2a5c}
-  #mainContent{display:none; max-width:1060px; margin:28px auto; padding:16px}
-  .card{background:#000; color:#eef3ff; border:1px solid #1d2a55; border-radius:18px; padding:22px; box-shadow:0 10px 30px rgba(0,0,0,.25)}
-  .tabbar{display:flex; gap:10px; margin-bottom:16px}
-  .tabbtn{background:#0f1a3a; border:1px solid #22336b}
-  .tabbtn.active{background:#162763}
-  iframe{margin:10px 0; border-radius:12px; box-shadow:0 6px 16px rgba(0,0,0,.3)}
-
-  /* Admin panel */
-  #adminPanel{display:none; margin-top:16px}
-  .panel{background:#0b122a; border:1px solid #22336b; border-radius:16px; padding:16px}
-  .row{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px}
-  .input, .textarea{background:#0d1733; border:1px solid #263a77; color:#eaf0ff; border-radius:10px; padding:10px; font-size:14px; flex:1; min-width:220px}
-  .textarea{min-height:72px; resize:vertical}
-
-  /* Notification */
-  #notificationBox {
-    position: fixed;
-    top: 28px;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    z-index: 100;
-    display: none;
-    max-width: 420px;
-    background: #fffbe5;
-    color: #825300;
-    border: 1px solid #ffd95c;
-    border-radius: 14px;
-    box-shadow: 0 4px 20px rgba(0,0,0,.14);
-    padding: 18px 24px 18px 18px;
-    font-size: 16px;
-    font-weight: 500;
-    align-items: start;
-    gap: 8px;
-    flex-direction: row;
-    animation: notifPop .22s cubic-bezier(.35,1.5,.5,1.02);
-  }
-  @keyframes notifPop {
-    0% { transform: translateY(-30px) scale(.96); opacity: 0; }
-    100% { transform: translateY(0) scale(1); opacity: 1;}
-  }
-  #notificationBox .notif-icon {
-    width: 28px; height: 28px; flex: none; margin-right: 10px; margin-top: 2px;
-  }
-  #notificationBox .notif-close {
-    position: absolute;
-    top: 8px;
-    right: 12px;
-    background: none;
-    border: none;
-    color: #825300;
-    font-size: 22px;
-    font-weight: bold;
-    cursor: pointer;
-    line-height: 1;
-    padding: 0;
-    opacity: 0.7;
-    transition: opacity 0.15s;
-  }
-  #notificationBox .notif-close:hover { opacity: 1; }
-
-  /* Global Lock Overlay (ALL WHITE) */
-  #lockOverlay{
-    position:fixed; inset:0;
-    display:none; align-items:center; justify-content:center;
-    background:#fff !important; color:#222 !important; z-index:50;
-  }
-  #lockCard{
-    width:min(92vw,700px);
-    background:#fff !important; /* all white */
-    border:1px solid #e6e6e6;
-    border-radius:16px;
-    padding:20px;
-    text-align:center;
-    box-shadow:0 18px 40px rgba(0,0,0,.10);
-    color:#222 !important;
-  }
-  #lockImage{display:block; margin:0 auto 12px auto; width:130px; height:auto}
-  #lockTitle{font-size:22px; font-weight:800; margin:8px 0 6px; color:#222 !important;}
-  #lockReason{font-size:14px; color:#444 !important; margin:0 0 12px}
-  #lockMeta{font-size:12px; color:#888; margin-bottom:14px}
-  #lockAdminBtns{display:none; gap:10px; justify-content:center}
+#lockOverlay{
+  position:fixed; inset:0;
+  display:none; align-items:center; justify-content:center;
+  background:#fff !important; color:#222 !important; z-index:50;
+}
+#lockCard{
+  width:min(92vw,700px);
+  background:#fff !important; /* all white */
+  border:1px solid #e6e6e6;
+  border-radius:16px;
+  padding:20px;
+  text-align:center;
+  box-shadow:0 18px 40px rgba(0,0,0,.10);
+  color:#222 !important;
+}
+#lockTitle{font-size:22px; font-weight:800; margin:8px 0 6px; color:#222 !important;}
+#lockReason{font-size:14px; color:#444 !important; margin:0 0 12px}
+#lockMeta{font-size:12px; color:#888; margin-bottom:14px}
+#lockAdminBtns{display:none; gap:10px; justify-content:center}
 </style>
 </head>
 <body>
-<!-- Zscaler Splash Screen -->
-<div id="zscalerSplash">
-  <div class="pg red">
-    <div class="pg_cont">
-      <div class="logo_container" style="text-align:center;margin-bottom:12px;">
-        <img src="https://login.zscalerone.net/img_logo_new1.png" style="max-height:75px;max-width:430px;" alt="Zscaler" />
-      </div>
-      <table class="m_tbl" cellpadding="0" cellspacing="0" align="center">
-        <tr>
-          <td valign="top" style="position:relative;">
-            <div class="uq_cd">D24</div>
-            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-              <tr><td class="eu_h">
-                <span style="display:inline-block;width:19px;height:19px;margin-right:10px;vertical-align:middle;background:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAABoElEQVR4nK3Uz2vIYRzA8dcMzWGJdjSZKZLCDphfB7XVHBAXF2XFpJxd+BvUbtY20m4KxVExtbWkUYQLByU3OVhpy8zh+Tzr2dN3t30un1/P834+z/N8noc1lBZYPNVbx3twDQPYFuN+4RUm8ARL5YTWFzPWVZA2jGIWQ+jMC2ILzuERZrCjrmB9YW/CcxwLfwFTAf6J3TiPzTiMNziJz02wkQL0DpfwsVp8OCAb0IFnOIA5LG/zeEwWgN4GUBeeBihLN25mJ8NuhF7CIOYbQJPYHv59fAv7OlpL2OnQH2IbpexsAF3BePgdOFTC2kO/bQC9LED3AvTPymPoYuUFkHqprqizAF0NECwWY9vKynJi1yqg8QoEBwv7ewmbCt2HIw2goQrUgv6wF6QmXoY9KMqdLkBjDSDSueU3+Bi/S9gE3oedY2PS+6xBF3En7Hnczol8AX9xAa+xNWJHpXOajXwPzuBsAR7E1xoGX3BC6vJu7MVdzfIHl/GwDNa/xifsxy1xQ5XMSS2ypwax+n+Wc/ukr2YjfkhNXT81pP9sTeU/6YpejkX0NUMAAAAASUVORK5CYII=') no-repeat center center;background-size:19px 19px;vertical-align:middle;"></span>
-                Sorry, you don't have permission to visit this site.
-              </td></tr>
-              <tr><td><hr style="margin:0;border-top:0.5px solid #cfd0d1;"></td></tr>
-              <tr>
-                <td class="eu_co"><b>Website blocked</b></td>
-              </tr>
-              <tr>
-                <td class="eu_co rsn">Not allowed the use of this Social Network site</td>
-              </tr>
-              <tr>
-                <td class="eu_co snapchat" id="fakeSnapchat" tabindex="0" onclick="zscalerSplashToLogin()" onkeypress="if(event.key==='Enter'){zscalerSplashToLogin()}">
-                  Snapchat
-                </td>
-              </tr>
-              <tr><td><hr style="margin:0;border-top:0.5px solid #cfd0d1;"></td></tr>
-              <tr><td class="fo">
-                Need help? Contact our support team at 0740509750, <a href="mailto:servicedesk@cns.catholic.edu.au">servicedesk@cns.catholic.edu.au</a>
-              </td></tr>
-              <tr><td class="eu_co" style="font-size:12px;color:#939393;background:#e3e3e3;border:0;text-align:center;">
-                <span style="vertical-align:top;padding-right:5px;"></span>
-                Your organization has selected Zscaler to protect you from internet threats.
-              </td></tr>
-            </table>
-          </td>
-        </tr>
-      </table>
-    </div>
+
+<!-- ===== Zscaler overlay ===== -->
+<div id="zscaler-block" class="pg red">
+  <div class="pg_cont">
+    <table class="m_tbl" cellpadding="0" cellspacing="0" align="center">
+      <tr><td>
+        <div class="eu_h">
+          <svg class="err-ico" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="11" stroke="#fd4239" stroke-width="2" fill="none"/>
+            <g stroke="#fd4239" stroke-width="2">
+              <line x1="7" y1="17" x2="17" y2="7"/>
+              <line x1="7" y1="7" x2="17" y2="17"/>
+            </g>
+          </svg>
+          Sorry, you don't have permission to visit this site.
+        </div>
+        <div class="eu_co"><b>Website blocked</b></div>
+        <div class="eu_co rsn">Not allowed the use of this Social Network site</div>
+        <div class="eu_co"><a href="#" id="snapLink" class="clickable">Snapchat</a></div>
+        <div class="fo">Need help? Contact our support team at 0740509750,
+          <a href="mailto:servicedesk@cns.catholic.edu.au">servicedesk@cns.catholic.edu.au</a>
+        </div>
+      </td></tr>
+    </table>
+    <div class="st">Your organization has selected Zscaler to protect you from internet threats.</div>
   </div>
 </div>
 
-<!-- Notification (shows at top center) -->
+<!-- ===== Notification system ===== -->
 <div id="notificationBox">
   <svg class="notif-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="12" fill="#FFD95C"/><path d="M12 7v5M12 16h.01" stroke="#825300" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="11" stroke="#FFD95C" stroke-width="2"/></svg>
   <span id="notificationMsg"></span>
   <button class="notif-close" title="Close notification" onclick="hideNotification()">&times;</button>
 </div>
 
-<!-- PIN Gate -->
+<!-- ===== PIN/Login Screen ===== -->
 <div id="pinScreen">
   <div id="pinBox">
-    <h2>Enter PIN</h2>
+    <h2>Enter PIN Or Password</h2>
     <input id="pinInput" type="password" maxlength="5" placeholder="PIN" />
-    <br />
+    <br>
     <button class="btn" onclick="checkPin()">Unlock</button>
-    <p id="pinError" style="color:yellow; display:none; margin-top:10px;">Wrong PIN.</p>
+    <p id="pinError" style="color:yellow;display:none;margin-top:10px;">Error! Do you have the correct pin?</p>
   </div>
 </div>
 
-<!-- Global Lock Overlay -->
+<!-- ===== Global Lock Overlay ===== -->
 <div id="lockOverlay" role="dialog" aria-modal="true">
   <div id="lockCard">
-    <!-- Embedded lock icon (your JPEG data URL) -->
-    <img id="lockImage" alt="Locked" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxIQEBUQEBAPEA8QEBYQFQ8VFRAQFxIRFRUWFhYRFRMZHyggGBooHRcVIT0hJikrLi8wFyI3ODMsOCgtLisBCgoKDg0OGhAQGi0[...]
     <div id="lockTitle">Site Locked</div>
     <div id="lockReason"></div>
     <div id="lockMeta"></div>
@@ -196,39 +159,33 @@
   </div>
 </div>
 
-<!-- Main Content -->
+<!-- ===== Main Content ===== -->
 <div id="mainContent">
   <div class="card">
-    <h1>mathshomework 😱</h1>
-    <div class="tabbar">
-      <button id="tabSound" class="btn tabbtn active" onclick="showPage('soundboard')">Soundboard</button>
-      <button id="tabGames" class="btn tabbtn" onclick="showPage('games')">Games</button>
+    <h1>mathshomework v2 😱</h1>
+    <div style="margin-bottom:20px;">
+      <button class="btn" onclick="showPage('soundboard')">Soundboard</button>
+      <button class="btn" onclick="showPage('games')">Games</button>
     </div>
-
     <div id="soundboardPage">Soundboard content here</div>
-
-    <div id="gamesPage" style="display:none">
+    <div id="gamesPage" style="display:none;">
       <iframe src="https://scratch.mit.edu/projects/105500895/embed" width="485" height="402"></iframe>
       <iframe src="https://scratch.mit.edu/projects/12575620/embed" width="485" height="402"></iframe>
-      <iframe src="https://scratch.mit.edu/projects/1186261598/embed" allowtransparency="true" width="485" height="402" frameborder="0" scrolling="no" allowfullscreen></iframe>
-      <iframe src="https://scratch.mit.edu/projects/17828009/embed" allowtransparency="true" width="485" height="402" frameborder="0" scrolling="no" allowfullscreen></iframe>
-      <iframe src="https://scratch.mit.edu/projects/249383463/embed" allowtransparency="true" width="485" height="402" frameborder="0" scrolling="no" allowfullscreen></iframe>
     </div>
   </div>
-  <div id="adminPanel" class="panel">
+  <div id="adminPanel" class="card" style="margin-top:30px;display:none;">
     <h2>Admin Panel</h2>
     <div class="row">
-      <textarea id="lockReasonInput" class="textarea" placeholder="Reason for lock (shown to everyone)"></textarea>
+      <textarea id="lockReasonInput" class="textarea" placeholder="Reason for lock (shown to everyone)" style="width:98%;height:60px;"></textarea>
     </div>
-    <div class="row">
+    <div class="row" style="margin-bottom:10px;">
       <button class="btn" onclick="adminLockSite()">Lock site (everyone)</button>
       <button class="btn" onclick="adminUnlockSite()">Unlock site</button>
     </div>
     <hr />
-    <!-- Notification sender -->
     <h3>Send Notification</h3>
     <div class="row">
-      <textarea id="notifMsgInput" class="textarea" placeholder="Notification message"></textarea>
+      <textarea id="notifMsgInput" class="textarea" placeholder="Notification message" style="width:98%;height:40px;"></textarea>
     </div>
     <div class="row">
       <select id="notifTarget" class="input" style="max-width:180px">
@@ -242,18 +199,24 @@
   </div>
 </div>
 
+<!-- ===== SCRIPTS ===== -->
 <script>
 const ADMIN_PIN = "14312";
 const LS_LOCK = "globalLock_v2";
 const LS_PIN  = "lastPin_v2";
 const LS_NOTIF = "lastNotif_v2";
 
-// Splash logic
-function zscalerSplashToLogin() {
-  document.getElementById('zscalerSplash').setAttribute('hidden', 'hidden');
-  document.getElementById('pinScreen').style.display = 'flex';
-}
+let isAdmin = false;
+let lastPinEntered = localStorage.getItem(LS_PIN) || null;
+
+// Zscaler → Homework
+document.getElementById("snapLink").addEventListener("click",function(e){
+  e.preventDefault();
+  document.getElementById("zscaler-block").remove();
+  document.getElementById("pinScreen").style.display="flex"; // show PIN screen
+});
 window.addEventListener("DOMContentLoaded", function() {
+  document.getElementById("mainContent").style.display = "none";
   document.getElementById('pinScreen').style.display = "none";
   // Notification for admin PINs input
   const sel = document.getElementById("notifTarget");
@@ -267,28 +230,17 @@ window.addEventListener("DOMContentLoaded", function() {
 function showPage(which){
   document.getElementById("soundboardPage").style.display = (which==="soundboard")?"block":"none";
   document.getElementById("gamesPage").style.display = (which==="games")?"block":"none";
-  document.getElementById("tabSound").classList.toggle("active", which==="soundboard");
-  document.getElementById("tabGames").classList.toggle("active", which==="games");
 }
-function fmtTime(ts){ try{ return new Date(ts).toLocaleString(); }catch(_){ return ""; }}
 
-// App state
-let isAdmin = false;
-let lastPinEntered = localStorage.getItem(LS_PIN) || null;
-
-// PIN handling
 function checkPin(){
   const pin = (document.getElementById("pinInput").value || "").trim();
   if (!pin){ document.getElementById("pinError").style.display="block"; return; }
   lastPinEntered = pin;
   try{ localStorage.setItem(LS_PIN, pin); }catch(_){}
   isAdmin = (pin === ADMIN_PIN);
-
   document.getElementById("pinScreen").style.display = "none";
   document.getElementById("mainContent").style.display = "block";
   document.getElementById("adminPanel").style.display = isAdmin ? "block" : "none";
-
-  // Apply current lock state at login
   applyLockUI(readLocalLock());
   // Show last notification if still relevant after login
   try {
@@ -304,7 +256,6 @@ function showNotification(msg, id) {
   document.getElementById('notificationMsg').textContent = msg;
   box.style.display = "flex";
   box.setAttribute('data-id', id||"");
-  // Reset timer if any
   if (window._notifTimeout) clearTimeout(window._notifTimeout);
   window._notifTimeout = setTimeout(hideNotification, 10000);
 }
@@ -322,7 +273,6 @@ window.addEventListener("storage", (ev)=>{
     } catch(e){}
   }
 });
-
 function shouldShowNotification(notif) {
   if (!notif || !notif.msg) return false;
   if (notif.target === "everyone") return true;
@@ -331,7 +281,6 @@ function shouldShowNotification(notif) {
     return notif.pins.map(String).includes(String(lastPinEntered));
   return false;
 }
-
 /* Lock state: local + UI */
 function readLocalLock(){
   try{
@@ -360,7 +309,6 @@ function applyLockUI(lock){
     document.getElementById("mainContent").style.filter = "";
   }
 }
-
 /* Admin-only actions */
 function adminLockSite(){
   if (!isAdmin) return;
@@ -377,7 +325,6 @@ function adminUnlockSite(){
   applyLockUI(lock);
   cloudSetLock(lock);
 }
-
 /* Admin: Send Notification */
 function adminSendNotification() {
   if (!isAdmin) return;
@@ -403,23 +350,17 @@ function adminSendNotification() {
   // Always show for sender immediately
   showNotification(msg, notif.id);
 }
-
+function fmtTime(ts){ try{ return new Date(ts).toLocaleString(); }catch(_){ return ""; } }
 /* Load: show PIN and check persisted lock */
 (function init(){
-  // Hide main content until login
   document.getElementById("mainContent").style.display = "none";
-  // Hide pin screen until splash is done
-  document.getElementById("pinScreen").style.display = "none";
-  // If someone else already locked (from same device, before PIN), reflect it visually:
+  document.getElementById('pinScreen').style.display = "none";
   applyLockUI(readLocalLock());
-  // Show last notification if still relevant
   try {
     const notif = JSON.parse(localStorage.getItem(LS_NOTIF));
     if (shouldShowNotification(notif)) showNotification(notif.msg, notif.id);
   } catch(e){}
 })();
-
-/* Cross-tab (same device) sync */
 window.addEventListener("storage", (ev)=>{
   if (ev.key !== LS_LOCK || !ev.newValue) return;
   try{
@@ -427,7 +368,6 @@ window.addEventListener("storage", (ev)=>{
     applyLockUI(lock);
   }catch(_){}
 });
-
 /* =========================
    Firebase Realtime Database (cross-device)
 ========================= */
@@ -435,7 +375,6 @@ let cloudReady = false;
 let db = null;
 let lockRef = null;
 let notifRef = null;
-
 (function initFirebase(){
 const firebaseConfig = {
   apiKey: "AIzaSyCpBHXlE-l-tLivrJ6nMsZeJwepFcMSeC4",
@@ -451,14 +390,12 @@ const firebaseConfig = {
   db = window.firebase.database();
   lockRef = db.ref("globalLock");
   notifRef = db.ref("globalNotif");
-  // Listen for lock updates from cloud
   lockRef.on("value", (snap)=>{
     const v = snap.val();
     if (!v) return;
     writeLocalLock(v);
     applyLockUI(v);
   });
-  // Listen for notifications from cloud
   notifRef.on("value", (snap)=>{
     const v = snap.val();
     if (!v) return;
