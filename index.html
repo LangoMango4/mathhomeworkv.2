@@ -30,17 +30,84 @@
   .input, .textarea{background:#0d1733; border:1px solid #263a77; color:#eaf0ff; border-radius:10px; padding:10px; font-size:14px; flex:1; min-width:220px}
   .textarea{min-height:72px; resize:vertical}
 
-  /* Global Lock Overlay */
-  #lockOverlay{position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:var(--bg); color:var(--fg); z-index:50}
-  #lockCard{width:min(92vw,700px); background:var(--card); border:1px solid #2a3f84; border-radius:16px; padding:20px; text-align:center; box-shadow:0 18px 40px rgba(0,0,0,.45)}
+  /* Notification */
+  #notificationBox {
+    position: fixed;
+    top: 28px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    z-index: 100;
+    display: none;
+    max-width: 420px;
+    background: #fffbe5;
+    color: #825300;
+    border: 1px solid #ffd95c;
+    border-radius: 14px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.14);
+    padding: 18px 24px 18px 18px;
+    font-size: 16px;
+    font-weight: 500;
+    align-items: start;
+    gap: 8px;
+    flex-direction: row;
+    animation: notifPop .22s cubic-bezier(.35,1.5,.5,1.02);
+  }
+  @keyframes notifPop {
+    0% { transform: translateY(-30px) scale(.96); opacity: 0; }
+    100% { transform: translateY(0) scale(1); opacity: 1;}
+  }
+  #notificationBox .notif-icon {
+    width: 28px; height: 28px; flex: none; margin-right: 10px; margin-top: 2px;
+  }
+  #notificationBox .notif-close {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    background: none;
+    border: none;
+    color: #825300;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    opacity: 0.7;
+    transition: opacity 0.15s;
+  }
+  #notificationBox .notif-close:hover { opacity: 1; }
+
+  /* Global Lock Overlay (ALL WHITE) */
+  #lockOverlay{
+    position:fixed; inset:0;
+    display:none; align-items:center; justify-content:center;
+    background:#fff !important; color:#222 !important; z-index:50;
+  }
+  #lockCard{
+    width:min(92vw,700px);
+    background:#fff !important; /* all white */
+    border:1px solid #e6e6e6;
+    border-radius:16px;
+    padding:20px;
+    text-align:center;
+    box-shadow:0 18px 40px rgba(0,0,0,.10);
+    color:#222 !important;
+  }
   #lockImage{display:block; margin:0 auto 12px auto; width:130px; height:auto}
-  #lockTitle{font-size:22px; font-weight:800; margin:8px 0 6px}
-  #lockReason{font-size:14px; color:#d6defa; margin:0 0 12px}
-  #lockMeta{font-size:12px; color:#9fb2ff; margin-bottom:14px}
+  #lockTitle{font-size:22px; font-weight:800; margin:8px 0 6px; color:#222 !important;}
+  #lockReason{font-size:14px; color:#444 !important; margin:0 0 12px}
+  #lockMeta{font-size:12px; color:#888; margin-bottom:14px}
   #lockAdminBtns{display:none; gap:10px; justify-content:center}
 </style>
 </head>
 <body>
+
+<!-- Notification (shows at top center) -->
+<div id="notificationBox">
+  <svg class="notif-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="12" fill="#FFD95C"/><path d="M12 7v5M12 16h.01" stroke="#825300" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="11" stroke="#FFD95C" stroke-width="2"/></svg>
+  <span id="notificationMsg"></span>
+  <button class="notif-close" title="Close notification" onclick="hideNotification()">&times;</button>
+</div>
 
 <!-- PIN Gate -->
 <div id="pinScreen">
@@ -57,7 +124,7 @@
 <div id="lockOverlay" role="dialog" aria-modal="true">
   <div id="lockCard">
     <!-- Embedded lock icon (your JPEG data URL) -->
-    <img id="lockImage" alt="Locked" src="data:image/jpeg;base64,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" />
+    <img id="lockImage" alt="Locked" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxIQEBUQEBAPEA8QEBYQFQ8VFRAQFxIRFRUWFhYRFRMZHyggGBooHRcVIT0hJikrLi8wFyI3ODMsOCgtLisBCgoKDg0OGhAQGi0[...]
     <div id="lockTitle">Site Locked</div>
     <div id="lockReason"></div>
     <div id="lockMeta"></div>
@@ -99,6 +166,21 @@
       <button class="btn" onclick="adminLockSite()">Lock site (everyone)</button>
       <button class="btn" onclick="adminUnlockSite()">Unlock site</button>
     </div>
+    <hr />
+    <!-- Notification sender -->
+    <h3>Send Notification</h3>
+    <div class="row">
+      <textarea id="notifMsgInput" class="textarea" placeholder="Notification message"></textarea>
+    </div>
+    <div class="row">
+      <select id="notifTarget" class="input" style="max-width:180px">
+        <option value="everyone">Everyone</option>
+        <option value="me">Just me</option>
+        <option value="pins">Specific PIN(s)...</option>
+      </select>
+      <input id="notifPins" class="input" type="text" placeholder="PIN(s) (comma separated)" style="display:none;max-width:220px" />
+      <button class="btn" onclick="adminSendNotification()">Send Notification</button>
+    </div>
   </div>
 </div>
 
@@ -109,6 +191,7 @@
 const ADMIN_PIN = "14312";
 const LS_LOCK = "globalLock_v2";
 const LS_PIN  = "lastPin_v2";
+const LS_NOTIF = "lastNotif_v2";
 
 /* =========================
    Basic UI helpers
@@ -143,6 +226,51 @@ function checkPin(){
 
   // Apply current lock state at login
   applyLockUI(readLocalLock());
+}
+
+/* =========================
+   Notification System
+========================= */
+function showNotification(msg, id) {
+  if(!msg) return;
+  const box = document.getElementById('notificationBox');
+  document.getElementById('notificationMsg').textContent = msg;
+  box.style.display = "flex";
+  box.setAttribute('data-id', id||"");
+  // Reset timer if any
+  if (window._notifTimeout) clearTimeout(window._notifTimeout);
+  window._notifTimeout = setTimeout(hideNotification, 10000);
+}
+function hideNotification() {
+  const box = document.getElementById('notificationBox');
+  box.style.display = "none";
+  box.setAttribute('data-id',"");
+  if (window._notifTimeout) clearTimeout(window._notifTimeout);
+}
+// Listen for notification "close" on this tab (from storage/cross-tab)
+window.addEventListener("storage", (ev)=>{
+  if (ev.key === LS_NOTIF && ev.newValue) {
+    try {
+      const notif = JSON.parse(ev.newValue);
+      // Only show if this user is targetted
+      if (shouldShowNotification(notif)) {
+        showNotification(notif.msg, notif.id);
+      }
+    } catch(e){}
+  }
+});
+
+/* Should this notification be shown to this user? */
+function shouldShowNotification(notif) {
+  if (!notif || !notif.msg) return false;
+  // "everyone"
+  if (notif.target === "everyone") return true;
+  // "me" (only show if admin and matching PIN)
+  if (notif.target === "me" && isAdmin) return true;
+  // "pins": array of pins. Only show if current PIN matches (even if not admin)
+  if (notif.target === "pins" && Array.isArray(notif.pins) && lastPinEntered)
+    return notif.pins.map(String).includes(String(lastPinEntered));
+  return false;
 }
 
 /* =========================
@@ -191,11 +319,55 @@ function adminUnlockSite(){
   cloudSetLock(lock);
 }
 
+/* Admin: Send Notification */
+function adminSendNotification() {
+  if (!isAdmin) return;
+  const msg = (document.getElementById("notifMsgInput").value || "").trim();
+  if (!msg) return alert("Notification message required.");
+  const target = document.getElementById("notifTarget").value;
+  let pins = [];
+  if (target === "pins") {
+    const rawPins = (document.getElementById("notifPins").value || "").split(",");
+    pins = rawPins.map(p=>p.trim()).filter(Boolean);
+    if (!pins.length) return alert("Enter at least one PIN.");
+  }
+  // For unique notification id (timestamp+random)
+  const notif = {
+    id: "notif_" + Date.now() + "_" + Math.floor(Math.random()*100000),
+    msg: msg,
+    target: target,
+    pins: pins,
+    ts: Date.now(),
+    by: "admin"
+  };
+  // Write to localStorage (triggers all tabs, including this one)
+  try { localStorage.setItem(LS_NOTIF, JSON.stringify(notif)); } catch(e){}
+  // Try to sync to cloud if ready
+  cloudSetNotif(notif);
+  // For admin, also show immediately
+  if (shouldShowNotification(notif)) showNotification(msg, notif.id);
+}
+
+/* Show/hide PINs input for "pins" mode */
+document.addEventListener("DOMContentLoaded", function() {
+  const sel = document.getElementById("notifTarget");
+  if (sel) {
+    sel.addEventListener("change", function() {
+      document.getElementById("notifPins").style.display = (this.value==="pins") ? "inline-block" : "none";
+    });
+  }
+});
+
 /* Load: show PIN and check persisted lock */
 (function init(){
   document.getElementById("pinScreen").style.display = "flex";
   // If someone else already locked (from same device, before PIN), reflect it visually:
   applyLockUI(readLocalLock());
+  // Show last notification if still relevant
+  try {
+    const notif = JSON.parse(localStorage.getItem(LS_NOTIF));
+    if (shouldShowNotification(notif)) showNotification(notif.msg, notif.id);
+  } catch(e){}
 })();
 
 /* Cross-tab (same device) sync */
@@ -220,6 +392,9 @@ window.addEventListener("storage", (ev)=>{
          ".read": true,
          "globalLock": {
            ".write": "auth != null && auth.token.admin === true"
+         },
+         "globalNotif": {
+           ".write": "auth != null && auth.token.admin === true"
          }
        }
      }
@@ -229,6 +404,7 @@ window.addEventListener("storage", (ev)=>{
 let cloudReady = false;
 let db = null;
 let lockRef = null;
+let notifRef = null;
 
 (function initFirebase(){
   // TODO: paste your Firebase config here (from your Firebase console)
@@ -248,6 +424,7 @@ const firebaseConfig = {
   const app = window.firebase.initializeApp(firebaseConfig);
   db = window.firebase.database();
   lockRef = db.ref("globalLock");
+  notifRef = db.ref("globalNotif");
 
   // Listen for lock updates from cloud
   lockRef.on("value", (snap)=>{
@@ -256,6 +433,14 @@ const firebaseConfig = {
     // Update local store & UI
     writeLocalLock(v);
     applyLockUI(v);
+  });
+
+  // Listen for notifications from cloud
+  notifRef.on("value", (snap)=>{
+    const v = snap.val();
+    if (!v) return;
+    try { localStorage.setItem(LS_NOTIF, JSON.stringify(v)); } catch(e){}
+    if (shouldShowNotification(v)) showNotification(v.msg, v.id);
   });
 
   cloudReady = true;
@@ -267,6 +452,13 @@ function cloudSetLock(lock){
   // Client-side check (real enforcement should be in DB Rules)
   if (!isAdmin) return;
   lockRef.set(lock).catch(()=>{ /* ignore client errors */ });
+}
+
+// Set notification in cloud (admins only)
+function cloudSetNotif(notif){
+  if (!cloudReady || !notifRef) return;
+  if (!isAdmin) return;
+  notifRef.set(notif).catch(()=>{});
 }
 </script>
 
