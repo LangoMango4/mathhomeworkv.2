@@ -1,10 +1,11 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <title>MyMathsHomework</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <style>
-/* ===== Zscaler styles (from your provided file) ===== */
+/* ===== Zscaler styles (from your file) ===== */
 body {background:#e3e3e3;font-family:Arial,sans-serif;font-size:12px;color:#4B4F54;}
 a {cursor:pointer;color:#009dd0;text-decoration:none;}
 img {max-height:75px;max-width:430px;}
@@ -16,88 +17,36 @@ img {max-height:75px;max-width:430px;}
 .eu_h .err-ico{flex:none;display:inline-block;width:30px;height:30px;}
 .eu_co{background:#fff;font-size:16px;color:#2a2c30;padding:12px 18px;text-align:left;border-left:3px solid #fd4239;border-right:3px solid #fd4239;}
 .eu_co.rsn{color:#000;}
-.hr{height:1px;background:#cfd0d1;}
 .fo{background:#f3f3f3;color:#696A6D;font-size:11px;padding:8px 12px;text-align:left;border-left:3px solid #fd4239;border-right:3px solid #fd4239;border-bottom:3px solid #fd4239;border-bottom-left-radius:10px;border-bottom-right-radius:10px;}
 .st{font-size:12px;color:#939393;text-align:center;margin-top:6px}
-.clickable{cursor:pointer;color:#009dd0;font-weight:600}
 
-/* ===== MathsHomework styles (extra) ===== */
-:root { --bg:#000000; --card:#000000; --fg:#eef3ff }
-#pinScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);display:none;align-items:center;justify-content:center;z-index:5;}
-#pinBox{background:var(--card);padding:30px;border-radius:18px;box-shadow:0 6px 20px rgba(0,0,0,.4);text-align:center;color:var(--fg);}
-#pinInput{padding:10px;font-size:18px;border-radius:8px;border:none;margin-bottom:12px;width:220px;text-align:center}
-#mainContent{display:none;max-width:960px;margin:40px auto;padding:20px;color:var(--fg);}
-.card{background:var(--card);border:1px solid #1d2a55;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.25);padding:22px;text-align:center}
-.btn{appearance:none;border:1px solid #24366d;background:#17224a;color:var(--fg);padding:14px;border-radius:12px;cursor:pointer;font-weight:600;font-size:15px}
+/* ===== App styles ===== */
+:root { --bg:#000; --card:#000; --fg:#eef3ff }
+#pinScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);display:none;align-items:center;justify-content:center;z-index:5;padding:18px;}
+#pinBox{background:var(--card);padding:26px 30px;border-radius:18px;box-shadow:0 6px 20px rgba(0,0,0,.4);text-align:center;color:var(--fg);width:min(92vw,520px)}
+#pinHeader{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 12px 0}
+#pinInput{padding:12px;font-size:18px;border-radius:8px;border:1px solid #1d2a55;margin-bottom:8px;width:240px;text-align:center;background:#0b0f1f;color:var(--fg)}
+#pinHelp{font-size:12px;opacity:.9;margin:6px 0 0}
+#pinError{color:#ffd0d0;display:none;margin-top:8px}
+
+#logoWrap{display:flex;justify-content:center;margin-bottom:12px}
+#logoWrap img{max-height:64px;max-width:240px}
+
+.btn{appearance:none;border:1px solid #24366d;background:#17224a;color:var(--fg);padding:12px 16px;border-radius:12px;cursor:pointer;font-weight:600;font-size:15px}
 .btn:hover{background:#1b2a5c}
-iframe{margin:20px 0;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
 
-/* Notification system */
-#notificationBox {
-  position: fixed;
-  top: 28px;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-  z-index: 100;
-  display: none;
-  max-width: 420px;
-  background: #fffbe5;
-  color: #825300;
-  border: 1px solid #ffd95c;
-  border-radius: 14px;
-  box-shadow: 0 4px 20px rgba(0,0,0,.14);
-  padding: 18px 24px 18px 18px;
-  font-size: 16px;
-  font-weight: 500;
-  align-items: start;
-  gap: 8px;
-  flex-direction: row;
-  animation: notifPop .22s cubic-bezier(.35,1.5,.5,1.02);
-}
-@keyframes notifPop {
-  0% { transform: translateY(-30px) scale(.96); opacity: 0; }
-  100% { transform: translateY(0) scale(1); opacity: 1;}
-}
-#notificationBox .notif-icon {
-  width: 28px; height: 28px; flex: none; margin-right: 10px; margin-top: 2px;
-}
-#notificationBox .notif-close {
-  position: absolute;
-  top: 8px;
-  right: 12px;
-  background: none;
-  border: none;
-  color: #825300;
-  font-size: 22px;
-  font-weight: bold;
-  cursor: pointer;
-  line-height: 1;
-  padding: 0;
-  opacity: 0.7;
-  transition: opacity 0.15s;
-}
-#notificationBox .notif-close:hover { opacity: 1; }
-
-#lockOverlay{
-  position:fixed; inset:0;
-  display:none; align-items:center; justify-content:center;
-  background:#fff !important; color:#222 !important; z-index:50;
-}
-#lockCard{
-  width:min(92vw,700px);
-  background:#fff !important; /* all white */
-  border:1px solid #e6e6e6;
-  border-radius:16px;
-  padding:20px;
-  text-align:center;
-  box-shadow:0 18px 40px rgba(0,0,0,.10);
-  color:#222 !important;
-}
-#lockTitle{font-size:22px; font-weight:800; margin:8px 0 6px; color:#222 !important;}
-#lockReason{font-size:14px; color:#444 !important; margin:0 0 12px}
-#lockMeta{font-size:12px; color:#888; margin-bottom:14px}
-#lockAdminBtns{display:none; gap:10px; justify-content:center}
+#mainContent{display:none;max-width:1060px;margin:40px auto;padding:0 16px;color:#0b0b0b}
+.card{background:#fff;border:1px solid #e5e7ef;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.08);padding:22px}
+.tabs{display:flex;gap:10px;margin:0 0 16px 0}
+.hstack{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.sound-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.sound{border:1px solid #e6eaf7;border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.sound .row{display:flex;gap:10px;align-items:center;justify-content:space-between}
+.sound title{font-weight:700}
+audio{width:100%;height:32px}
+.small{font-size:12px;color:#666}
+.headerRow{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.err-ico.small{width:20px;height:20px}
 </style>
 </head>
 <body>
@@ -108,7 +57,7 @@ iframe{margin:20px 0;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
     <table class="m_tbl" cellpadding="0" cellspacing="0" align="center">
       <tr><td>
         <div class="eu_h">
-          <svg class="err-ico" viewBox="0 0 24 24" fill="none">
+          <svg class="err-ico" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <circle cx="12" cy="12" r="11" stroke="#fd4239" stroke-width="2" fill="none"/>
             <g stroke="#fd4239" stroke-width="2">
               <line x1="7" y1="17" x2="17" y2="7"/>
@@ -129,104 +78,110 @@ iframe{margin:20px 0;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
   </div>
 </div>
 
-<!-- ===== Notification system ===== -->
-<div id="notificationBox">
-  <svg class="notif-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="12" fill="#FFD95C"/><path d="M12 7v5M12 16h.01" stroke="#825300" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="11" stroke="#FFD95C" stroke-width="2"/></svg>
-  <span id="notificationMsg"></span>
-  <button class="notif-close" title="Close notification" onclick="hideNotification()">&times;</button>
-</div>
-
-<!-- ===== PIN/Login Screen ===== -->
-<div id="pinScreen">
+<!-- ===== PIN/Login Screen (no notifications, no site lock) ===== -->
+<div id="pinScreen" aria-modal="true" role="dialog">
   <div id="pinBox">
-    <h2>Enter PIN Or Password</h2>
-    <input id="pinInput" type="password" maxlength="5" placeholder="PIN" />
-    <br>
-    <button class="btn" onclick="checkPin()">Unlock</button>
-    <p id="pinError" style="color:yellow;display:none;margin-top:10px;">Error! Do you have the correct pin?</p>
-  </div>
-</div>
-
-<!-- ===== Global Lock Overlay ===== -->
-<div id="lockOverlay" role="dialog" aria-modal="true">
-  <div id="lockCard">
-    <div id="lockTitle">Site Locked</div>
-    <div id="lockReason"></div>
-    <div id="lockMeta"></div>
-    <div id="lockAdminBtns">
-      <button class="btn" onclick="adminUnlockSite()">Unlock (admin)</button>
+    <div id="logoWrap">
+      <!-- Put your logo file in the repo (e.g. /cnslogo.png) -->
+      <img src="cnslogo.png" alt="CNS Logo" id="cnslogo">
     </div>
+    <div id="pinHeader">
+      <!-- Reusing the same red X icon -->
+      <svg class="err-ico small" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="11" stroke="#fd4239" stroke-width="2" fill="none"/>
+        <g stroke="#fd4239" stroke-width="2">
+          <line x1="7" y1="17" x2="17" y2="7"/>
+          <line x1="7" y1="7" x2="17" y2="17"/>
+        </g>
+      </svg>
+      <h2 style="margin:0">Enter PIN or Password</h2>
+    </div>
+
+    <input id="pinInput" type="password" maxlength="64" placeholder="Enter your PIN / password" autocomplete="current-password" />
+    <div id="pinHelp" class="small">Use one of the approved passwords. Access is denied unless a match is found.</div>
+    <div>
+      <button class="btn" id="unlockBtn">Unlock</button>
+    </div>
+    <div id="pinError">Error — incorrect PIN/password.</div>
   </div>
 </div>
 
 <!-- ===== Main Content ===== -->
 <div id="mainContent">
   <div class="card">
-    <h1>mathshomework v2 😱</h1>
-    <div style="margin-bottom:20px;">
+    <div class="headerRow">
+      <svg class="err-ico small" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="11" stroke="#fd4239" stroke-width="2" fill="none"/>
+        <g stroke="#fd4239" stroke-width="2">
+          <line x1="7" y1="17" x2="17" y2="7"/>
+          <line x1="7" y1="7" x2="17" y2="17"/>
+        </g>
+      </svg>
+      <h1 style="margin:0">mathshomework v2</h1>
+    </div>
+
+    <div class="tabs">
       <button class="btn" onclick="showPage('soundboard')">Soundboard</button>
       <button class="btn" onclick="showPage('games')">Games</button>
     </div>
-    <div id="soundboardPage">Soundboards Coming Soon</div>
+
+    <!-- Soundboard -->
+    <div id="soundboardPage">
+      <div class="small" style="margin-bottom:8px">
+        Add/host audio files in your repo (e.g. <code>/audio/...</code>) or list them in <code>soundboards.json</code>. They will play directly from GitHub Pages.
+      </div>
+      <div id="soundList" class="sound-list"></div>
+    </div>
+
+    <!-- Games -->
     <div id="gamesPage" style="display:none;">
+      <div class="hstack small" style="margin-bottom:6px">Scratch demos:</div>
       <iframe src="https://scratch.mit.edu/projects/3041905/embed" allowtransparency="true" width="485" height="402" frameborder="0" scrolling="no" allowfullscreen></iframe>
       <iframe src="https://scratch.mit.edu/projects/17828009/embed" allowtransparency="true" width="485" height="402" frameborder="0" scrolling="no" allowfullscreen></iframe>
       <iframe src="https://scratch.mit.edu/projects/105500895/embed" width="485" height="402"></iframe>
       <iframe src="https://scratch.mit.edu/projects/12575620/embed" width="485" height="402"></iframe>
     </div>
   </div>
-  <div id="adminPanel" class="card" style="margin-top:30px;display:none;">
-    <h2>Admin Panel</h2>
-    <div class="row">
-      <textarea id="lockReasonInput" class="textarea" placeholder="Reason for lock (shown to everyone)" style="width:98%;height:60px;"></textarea>
-    </div>
-    <div class="row" style="margin-bottom:10px;">
-      <button class="btn" onclick="adminLockSite()">Lock site (everyone)</button>
-      <button class="btn" onclick="adminUnlockSite()">Unlock site</button>
-    </div>
-    <hr />
-    <h3>Send Notification</h3>
-    <div class="row">
-      <textarea id="notifMsgInput" class="textarea" placeholder="Notification message" style="width:98%;height:40px;"></textarea>
-    </div>
-    <div class="row">
-      <select id="notifTarget" class="input" style="max-width:180px">
-        <option value="everyone">Everyone</option>
-        <option value="me">Just me</option>
-        <option value="pins">Specific PIN(s)...</option>
-      </select>
-      <input id="notifPins" class="input" type="text" placeholder="PIN(s) (comma separated)" style="display:none;max-width:220px" />
-      <button class="btn" onclick="adminSendNotification()">Send Notification</button>
-    </div>
-  </div>
 </div>
 
-<!-- ===== SCRIPTS ===== -->
 <script>
-const ADMIN_PIN = "14312";
-const LS_LOCK = "globalLock_v2";
-const LS_PIN  = "lastPin_v2";
-const LS_NOTIF = "lastNotif_v2";
+/* ================================
+   CONFIG
+   --------------------------------
+   1) VALID_PASSWORDS: put allowed PINs/passwords here (strings).
+   2) If you add a file /soundboards.json at your repo root (served by GitHub Pages),
+      it will be fetched automatically to list sounds. Example file contents:
 
-let isAdmin = false;
-let lastPinEntered = localStorage.getItem(LS_PIN) || null;
+      [
+        {"title":"Airhorn","path":"audio/airhorn.mp3"},
+        {"title":"Bell","path":"audio/bell.mp3"}
+      ]
 
-// Zscaler → Homework
-document.getElementById("snapLink").addEventListener("click",function(e){
+   3) If the JSON file is missing, we fall back to the array in FALLBACK_SOUNDS.
+================================== */
+const VALID_PASSWORDS = [
+  "14312",       // your admin PIN (optional to keep here)
+  "24680", "13579", "school123" // add more as needed
+];
+
+const FALLBACK_SOUNDS = [
+  // Edit these to match files in your repo (relative to site root)
+  { title: "Airhorn", path: "audio/airhorn.mp3" },
+  { title: "Bell",    path: "audio/bell.mp3"   }
+];
+
+/* ================================
+   SIMPLE STATE
+================================== */
+let lastPassword = null;
+
+/* ================================
+   ZSCALER → LOGIN
+================================== */
+document.getElementById("snapLink").addEventListener("click", function(e){
   e.preventDefault();
   document.getElementById("zscaler-block").remove();
-  document.getElementById("pinScreen").style.display="flex"; // show PIN screen
-});
-window.addEventListener("DOMContentLoaded", function() {
-  document.getElementById("mainContent").style.display = "none";
-  document.getElementById('pinScreen').style.display = "none";
-  // Notification for admin PINs input
-  const sel = document.getElementById("notifTarget");
-  if (sel) {
-    sel.addEventListener("change", function() {
-      document.getElementById("notifPins").style.display = (this.value==="pins") ? "inline-block" : "none";
-    });
-  }
+  document.getElementById("pinScreen").style.display = "flex";
 });
 
 function showPage(which){
@@ -234,190 +189,108 @@ function showPage(which){
   document.getElementById("gamesPage").style.display = (which==="games")?"block":"none";
 }
 
-function checkPin(){
-  const pin = (document.getElementById("pinInput").value || "").trim();
-  if (!pin){ document.getElementById("pinError").style.display="block"; return; }
-  lastPinEntered = pin;
-  try{ localStorage.setItem(LS_PIN, pin); }catch(_){}
-  isAdmin = (pin === ADMIN_PIN);
+/* ================================
+   LOGIN (password allowlist)
+================================== */
+function checkPassword(){
+  const input = (document.getElementById("pinInput").value || "").trim();
+  const ok = VALID_PASSWORDS.map(String).includes(String(input));
+  if (!ok){
+    document.getElementById("pinError").style.display = "block";
+    return;
+  }
+  lastPassword = input;
+  document.getElementById("pinError").style.display = "none";
   document.getElementById("pinScreen").style.display = "none";
   document.getElementById("mainContent").style.display = "block";
-  document.getElementById("adminPanel").style.display = isAdmin ? "block" : "none";
-  applyLockUI(readLocalLock());
-  // Show last notification if still relevant after login
-  try {
-    const notif = JSON.parse(localStorage.getItem(LS_NOTIF));
-    if (shouldShowNotification(notif)) showNotification(notif.msg, notif.id);
-  } catch(e){}
+  // After login, load sound list
+  loadSoundboard();
 }
 
-/* Notification System */
-function showNotification(msg, id) {
-  if(!msg) return;
-  const box = document.getElementById('notificationBox');
-  document.getElementById('notificationMsg').textContent = msg;
-  box.style.display = "flex";
-  box.setAttribute('data-id', id||"");
-  if (window._notifTimeout) clearTimeout(window._notifTimeout);
-  window._notifTimeout = setTimeout(hideNotification, 10000);
-}
-function hideNotification() {
-  const box = document.getElementById('notificationBox');
-  box.style.display = "none";
-  box.setAttribute('data-id',"");
-  if (window._notifTimeout) clearTimeout(window._notifTimeout);
-}
-window.addEventListener("storage", (ev)=>{
-  if (ev.key === LS_NOTIF && ev.newValue) {
-    try {
-      const notif = JSON.parse(ev.newValue);
-      if (shouldShowNotification(notif)) showNotification(notif.msg, notif.id);
-    } catch(e){}
-  }
+document.getElementById("unlockBtn").addEventListener("click", checkPassword);
+document.getElementById("pinInput").addEventListener("keydown", (e)=>{
+  if (e.key === "Enter") checkPassword();
 });
-function shouldShowNotification(notif) {
-  if (!notif || !notif.msg) return false;
-  if (notif.target === "everyone") return true;
-  if (notif.target === "me" && lastPinEntered === ADMIN_PIN) return true;
-  if (notif.target === "pins" && Array.isArray(notif.pins) && lastPinEntered)
-    return notif.pins.map(String).includes(String(lastPinEntered));
-  return false;
-}
-/* Lock state: local + UI */
-function readLocalLock(){
+
+/* ================================
+   SOUNDBOARD (loads from GitHub files)
+   - Tries /soundboards.json (same origin, GitHub Pages)
+   - Falls back to FALLBACK_SOUNDS
+================================== */
+async function loadSoundboard(){
+  let list = null;
   try{
-    const raw = localStorage.getItem(LS_LOCK);
-    if (!raw) return {active:false, reason:"", ts:0, by:""};
-    const o = JSON.parse(raw);
-    return {active:!!o.active, reason:o.reason||"", ts:o.ts||0, by:o.by||"admin"};
-  }catch(_){ return {active:false, reason:"", ts:0, by:""}; }
-}
-function writeLocalLock(lock){
-  try{ localStorage.setItem(LS_LOCK, JSON.stringify(lock)); }catch(_){}
-}
-function renderLock(lock){
-  document.getElementById("lockTitle").textContent = "Site Locked";
-  document.getElementById("lockReason").textContent = lock.reason ? lock.reason : "No reason provided.";
-  document.getElementById("lockMeta").textContent = `Locked by ${lock.by||"admin"} — ${fmtTime(lock.ts)}`;
-  document.getElementById("lockAdminBtns").style.display = isAdmin ? "flex" : "none";
-}
-function applyLockUI(lock){
-  if (lock.active){
-    renderLock(lock);
-    document.getElementById("lockOverlay").style.display = "flex";
-    document.getElementById("mainContent").style.filter = "blur(2px)";
-  }else{
-    document.getElementById("lockOverlay").style.display = "none";
-    document.getElementById("mainContent").style.filter = "";
+    // Will succeed if you add soundboards.json at your site root
+    const res = await fetch("soundboards.json", {cache:"no-store"});
+    if (res.ok){
+      list = await res.json();
+    }
+  }catch(_){/* ignore */ }
+
+  if (!Array.isArray(list) || !list.length){
+    list = FALLBACK_SOUNDS;
   }
+  renderSoundList(list);
 }
-/* Admin-only actions */
-function adminLockSite(){
-  if (!isAdmin) return;
-  const reason = (document.getElementById("lockReasonInput").value || "").trim();
-  const lock = { active:true, reason, ts:Date.now(), by:"admin" };
-  writeLocalLock(lock);
-  applyLockUI(lock);
-  cloudSetLock(lock);
+
+function renderSoundList(items){
+  const wrap = document.getElementById("soundList");
+  wrap.innerHTML = "";
+  items.forEach((item, idx)=>{
+    const card = document.createElement("div");
+    card.className = "sound";
+
+    const title = document.createElement("div");
+    title.style.fontWeight = "700";
+    title.textContent = item.title || ("Sound " + (idx+1));
+
+    const audio = document.createElement("audio");
+    audio.setAttribute("preload", "none");
+    audio.setAttribute("controls", "");
+    audio.src = item.path;  // relative path in your repo (GitHub Pages)
+
+    const row = document.createElement("div");
+    row.className = "row";
+
+    const playBtn = document.createElement("button");
+    playBtn.className = "btn";
+    playBtn.textContent = "Play";
+    playBtn.addEventListener("click", ()=>{
+      // pause any other playing audio
+      document.querySelectorAll("#soundList audio").forEach(a=>{
+        if (a !== audio) a.pause();
+      });
+      audio.currentTime = 0;
+      audio.play();
+    });
+
+    const stopBtn = document.createElement("button");
+    stopBtn.className = "btn";
+    stopBtn.textContent = "Stop";
+    stopBtn.addEventListener("click", ()=> audio.pause());
+
+    row.appendChild(playBtn);
+    row.appendChild(stopBtn);
+
+    const hint = document.createElement("div");
+    hint.className = "small";
+    hint.textContent = item.path;
+
+    card.appendChild(title);
+    card.appendChild(audio);
+    card.appendChild(row);
+    card.appendChild(hint);
+    wrap.appendChild(card);
+  });
 }
-function adminUnlockSite(){
-  if (!isAdmin) return;
-  const lock = { active:false, reason:"", ts:Date.now(), by:"admin" };
-  writeLocalLock(lock);
-  applyLockUI(lock);
-  cloudSetLock(lock);
-}
-/* Admin: Send Notification */
-function adminSendNotification() {
-  if (!isAdmin) return;
-  const msg = (document.getElementById("notifMsgInput").value || "").trim();
-  if (!msg) return alert("Notification message required.");
-  const target = document.getElementById("notifTarget").value;
-  let pins = [];
-  if (target === "pins") {
-    const rawPins = (document.getElementById("notifPins").value || "").split(",");
-    pins = rawPins.map(p=>p.trim()).filter(Boolean);
-    if (!pins.length) return alert("Enter at least one PIN.");
-  }
-  const notif = {
-    id: "notif_" + Date.now() + "_" + Math.floor(Math.random()*100000),
-    msg: msg,
-    target: target,
-    pins: pins,
-    ts: Date.now(),
-    by: "admin"
-  };
-  try { localStorage.setItem(LS_NOTIF, JSON.stringify(notif)); } catch(e){}
-  cloudSetNotif(notif);
-  // Always show for sender immediately
-  showNotification(msg, notif.id);
-}
-function fmtTime(ts){ try{ return new Date(ts).toLocaleString(); }catch(_){ return ""; } }
-/* Load: show PIN and check persisted lock */
-(function init(){
+
+/* ================================
+   INIT
+================================== */
+window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("mainContent").style.display = "none";
-  document.getElementById('pinScreen').style.display = "none";
-  applyLockUI(readLocalLock());
-  try {
-    const notif = JSON.parse(localStorage.getItem(LS_NOTIF));
-    if (shouldShowNotification(notif)) showNotification(notif.msg, notif.id);
-  } catch(e){}
-})();
-window.addEventListener("storage", (ev)=>{
-  if (ev.key !== LS_LOCK || !ev.newValue) return;
-  try{
-    const lock = JSON.parse(ev.newValue);
-    applyLockUI(lock);
-  }catch(_){}
+  document.getElementById("pinScreen").style.display = "none";
 });
-/* =========================
-   Firebase Realtime Database (cross-device)
-========================= */
-let cloudReady = false;
-let db = null;
-let lockRef = null;
-let notifRef = null;
-(function initFirebase(){
-const firebaseConfig = {
-  apiKey: "AIzaSyCpBHXlE-l-tLivrJ6nMsZeJwepFcMSeC4",
-  authDomain: "wasda-405c4.firebaseapp.com",
-  databaseURL: "https://wasda-405c4-default-rtdb.firebaseio.com",
-  projectId: "wasda-405c4",
-  storageBucket: "wasda-405c4.firebasestorage.app",
-  messagingSenderId: "449102913942",
-  appId: "1:449102913942:web:81936de160f8672b2f3db7"
-};
-  if (!firebaseConfig.apiKey || firebaseConfig.apiKey === "YOUR_API_KEY") return;
-  const app = window.firebase.initializeApp(firebaseConfig);
-  db = window.firebase.database();
-  lockRef = db.ref("globalLock");
-  notifRef = db.ref("globalNotif");
-  lockRef.on("value", (snap)=>{
-    const v = snap.val();
-    if (!v) return;
-    writeLocalLock(v);
-    applyLockUI(v);
-  });
-  notifRef.on("value", (snap)=>{
-    const v = snap.val();
-    if (!v) return;
-    try { localStorage.setItem(LS_NOTIF, JSON.stringify(v)); } catch(e){}
-    if (shouldShowNotification(v)) showNotification(v.msg, v.id);
-  });
-  cloudReady = true;
-})();
-function cloudSetLock(lock){
-  if (!cloudReady || !lockRef) return;
-  if (!isAdmin) return;
-  lockRef.set(lock).catch(()=>{});
-}
-function cloudSetNotif(notif){
-  if (!cloudReady || !notifRef) return;
-  if (!isAdmin) return;
-  notifRef.set(notif).catch(()=>{});
-}
 </script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </body>
 </html>
