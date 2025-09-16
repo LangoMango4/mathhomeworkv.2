@@ -1,103 +1,274 @@
-<!-- ====== Zscaler CSS overrides (place AFTER the original Zscaler CSS) ====== -->
-<style>
-  /* Bigger top logo */
-  #logo img{
-    max-height:140px;        /* was ~75px */
-    max-width:min(90vw, 560px);
-    height:auto; width:auto;
-    image-rendering:auto;    /* keep it crisp */
-  }
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="description" content="Zscaler makes the internet safe for businesses by protecting their employees from malware, viruses, and other security threats.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Internet Security by Zscaler</title>
+<script>var defLang='en_US';</script>
 
-  /* Bigger “no” icon next to the message */
-  .pg.red .eu_h .a_i{
-    width:28px;              /* was 19px */
-    height:28px;
-    background-size:28px 28px;
-    margin-right:12px;
-    position:relative;
-    top:3px;
-  }
+<style type="text/css">
+/* === Original Zscaler CSS from your snippet (unchanged) === */
+body{background-color:#e3e3e3;font-family:Arial,sans-serif;font-size:12px;color:#4B4F54;}
+a{cursor:pointer;text-decoration:none;color:#009dd0;}
+table{margin-top:10px;}
+td table{margin-top:0;text-align:center;}
+img{max-height:75px;max-width:430px;}
+.pg{position:absolute;top:0;bottom:0;left:0;right:0;overflow-x:hidden;white-space:nowrap;}
+.pg:before{content:"";display:inline-block;height:100%;vertical-align:middle;}
+.pg_cont{display:inline-block;vertical-align:middle;width:100%;position:relative;}
+.a_i{width:19px;height:19px;margin-right:10px;background-size:19px 19px;display:inline-block;}
+.m_tbl{width:100%;max-width:758px;background:#e3e3e3;min-width:600px;}
+.pg.red .eu_h{color:#fd4239;border-top:3px solid #fd4239;}
+/* (original base64 icon kept but will be overridden below) */
+.pg.red .eu_h .a_i{background-image:url('data:image/png;base64,iVBORw0K...');}
+.pg.red .eu_h,.pg.red .eu_co,.pg.red .hr{border-left:3px solid #fd4239;border-right:3px solid #fd4239;}
+.pg.red .fo{border-bottom-color:#fd4239;}
+.pg.red .eu_co.st{border:0;}
+.m_tbl table td{padding:0 20px 16px 20px;text-align:left;background-color:#fff;}
+.m_tbl table td.bh{text-align:center;background-color:#e3e3e3;z-index:100;}
+.m_tbl table td.eu_h{padding-top:20px;}
+.eu_h{vertical-align:middle;font-weight:normal;white-space:normal;font-size:24px;background-color:#fff;border-left:3px solid;border-right:3px solid;border-top-left-radius:10px;border-top-right-radius:10px;}
+.pg .eu_h.sm{font-size:16px;color:#929496;border-top-left-radius:0;border-top-right-radius:0;border-top:0;padding-top:0;}
+hr{margin:0;border-top:0.5px solid #cfd0d1;}
+.eu_co{font-size:16px;color:#2a2c30;border-left:3px solid;border-right:3px solid;white-space:normal;word-wrap:break-word;}
+.eu_co.rsn{color:#000;}
+.eu_l{display:inline;padding-left:5px;}
+.bh{min-height:35px;display:block;max-height:75px;color:#0076A9;font-size:16px;overflow:hidden;padding-bottom:15px;padding-top:5px;background-color:#e3e3e3;text-align:center;max-width:758px;text-overflow:ellipsis;}
+.btn{background:#009dd0;color:#fff;border-radius:5px;border:2px solid #009dd0;cursor:pointer;display:inline-block;height:30px;margin:10px 0 15px;font-size:18px;line-height:26px;width:auto;padding:0 20px;}
+.btn:hover{background:#fff;color:#0076A9;}
+.eu_co.fo{height:32px;color:#696A6D;background-color:#f3f3f3;line-height:32px;font-size:11px;padding-bottom:0;border-bottom:3px solid;border-bottom-left-radius:10px;border-bottom-right-radius:10px;}
+.eu_co.st{font-size:12px;padding:10px 0;line-height:20px;position:relative;color:#939393;background:#e3e3e3;border:0;text-align:center;}
+.s_img{vertical-align:top;padding-right:5px;background:url("data:image/png;base64,iVBORw0K...") no-repeat;width:55px;height:17px;position:relative;top:3px;display:inline-block;}
+.uq_cd{position:absolute;bottom:54px;right:25px;font-size:10px;color:#696A6D;}
+.logo_container{position:relative;max-width:758px;margin:0 auto;}
+@media only screen and (max-width:700px){
+  td.bh{padding-bottom:35px;}
+  .eu_h{font-size:18px;}
+  .eu_h,.eu_co,.st{word-wrap:break-word;white-space:normal;}
+  .fo{padding:2px 0;height:20px;line-height:20px;}
+  .m_tbl{min-width:300px;width:95%;position:relative;left:-3px;}
+  .uq_cd{bottom:77px;}
+  .a_i{position:relative;top:4px;}
+  .pg{overflow-y:auto;}
+}
 
-  /* We’re not using the floating D24 box anymore */
-  .uq_cd{ display:none; }
+/* === Minimal overrides (what you asked for) === */
+/* Bigger, clearer top logo */
+#logo img{max-height:100px;max-width:min(90vw,560px);height:auto;width:auto;image-rendering:auto;}
+/* Use your no.png for the X icon; make it bigger */
+.pg.red .eu_h .a_i{
+  background-image:url('no.png') !important;
+  background-size:28px 30px; width:25px; height:27px; margin-right:12px;
+}
+/* Hide floating D24 box (we'll place it in footer) */
+.uq_cd{display:none !important;}
 </style>
 
-<!-- ====== Zscaler block (replace your current zscaler-block HTML with this) ====== -->
+<!-- ===== Dark theme for PIN/Main (separate from Zscaler styles) ===== -->
+<style>
+:root{--bg:#000;--card:#0f111a;--fg:#eef3ff;--accent:#1b2a5c;--border:#1d2a55}
+#pinScreen{position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;z-index:5;padding:18px}
+#pinBox{background:var(--card);padding:30px;border-radius:18px;box-shadow:0 6px 20px rgba(0,0,0,.6);color:var(--fg);width:min(92vw,420px);text-align:center;transform:translateX(-80px)}
+@media(max-width:700px){#pinBox{transform:none}}
+#pinTitle{margin:0 0 12px 0;font-size:22px;color:var(--fg)}
+#pinInput{padding:12px;font-size:18px;border-radius:10px;border:1px solid var(--border);width:100%;background:#0e1630;color:var(--fg);text-align:center;margin-bottom:10px}
+#pinInput:focus{border-color:#2a47a6;box-shadow:0 0 0 3px rgba(42,71,166,.3)}
+#pinError{display:none;color:#ff7a7a;margin-top:6px;font-size:13px}
+.btn-dark{appearance:none;border:1px solid var(--accent);background:#17224a;color:var(--fg);padding:12px 16px;border-radius:12px;cursor:pointer;font-weight:600;font-size:15px}
+.btn-dark:hover{background:#22356b}
+#mainContent{display:none;max-width:1060px;margin:40px auto;padding:0 16px;color:var(--fg)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.5);padding:22px}
+.tabs{display:flex;gap:10px;margin:0 0 16px 0}
+.sound-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.sound{border:1px solid #1d2a55;border-radius:14px;padding:12px}
+audio{width:100%;height:32px}
+.small{font-size:12px;color:#aab3ff}
+</style>
+</head>
+
+<body>
+<!-- ===================== Zscaler overlay (your file, lightly edited) ===================== -->
 <div class="pg red" id="zscaler-block">
   <div class="pg_cont">
-
     <div id="logo_container" class="logo_container">
       <table id="logo" width="50%" cellspacing="0" cellpadding="0" border="0" align="center">
-        <tbody>
-          <tr align="center">
-            <td align="center" class="bh">
-              <!-- Bigger logo -->
-              <img src="cnslogo.png" alt="CNS Logo">
-            </td>
-          </tr>
-        </tbody>
+        <tbody><tr align="center">
+          <td align="center" class="bh">
+            <!-- Use your banner logo -->
+            <img src="cnslogo.png" alt="CNS Logo">
+          </td>
+        </tr></tbody>
       </table>
     </div>
 
-    <table class="m_tbl" cellpadding="0" cellspacing="0" align="center" role="presentation">
-      <tbody>
-        <tr>
-          <td height="100" valign="top" style="position:relative;">
-            <!-- locale en_US -->
-            <table id="en_US" width="100%" border="0" cellspacing="0" cellpadding="0">
-              <tbody>
-                <tr>
-                  <td class="eu_h">
-                    <!-- bigger NO icon is handled by CSS above -->
-                    <i class="a_i"></i>
-                    Sorry, you don't have permission to visit this site.
-                  </td>
-                </tr>
-                <tr><td class="hr"><hr></td></tr>
+    <table class="m_tbl" cellpadding="0" cellspacing="0" align="center">
+      <tbody><tr><td height="100" valign="top" style="position:relative;">
+        <!--locale en_US-->
+        <table id="en_US" width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr><td class="eu_h">
+              <i class="a_i"></i>
+              Sorry, you don't have permission to visit this site.
+            </td></tr>
+            <tr><td class="hr"><hr></td></tr>
 
-                <tr><td class="eu_co"><b>Website blocked</b></td></tr>
-                <tr><td class="eu_co rsn">Not allowed the use of this Social Network site</td></tr>
+            <tr><td class="eu_co"><b>Website blocked</b></td></tr>
+            <tr><td class="eu_co rsn">Not allowed the use of this Chatting/Gaming site</td></tr>
 
-                <tr>
-                  <td class="eu_co">
-                    <!-- Snapchat stays clickable to switch to your area -->
-                    <a id="snapLink">Snapchat</a>
-                  </td>
-                </tr>
+            <tr><td class="eu_co">
+              <!-- Make Snapchat clickable to switch to your area -->
+              <a id="snapLink">www.mymathshomework.com</a>
+            </td></tr>
 
-                <tr><td class="hr"><hr></td></tr>
+            <tr><td class="hr"><hr></td></tr>
 
-                <tr>
-                  <td class="eu_co fo">
-                    Need help? Contact our support team at 0740509750,
-                    <a href="mailto:servicedesk@cns.catholic.edu.au">servicedesk@cns.catholic.edu.au</a>
-                    <!-- D24 moved here -->
-                    <span style="margin-left:10px;color:#9aa0a6;">&middot; Code: <strong>D24</strong></span>
-                  </td>
-                </tr>
+            <tr><td class="eu_co fo">
+             Need help? Contact our support team at 0740509750,
+              <a href="mailto:servicedesk@cns.catholic.edu.au">servicedesk@cns.catholic.edu.au</a>
+              <span style="margin-left:10px;color:#9aa0a6;">&middot;                                  <strong> ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤD24</strong></span>
+            </td></tr>
 
-                <tr>
-                  <td class="eu_co st red">
-                    <span class="s_img"></span>
-                    Your organization has selected Zscaler to protect you from internet threats.
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <!-- /locale en_US -->
-          </td>
-        </tr>
-      </tbody>
+            <tr><td class="eu_co st red">
+              <span class="s_img"></span>
+              Your organization has selected Zscaler to protect you from internet threats.ㅤㅤㅤㅤㅤ
+            </td></tr>
+          </tbody>
+        </table>
+        <!--/locale en_US-->
+      </td></tr></tbody>
     </table>
   </div>
 </div>
 
+<!-- ===================== PIN / Password (dark, shifted left) ===================== -->
+<div id="pinScreen" aria-modal="true" role="dialog">
+  <div id="pinBox">
+    <h2 id="pinTitle">Enter PIN or Password</h2>
+    <h2 id="pinTitle">Password changed every week or depending on issues.</h2>
+    <input id="pinInput" type="password" maxlength="64" placeholder="Enter Pin." autocomplete="current-password" />
+    <div id="pinError">Incorrect PIN/password. Try again.</div>
+    <button class="btn-dark" id="unlockBtn" style="margin-top:10px">Unlock</button>
+  </div>
+</div>
+
+<!-- ===================== Main content (dark) ===================== -->
+<div id="mainContent">
+  <div class="card">
+    <h1 style="margin:0 0 12px 0">mathshomework v2</h1>
+    <div class="tabs">
+      <button class="btn-dark" onclick="showPage('soundboard')">Soundboard</button>
+      <button class="btn-dark" onclick="showPage('games')">Games</button>
+    </div>
+
+    <div id="soundboardPage">
+      <div class="small" style="margin-bottom:8px">
+        Soundboard is under development, check back soon.
+      </div>
+      <div id="soundList" class="sound-list"></div>
+    </div>
+
+    <div id="gamesPage" style="display:none;">
+      <iframe src="https://scratch.mit.edu/projects/3041905/embed" allowtransparency="true" width="485" height="402" frameborder="0" scrolling="no" allowfullscreen></iframe>
+      <iframe src="https://scratch.mit.edu/projects/17828009/embed" allowtransparency="true" width="485" height="402" frameborder="0" scrolling="no" allowfullscreen></iframe>
+      <iframe src="https://scratch.mit.edu/projects/105500895/embed" width="485" height="402"></iframe>
+      <iframe src="https://scratch.mit.edu/projects/12575620/embed" width="485" height="402"></iframe>
+    </div>
+  </div>
+</div>
+
 <script>
-  // Keep Snapchat switching to the login area (reuse your existing handler if you already have one)
-  document.getElementById("snapLink")?.addEventListener("click", function (e) {
-    e.preventDefault();
-    document.getElementById("zscaler-block")?.remove();
-    // show your existing PIN/password screen
-    document.getElementById("pinScreen").style.display = "flex";
+/* ===== Console copyright warning (3×) ===== */
+window.addEventListener("load", () => {
+  const title="%cCopyright Warning!!";
+  const style="color:#F00;font-size:30px;-webkit-text-stroke:1px black;font-weight:bold";
+  const mit=`MIT License
+
+Copyright (c) 2025 Skibidi._fish
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.`;
+  for(let i=0;i<3;i++){ console.log(title,style); console.log(mit); }
+});
+
+/* ===== Config ===== */
+const VALID_PASSWORDS = ["14312","57911","13579","school123"]; // edit as needed
+const FALLBACK_SOUNDS = [
+  { title: "Test", path: "audio/airhorn.mp3" },
+  { title: "Bell",    path: "audio/bell.mp3" }
+];
+
+/* ===== Zscaler → Login switch (Snapchat link) ===== */
+document.getElementById("snapLink").addEventListener("click",(e)=>{
+  e.preventDefault();
+  document.getElementById("zscaler-block").remove();
+  document.getElementById("pinScreen").style.display="flex";
+});
+
+/* ===== Tabs ===== */
+function showPage(which){
+  document.getElementById("soundboardPage").style.display=(which==="soundboard")?"block":"none";
+  document.getElementById("gamesPage").style.display=(which==="games")?"block":"none";
+}
+
+/* ===== Login ===== */
+function doLogin(){
+  const v=(document.getElementById("pinInput").value||"").trim();
+  const ok=VALID_PASSWORDS.map(String).includes(String(v));
+  const err=document.getElementById("pinError");
+  if(!ok){err.style.display="block";return;}
+  err.style.display="none";
+  document.getElementById("pinScreen").style.display="none";
+  document.getElementById("mainContent").style.display="block";
+  loadSoundboard();
+}
+document.getElementById("unlockBtn").addEventListener("click",doLogin);
+document.getElementById("pinInput").addEventListener("keydown",(e)=>{ if(e.key==="Enter") doLogin(); });
+
+/* ===== Soundboard (soundboards.json or fallback) ===== */
+async function loadSoundboard(){
+  let list=null;
+  try{
+    const res=await fetch("soundboards.json",{cache:"no-store"});
+    if(res.ok) list=await res.json();
+  }catch(_){}
+  if(!Array.isArray(list)||!list.length) list=FALLBACK_SOUNDS;
+  renderSoundList(list);
+}
+function renderSoundList(items){
+  const wrap=document.getElementById("soundList"); wrap.innerHTML="";
+  items.forEach((item,idx)=>{
+    const card=document.createElement("div"); card.className="sound";
+    const title=document.createElement("div"); title.style.fontWeight="700"; title.textContent=item.title||("Sound "+(idx+1));
+    const audio=document.createElement("audio"); audio.setAttribute("preload","none"); audio.setAttribute("controls",""); audio.src=item.path;
+    const play=document.createElement("button"); play.className="btn-dark"; play.textContent="Play";
+    play.addEventListener("click",()=>{ document.querySelectorAll("#soundList audio").forEach(a=>{if(a!==audio)a.pause();}); audio.currentTime=0; audio.play(); });
+    const stop=document.createElement("button"); stop.className="btn-dark"; stop.textContent="Stop"; stop.addEventListener("click",()=>audio.pause());
+    const row=document.createElement("div"); row.style.display="flex"; row.style.gap="10px"; row.style.marginTop="6px"; row.append(play,stop);
+    card.append(title,audio,row); wrap.append(card);
   });
+}
+
+/* ===== Initial hidden states ===== */
+document.addEventListener("DOMContentLoaded",()=>{
+  document.getElementById("mainContent").style.display="none";
+  document.getElementById("pinScreen").style.display="none";
+});
 </script>
+</body>
+</html>
