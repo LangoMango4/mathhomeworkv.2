@@ -5,7 +5,7 @@
 <title>MyMathsHomework</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <style>
-/* ===== Zscaler styles (from your file) ===== */
+/* ===== Zscaler (yours) ===== */
 body {background:#e3e3e3;font-family:Arial,sans-serif;font-size:12px;color:#4B4F54;}
 a {cursor:pointer;color:#009dd0;text-decoration:none;}
 img {max-height:75px;max-width:430px;}
@@ -13,27 +13,37 @@ img {max-height:75px;max-width:430px;}
 .pg:before{content:"";display:inline-block;height:100%;vertical-align:middle;}
 .pg_cont{display:inline-block;vertical-align:middle;width:100%;position:relative;}
 .m_tbl{width:100%;max-width:758px;background:#e3e3e3;min-width:600px;}
-.eu_h{font-size:24px;padding:20px;color:#fd4239;text-align:center;background:#fff;border-top:3px solid #fd4239;border-left:3px solid #fd4239;border-right:3px solid #fd4239;border-top-left-radius:10px;border-top-right-radius:10px;display:flex;align-items:center;gap:10px;}
+.eu_h{font-size:24px;padding:20px;color:#fd4239;text-align:center;background:#fff;border-top:3px solid #fd4239;border-left:3px solid #fd4239;border-right:3px solid #fd4239;border-top-left-radius:10px;border-top-right-radius:10px;display:flex;align-items:center;gap:10px;justify-content:center;}
 .eu_h .err-ico{flex:none;display:inline-block;width:30px;height:30px;}
 .eu_co{background:#fff;font-size:16px;color:#2a2c30;padding:12px 18px;text-align:left;border-left:3px solid #fd4239;border-right:3px solid #fd4239;}
 .eu_co.rsn{color:#000;}
 .fo{background:#f3f3f3;color:#696A6D;font-size:11px;padding:8px 12px;text-align:left;border-left:3px solid #fd4239;border-right:3px solid #fd4239;border-bottom:3px solid #fd4239;border-bottom-left-radius:10px;border-bottom-right-radius:10px;}
 .st{font-size:12px;color:#939393;text-align:center;margin-top:6px}
 
+/* ===== Add CNS logo above the Zscaler panel ===== */
+#cnsBanner {
+  display:flex; align-items:center; justify-content:center;
+  margin:0 auto 10px auto; width:100%;
+}
+#cnsBanner img {
+  max-height:110px;           /* bigger logo like you asked */
+  max-width:min(80vw, 520px);
+  height:auto; width:auto;
+}
+
 /* ===== App styles ===== */
-:root { --bg:#000; --card:#000; --fg:#eef3ff }
-#pinScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);display:none;align-items:center;justify-content:center;z-index:5;padding:18px;}
-#pinBox{background:var(--card);padding:26px 30px;border-radius:18px;box-shadow:0 6px 20px rgba(0,0,0,.4);text-align:center;color:var(--fg);width:min(92vw,520px)}
-#pinHeader{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 12px 0}
-#pinInput{padding:12px;font-size:18px;border-radius:8px;border:1px solid #1d2a55;margin-bottom:8px;width:240px;text-align:center;background:#0b0f1f;color:var(--fg)}
-#pinHelp{font-size:12px;opacity:.9;margin:6px 0 0}
-#pinError{color:#ffd0d0;display:none;margin-top:8px}
-
-#logoWrap{display:flex;justify-content:center;margin-bottom:12px}
-#logoWrap img{max-height:64px;max-width:240px}
-
-.btn{appearance:none;border:1px solid #24366d;background:#17224a;color:var(--fg);padding:12px 16px;border-radius:12px;cursor:pointer;font-weight:600;font-size:15px}
-.btn:hover{background:#1b2a5c}
+:root { --bg:#0b0f1f; --card:#111a2c; --fg:#eef3ff; --accent:#1b2a5c; --border:#1d2a55 }
+#pinScreen{position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;z-index:5;padding:18px;}
+#pinBox{background:var(--card);padding:26px 30px;border-radius:18px;box-shadow:0 6px 20px rgba(0,0,0,.45);color:var(--fg);width:min(92vw,520px)}
+#pinTitle{margin:0 0 12px 0;font-size:22px}
+.formRow{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.formLabel{font-size:13px;opacity:.9}
+#pinInput{padding:12px 14px;font-size:18px;border-radius:10px;border:1px solid var(--border);width:100%;background:#0e1630;color:var(--fg);outline:none}
+#pinInput:focus{border-color:#2a47a6;box-shadow:0 0 0 3px rgba(42,71,166,.25)}
+#pinHelp{font-size:12px;opacity:.85}
+#pinError{display:none;color:#ffd0d0;margin-top:6px;font-size:13px}
+.btn{appearance:none;border:1px solid var(--accent);background:#17224a;color:var(--fg);padding:12px 16px;border-radius:12px;cursor:pointer;font-weight:600;font-size:15px}
+.btn:hover{background:#203166}
 
 #mainContent{display:none;max-width:1060px;margin:40px auto;padding:0 16px;color:#0b0b0b}
 .card{background:#fff;border:1px solid #e5e7ef;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.08);padding:22px}
@@ -45,18 +55,27 @@ img {max-height:75px;max-width:430px;}
 .sound title{font-weight:700}
 audio{width:100%;height:32px}
 .small{font-size:12px;color:#666}
-.headerRow{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.err-ico.small{width:20px;height:20px}
+
+/* Mobile niceties */
+@media (max-width:640px){
+  .m_tbl{min-width:auto;}
+}
 </style>
 </head>
 <body>
 
-<!-- ===== Zscaler overlay ===== -->
+<!-- ===== Zscaler overlay (with BIG CNS logo above) ===== -->
 <div id="zscaler-block" class="pg red">
   <div class="pg_cont">
-    <table class="m_tbl" cellpadding="0" cellspacing="0" align="center">
+    <div id="cnsBanner">
+      <!-- Place cnslogo.png in the repo root (or change src) -->
+      <img src="cnslogo.png" alt="CNS Logo" id="cnslogo">
+    </div>
+
+    <table class="m_tbl" cellpadding="0" cellspacing="0" align="center" role="presentation">
       <tr><td>
         <div class="eu_h">
+          <!-- NO logo stays here only (next to the message) -->
           <svg class="err-ico" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <circle cx="12" cy="12" r="11" stroke="#fd4239" stroke-width="2" fill="none"/>
             <g stroke="#fd4239" stroke-width="2">
@@ -78,47 +97,26 @@ audio{width:100%;height:32px}
   </div>
 </div>
 
-<!-- ===== PIN/Login Screen (no notifications, no site lock) ===== -->
+<!-- ===== PIN/Login (no logos here) ===== -->
 <div id="pinScreen" aria-modal="true" role="dialog">
   <div id="pinBox">
-    <div id="logoWrap">
-      <!-- Put your logo file in the repo (e.g. /cnslogo.png) -->
-      <img src="cnslogo.png" alt="CNS Logo" id="cnslogo">
-    </div>
-    <div id="pinHeader">
-      <!-- Reusing the same red X icon -->
-      <svg class="err-ico small" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <circle cx="12" cy="12" r="11" stroke="#fd4239" stroke-width="2" fill="none"/>
-        <g stroke="#fd4239" stroke-width="2">
-          <line x1="7" y1="17" x2="17" y2="7"/>
-          <line x1="7" y1="7" x2="17" y2="17"/>
-        </g>
-      </svg>
-      <h2 style="margin:0">Enter PIN or Password</h2>
+    <h2 id="pinTitle">Enter PIN or Password</h2>
+
+    <div class="formRow">
+      <label class="formLabel" for="pinInput">Approved password</label>
+      <input id="pinInput" type="password" maxlength="64" placeholder="••••••••" autocomplete="current-password" />
+      <div id="pinHelp">Use one of the approved passwords. Press Enter to submit.</div>
+      <div id="pinError">Incorrect PIN/password. Try again.</div>
     </div>
 
-    <input id="pinInput" type="password" maxlength="64" placeholder="Enter your PIN / password" autocomplete="current-password" />
-    <div id="pinHelp" class="small">Use one of the approved passwords. Access is denied unless a match is found.</div>
-    <div>
-      <button class="btn" id="unlockBtn">Unlock</button>
-    </div>
-    <div id="pinError">Error — incorrect PIN/password.</div>
+    <button class="btn" id="unlockBtn">Unlock</button>
   </div>
 </div>
 
-<!-- ===== Main Content ===== -->
+<!-- ===== Main Content (no NO icon here) ===== -->
 <div id="mainContent">
   <div class="card">
-    <div class="headerRow">
-      <svg class="err-ico small" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <circle cx="12" cy="12" r="11" stroke="#fd4239" stroke-width="2" fill="none"/>
-        <g stroke="#fd4239" stroke-width="2">
-          <line x1="7" y1="17" x2="17" y2="7"/>
-          <line x1="7" y1="7" x2="17" y2="17"/>
-        </g>
-      </svg>
-      <h1 style="margin:0">mathshomework v2</h1>
-    </div>
+    <h1 style="margin:0 0 12px 0">mathshomework v2</h1>
 
     <div class="tabs">
       <button class="btn" onclick="showPage('soundboard')">Soundboard</button>
@@ -128,7 +126,7 @@ audio{width:100%;height:32px}
     <!-- Soundboard -->
     <div id="soundboardPage">
       <div class="small" style="margin-bottom:8px">
-        Add/host audio files in your repo (e.g. <code>/audio/...</code>) or list them in <code>soundboards.json</code>. They will play directly from GitHub Pages.
+        Host audio files in your repo (e.g. <code>/audio/...</code>) or list them in <code>soundboards.json</code>. They’ll play directly from GitHub Pages.
       </div>
       <div id="soundList" class="sound-list"></div>
     </div>
@@ -147,36 +145,23 @@ audio{width:100%;height:32px}
 <script>
 /* ================================
    CONFIG
-   --------------------------------
-   1) VALID_PASSWORDS: put allowed PINs/passwords here (strings).
-   2) If you add a file /soundboards.json at your repo root (served by GitHub Pages),
-      it will be fetched automatically to list sounds. Example file contents:
-
-      [
-        {"title":"Airhorn","path":"audio/airhorn.mp3"},
-        {"title":"Bell","path":"audio/bell.mp3"}
-      ]
-
-   3) If the JSON file is missing, we fall back to the array in FALLBACK_SOUNDS.
 ================================== */
 const VALID_PASSWORDS = [
-  "14312",       // your admin PIN (optional to keep here)
-  "24680", "13579", "school123" // add more as needed
+  "14312",       // admin PIN if you want it to work still
+  "24680", "13579", "school123" // add/remove as needed
 ];
-
 const FALLBACK_SOUNDS = [
-  // Edit these to match files in your repo (relative to site root)
   { title: "Airhorn", path: "audio/airhorn.mp3" },
   { title: "Bell",    path: "audio/bell.mp3"   }
 ];
 
 /* ================================
-   SIMPLE STATE
+   Simple State
 ================================== */
 let lastPassword = null;
 
 /* ================================
-   ZSCALER → LOGIN
+   Zscaler → Login
 ================================== */
 document.getElementById("snapLink").addEventListener("click", function(e){
   e.preventDefault();
@@ -184,55 +169,50 @@ document.getElementById("snapLink").addEventListener("click", function(e){
   document.getElementById("pinScreen").style.display = "flex";
 });
 
+/* ================================
+   Tabs
+================================== */
 function showPage(which){
   document.getElementById("soundboardPage").style.display = (which==="soundboard")?"block":"none";
   document.getElementById("gamesPage").style.display = (which==="games")?"block":"none";
 }
 
 /* ================================
-   LOGIN (password allowlist)
+   Login: allowlisted passwords
 ================================== */
-function checkPassword(){
+function doLogin(){
   const input = (document.getElementById("pinInput").value || "").trim();
   const ok = VALID_PASSWORDS.map(String).includes(String(input));
+  const err = document.getElementById("pinError");
   if (!ok){
-    document.getElementById("pinError").style.display = "block";
+    err.style.display = "block";
     return;
   }
+  err.style.display = "none";
   lastPassword = input;
-  document.getElementById("pinError").style.display = "none";
   document.getElementById("pinScreen").style.display = "none";
   document.getElementById("mainContent").style.display = "block";
-  // After login, load sound list
   loadSoundboard();
 }
-
-document.getElementById("unlockBtn").addEventListener("click", checkPassword);
+document.getElementById("unlockBtn").addEventListener("click", doLogin);
 document.getElementById("pinInput").addEventListener("keydown", (e)=>{
-  if (e.key === "Enter") checkPassword();
+  if (e.key === "Enter") doLogin();
 });
 
 /* ================================
-   SOUNDBOARD (loads from GitHub files)
-   - Tries /soundboards.json (same origin, GitHub Pages)
+   Soundboard (GitHub files)
+   - Tries /soundboards.json (same origin)
    - Falls back to FALLBACK_SOUNDS
 ================================== */
 async function loadSoundboard(){
   let list = null;
   try{
-    // Will succeed if you add soundboards.json at your site root
     const res = await fetch("soundboards.json", {cache:"no-store"});
-    if (res.ok){
-      list = await res.json();
-    }
-  }catch(_){/* ignore */ }
-
-  if (!Array.isArray(list) || !list.length){
-    list = FALLBACK_SOUNDS;
-  }
+    if (res.ok) list = await res.json();
+  }catch(_){ }
+  if (!Array.isArray(list) || !list.length) list = FALLBACK_SOUNDS;
   renderSoundList(list);
 }
-
 function renderSoundList(items){
   const wrap = document.getElementById("soundList");
   wrap.innerHTML = "";
@@ -247,7 +227,7 @@ function renderSoundList(items){
     const audio = document.createElement("audio");
     audio.setAttribute("preload", "none");
     audio.setAttribute("controls", "");
-    audio.src = item.path;  // relative path in your repo (GitHub Pages)
+    audio.src = item.path;
 
     const row = document.createElement("div");
     row.className = "row";
@@ -256,10 +236,7 @@ function renderSoundList(items){
     playBtn.className = "btn";
     playBtn.textContent = "Play";
     playBtn.addEventListener("click", ()=>{
-      // pause any other playing audio
-      document.querySelectorAll("#soundList audio").forEach(a=>{
-        if (a !== audio) a.pause();
-      });
+      document.querySelectorAll("#soundList audio").forEach(a=>{ if (a!==audio) a.pause(); });
       audio.currentTime = 0;
       audio.play();
     });
@@ -285,7 +262,7 @@ function renderSoundList(items){
 }
 
 /* ================================
-   INIT
+   Init
 ================================== */
 window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("mainContent").style.display = "none";
