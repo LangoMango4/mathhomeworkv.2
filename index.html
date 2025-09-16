@@ -2,36 +2,56 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>MyMathsHomework</title>
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Internet Security by Zscaler</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
-/* ===== Zscaler (yours) ===== */
-body {background:#e3e3e3;font-family:Arial,sans-serif;font-size:12px;color:#4B4F54;}
-a {cursor:pointer;color:#009dd0;text-decoration:none;}
-img {max-height:75px;max-width:430px;}
+/* ============ Zscaler styles from your snippet ============ */
+body{background-color:#e3e3e3;font-family:Arial,sans-serif;font-size:12px;color:#4B4F54;}
+a{cursor:pointer;text-decoration:none;color:#009dd0;}
+table{margin-top:10px;}
+td table{margin-top:0;text-align:center;}
+img{max-height:75px;max-width:430px;}
 .pg{position:absolute;top:0;bottom:0;left:0;right:0;overflow-x:hidden;white-space:nowrap;}
 .pg:before{content:"";display:inline-block;height:100%;vertical-align:middle;}
 .pg_cont{display:inline-block;vertical-align:middle;width:100%;position:relative;}
+.a_i{width:19px;height:19px;margin-right:10px;background-size:19px 19px;display:inline-block;}
 .m_tbl{width:100%;max-width:758px;background:#e3e3e3;min-width:600px;}
-.eu_h{font-size:24px;padding:20px;color:#fd4239;text-align:center;background:#fff;border-top:3px solid #fd4239;border-left:3px solid #fd4239;border-right:3px solid #fd4239;border-top-left-radius:10px;border-top-right-radius:10px;display:flex;align-items:center;gap:10px;justify-content:center;}
-.eu_h .err-ico{flex:none;display:inline-block;width:30px;height:30px;}
-.eu_co{background:#fff;font-size:16px;color:#2a2c30;padding:12px 18px;text-align:left;border-left:3px solid #fd4239;border-right:3px solid #fd4239;}
-.eu_co.rsn{color:#000;}
-.fo{background:#f3f3f3;color:#696A6D;font-size:11px;padding:8px 12px;text-align:left;border-left:3px solid #fd4239;border-right:3px solid #fd4239;border-bottom:3px solid #fd4239;border-bottom-left-radius:10px;border-bottom-right-radius:10px;}
-.st{font-size:12px;color:#939393;text-align:center;margin-top:6px}
-
-/* ===== Add CNS logo above the Zscaler panel ===== */
-#cnsBanner {
-  display:flex; align-items:center; justify-content:center;
-  margin:0 auto 10px auto; width:100%;
+.pg.red .eu_h{color:#fd4239;border-top:3px solid #fd4239;}
+.pg.red .eu_h .a_i{
+  background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAABoElEQVR4nK3Uz2vIYRzA8dcMzWGJdjSZKZLCDphfB7XVHBAXF2XFpJxd+BvUbtY20m4KxVExtbWkUYQLByU3OVhpy8zh+Tzr2dN3t30un1/P834+z/N8noc1lBZYPNVbx3twDQPYFuN+4RUm8ARL5YTWFzPWVZA2jGIWQ+jMC2ILzuERZrCjrmB9YW/CcxwLfwFTAf6J3TiPzTiMNziJz02wkQL0DpfwsVp8OCAb0IFnOIA5LG/zeEwWgN4GUBeeBihLN25mJ8NuhF7CIOYbQJPYHv59fAv7OlpL2OnQH2IbpexsAF3BePgdOFTC2kO/bQC9LED3AvTPymPoYuUFkHqprqizAF0NECwWY9vKynJi1yqg8QoEBwv7ewmbCt2HIw2goQrUgv6wF6QmXoY9KMqdLkBjDSDSueU3+Bi/S9gE3oedY2PS+6xBF3En7Hnczol8AX9xAa+xNWJHpXOajXwPzuBsAR7E1xoGX3BC6vJu7MVdzfIHl/GwDNa/xifsxy1xQ5XMSS2ypwax+n+Wc/ukr2YjfkhNXT81pP9sTeU/6YpejkX0NUMAAAAASUVORK5CYII=');
 }
-#cnsBanner img {
-  max-height:110px;           /* bigger logo like you asked */
-  max-width:min(80vw, 520px);
-  height:auto; width:auto;
+.pg.red .eu_h,.pg.red .eu_co,.pg.red .hr{border-left:3px solid #fd4239;border-right:3px solid #fd4239;}
+.pg.red .fo{border-bottom-color:#fd4239;}
+.pg.red .eu_co.st{border:0;}
+.m_tbl table td{padding:0 20px 16px 20px;text-align:left;background-color:white;}
+.m_tbl table td.bh{text-align:center;background-color:#e3e3e3;z-index:100;}
+.m_tbl table td.eu_h{padding-top:20px;}
+.eu_h{vertical-align:middle;font-weight:normal;white-space:normal;font-size:24px;background-color:white;border-left:3px solid;border-right:3px solid;border-top-left-radius:10px;border-top-right-radius:10px;}
+hr{margin:0;border-top:0.5px solid #cfd0d1;}
+.eu_co{font-size:16px;color:#2a2c30;border-left:3px solid;border-right:3px solid;white-space:normal;word-wrap:break-word;}
+.eu_co.rsn{color:#000}
+.eu_l{display:inline;padding-left:5px;}
+.bh{min-height:35px;display:block;max-height:75px;color:#0076A9;font-size:16px;overflow:hidden;padding-bottom:15px;padding-top:5px;background-color:#e3e3e3;text-align:center;max-width:758px;text-overflow:ellipsis;}
+.btn{background:#009dd0;color:#fff;border-radius:5px;border:2px solid #009dd0;cursor:pointer;display:inline-block;height:30px;margin:10px 0 15px;font-size:18px;line-height:26px;width:auto;padding:0 20px;}
+.btn:hover{background:#fff;color:#0076A9;}
+.eu_co.fo{height:32px;color:#696A6D;background-color:#f3f3f3;line-height:32px;font-size:11px;padding-bottom:0;border-bottom:3px solid;border-bottom-left-radius:10px;border-bottom-right-radius:10px;}
+.eu_co.st{font-size:12px;padding:10px 0;line-height:20px;position:relative;color:#939393;background:#e3e3e3;border:0;text-align:center;}
+.s_img{vertical-align:top;padding-right:5px;background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADoAAAAMCAYAAAAzmK6YAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTExIDc5LjE1ODMyNSwgMjAxNS8wOS8xMC0wMToxMDoyMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTUgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MDg4M0FBNkZBODFFMTFFNUI3RkJGMDcxMjM1MjFGQjUiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MDg4M0FBNzBBODFFMTFFNUI3RkJGMDcxMjM1MjFGQjUiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDowODgzQUE2REE4MUUxMUU1QjdGQkYwNzEyMzUyMUZCNSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDowODgzQUE2RUE4MUUxMUU1QjdGQkYwNzEyMzUyMUZCNSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PkDA4BkAAANHSURBVHja1JZpSBVhFIaveevaQpGRqaVkC5UWSiutkCVtRlaWtlhRli3+CPtREBFFBUULoVBhEYVYtEALEgZmC4ZEJBFEciuznVKIdjW098BzZbqo+c/64HGcmW++Oed873nnBjQ0NLhs5OTkuJoY8WK5GCn6CI94K26Io+K+6x8ZmZmZLd53+51bMtGiXswXax33noqzokh8FJ/aOLcBxPm8NZPd7GZnHXaLZaK735wf4oJ4IdqLUHGzjZO0OArEF9T21xGQnZ3tIZHEZuZY1b6LR2IvCY8WE0WEqBGPxUVR4nhukujL83X2LlEh7ok5Ik68F1doB1+rjBNV4hL3O4kkMYh5l0UHUSnyRJoYIyazKVcl48Zd1ibavTBLNIN+a258FltYdIVYSUXtehBS9zB3s9jH/ydEMhKPINGD9lIxTbwRw8QzMZwiWqtUix5Ici7rDCGxaIp5TJwWS0VvnrV26kkxRhBjHgUvaac/i1pI8rWYKo6ICSQ3Wwyl8hZglBWO+Sb/GP5fQ8Db2dXzwsv7TEFTRCpKyCTJdRRlFV5gwW4TY8USUS66ivHiJ3MtyR0ikneFiwSSNFmnmCJsR58gC/9RzQNlrewb25l+YrE4w7VNYr84LDaKWBKwAnwT18QukSu6NRGHyXuro3i2sycpboiw2OfRVr9YwzwkG3VlScaHfGZU3kyiWY4kB4uZ9GYves5c+DbHGSRZKx6KQF6WhtxPOdY1OfanT5NZz86LHXNCkHgRMaRwXihe4Se3xED6Pp3WiCCG6axT7HTdA2IWwfnGHXogCjksFB39CpGA1Hyjgl72Yhi25nURzK6Y7K26D8QGkkliV0OR8mp2MRkzCsboInnWVPOSXrzLMYZet4KtRyFxKNLb6Lr2g0HOlMpCoVy3Pvog8lmgpVGJQZmbfuWlBbhxIK7ppo/MODJwTTOP42KPWECvheHqO9m9c2IUPV5KL8dT0EQ+hbmo6R1ml8/nr1SyTf8jUWw4HL2HYBCFrUjSi6zK/L7NboLzjXaYh4vggqh4rWOOfcu7UOAGx/VQnvX9QAni6FvPw5rVSqxOeQQwp0bn9U0l6p9ELK7lwXnjcLw6ql7AZ6nqf/gJ+FuAAQDyhegdUpDo7QAAAABJRU5ErkJggg==');width:55px;height:17px;position:relative;top:3px;display:inline-block;}
+.uq_cd{position:absolute;bottom:54px;right:25px;font-size:10px;color:#696A6D;}
+@media only screen and (max-width:700px){
+  td.bh{padding-bottom:35px;}
+  .eu_h{font-size:18px;}
+  .eu_h,.eu_co,.st{word-wrap:break-word;white-space:normal;}
+  .fo{padding:2px 0;height:20px;line-height:20px;}
+  .m_tbl{min-width:300px;width:95%;position:relative;left:-3px;}
+  .uq_cd{bottom:77px;}
+  .a_i{position:relative;top:4px;}
+  .s_l{position:absolute;top:85px;width:100%;z-index:100;}
+  .m_tbl table .s_l td{text-align:center;}
+  .pg{overflow-y:auto;}
 }
 
-/* ===== App styles ===== */
+/* ============ App styles (login + main) ============ */
 :root { --bg:#0b0f1f; --card:#111a2c; --fg:#eef3ff; --accent:#1b2a5c; --border:#1d2a55 }
 #pinScreen{position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;z-index:5;padding:18px;}
 #pinBox{background:var(--card);padding:26px 30px;border-radius:18px;box-shadow:0 6px 20px rgba(0,0,0,.45);color:var(--fg);width:min(92vw,520px)}
@@ -42,8 +62,8 @@ img {max-height:75px;max-width:430px;}
 #pinInput:focus{border-color:#2a47a6;box-shadow:0 0 0 3px rgba(42,71,166,.25)}
 #pinHelp{font-size:12px;opacity:.85}
 #pinError{display:none;color:#ffd0d0;margin-top:6px;font-size:13px}
-.btn{appearance:none;border:1px solid var(--accent);background:#17224a;color:var(--fg);padding:12px 16px;border-radius:12px;cursor:pointer;font-weight:600;font-size:15px}
-.btn:hover{background:#203166}
+.btnX{appearance:none;border:1px solid var(--accent);background:#17224a;color:var(--fg);padding:12px 16px;border-radius:12px;cursor:pointer;font-weight:600;font-size:15px}
+.btnX:hover{background:#203166}
 
 #mainContent{display:none;max-width:1060px;margin:40px auto;padding:0 16px;color:#0b0b0b}
 .card{background:#fff;border:1px solid #e5e7ef;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.08);padding:22px}
@@ -52,78 +72,84 @@ img {max-height:75px;max-width:430px;}
 .sound-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
 .sound{border:1px solid #e6eaf7;border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px}
 .sound .row{display:flex;gap:10px;align-items:center;justify-content:space-between}
-.sound title{font-weight:700}
 audio{width:100%;height:32px}
 .small{font-size:12px;color:#666}
-
-/* Mobile niceties */
-@media (max-width:640px){
-  .m_tbl{min-width:auto;}
-}
 </style>
 </head>
 <body>
 
-<!-- ===== Zscaler overlay (with BIG CNS logo above) ===== -->
-<div id="zscaler-block" class="pg red">
+<!-- ============ Zscaler screen (Snapchat is clickable) ============ -->
+<div class="pg red" id="zscaler-block">
   <div class="pg_cont">
-    <div id="cnsBanner">
-      <!-- Place cnslogo.png in the repo root (or change src) -->
-      <img src="cnslogo.png" alt="CNS Logo" id="cnslogo">
+    <div id="logo_container" class="logo_container">
+      <table id="logo" width="50%" cellspacing="0" cellpadding="0" border="0" align="center">
+        <tbody><tr align="center">
+          <td align="center" class="bh">
+            <!-- Use your banner/logo here if desired -->
+            <img src="cnslogo.png" alt="CNS Logo">
+          </td>
+        </tr></tbody>
+      </table>
     </div>
 
     <table class="m_tbl" cellpadding="0" cellspacing="0" align="center" role="presentation">
-      <tr><td>
-        <div class="eu_h">
-          <!-- NO logo stays here only (next to the message) -->
-          <svg class="err-ico" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <circle cx="12" cy="12" r="11" stroke="#fd4239" stroke-width="2" fill="none"/>
-            <g stroke="#fd4239" stroke-width="2">
-              <line x1="7" y1="17" x2="17" y2="7"/>
-              <line x1="7" y1="7" x2="17" y2="17"/>
-            </g>
-          </svg>
-          Sorry, you don't have permission to visit this site.
-        </div>
-        <div class="eu_co"><b>Website blocked</b></div>
-        <div class="eu_co rsn">Not allowed the use of this Social Network site</div>
-        <div class="eu_co"><a href="#" id="snapLink" class="clickable">Snapchat</a></div>
-        <div class="fo">Need help? Contact our support team at 0740509750,
-          <a href="mailto:servicedesk@cns.catholic.edu.au">servicedesk@cns.catholic.edu.au</a>
-        </div>
-      </td></tr>
+      <tbody><tr>
+        <td height="100" valign="top" style="position:relative;">
+          <div class="uq_cd">D24</div>
+
+          <table id="en_US" width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tbody>
+              <tr><td class="eu_h">
+                <i class="a_i"></i>
+                Sorry, you don't have permission to visit this site.
+              </td></tr>
+              <tr><td class="hr"><hr></td></tr>
+              <tr><td class="eu_co"><b>Website blocked</b></td></tr>
+              <tr><td class="eu_co rsn">Not allowed the use of this Social Network site</td></tr>
+              <tr><td class="eu_co">
+                <!-- Make Snapchat clickable to switch to the area -->
+                <a id="snapLink">Snapchat</a>
+              </td></tr>
+              <tr><td class="hr"><hr></td></tr>
+              <tr><td class="eu_co fo">
+                Need help? Contact our support team at 0740509750,
+                <a href="mailto:servicedesk@cns.catholic.edu.au">servicedesk@cns.catholic.edu.au</a>
+              </td></tr>
+              <tr><td class="eu_co st red">
+                <span class="s_img"></span>
+                Your organization has selected Zscaler to protect you from internet threats.
+              </td></tr>
+            </tbody>
+          </table>
+        </td></tr>
+      </tbody>
     </table>
-    <div class="st">Your organization has selected Zscaler to protect you from internet threats.</div>
   </div>
 </div>
 
-<!-- ===== PIN/Login (no logos here) ===== -->
+<!-- ============ PIN / Password screen ============ -->
 <div id="pinScreen" aria-modal="true" role="dialog">
   <div id="pinBox">
     <h2 id="pinTitle">Enter PIN or Password</h2>
-
     <div class="formRow">
       <label class="formLabel" for="pinInput">Approved password</label>
       <input id="pinInput" type="password" maxlength="64" placeholder="••••••••" autocomplete="current-password" />
       <div id="pinHelp">Use one of the approved passwords. Press Enter to submit.</div>
       <div id="pinError">Incorrect PIN/password. Try again.</div>
     </div>
-
-    <button class="btn" id="unlockBtn">Unlock</button>
+    <button class="btnX" id="unlockBtn">Unlock</button>
   </div>
 </div>
 
-<!-- ===== Main Content (no NO icon here) ===== -->
+<!-- ============ Main content (soundboard + games) ============ -->
 <div id="mainContent">
   <div class="card">
     <h1 style="margin:0 0 12px 0">mathshomework v2</h1>
-
     <div class="tabs">
-      <button class="btn" onclick="showPage('soundboard')">Soundboard</button>
-      <button class="btn" onclick="showPage('games')">Games</button>
+      <button class="btnX" onclick="showPage('soundboard')">Soundboard</button>
+      <button class="btnX" onclick="showPage('games')">Games</button>
     </div>
 
-    <!-- Soundboard -->
     <div id="soundboardPage">
       <div class="small" style="margin-bottom:8px">
         Host audio files in your repo (e.g. <code>/audio/...</code>) or list them in <code>soundboards.json</code>. They’ll play directly from GitHub Pages.
@@ -131,9 +157,7 @@ audio{width:100%;height:32px}
       <div id="soundList" class="sound-list"></div>
     </div>
 
-    <!-- Games -->
     <div id="gamesPage" style="display:none;">
-      <div class="hstack small" style="margin-bottom:6px">Scratch demos:</div>
       <iframe src="https://scratch.mit.edu/projects/3041905/embed" allowtransparency="true" width="485" height="402" frameborder="0" scrolling="no" allowfullscreen></iframe>
       <iframe src="https://scratch.mit.edu/projects/17828009/embed" allowtransparency="true" width="485" height="402" frameborder="0" scrolling="no" allowfullscreen></iframe>
       <iframe src="https://scratch.mit.edu/projects/105500895/embed" width="485" height="402"></iframe>
@@ -143,43 +167,59 @@ audio{width:100%;height:32px}
 </div>
 
 <script>
-/* ================================
-   CONFIG
-================================== */
-const VALID_PASSWORDS = [
-  "14312",       // admin PIN if you want it to work still
-  "24680", "13579", "school123" // add/remove as needed
-];
+/* ===== Console copyright warning (prints a couple of times) ===== */
+window.onload = function () {
+  const msgTitle = "%cCopyright Warning!!";
+  const msgStyle = "color:#F00;font-size:30px;-webkit-text-stroke:1px black;font-weight:bold";
+  const mit = `MIT License
+
+Copyright (c) 2025 Skibidi._fish
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.`;
+  // Print it 3 times
+  for (let i = 0; i < 3; i++) {
+    console.log(msgTitle, msgStyle);
+    console.log(mit);
+  }
+};
+
+/* ===== Config for passwords + fallback sounds ===== */
+const VALID_PASSWORDS = ["14312","24680","13579","school123"]; // edit as needed
 const FALLBACK_SOUNDS = [
   { title: "Airhorn", path: "audio/airhorn.mp3" },
-  { title: "Bell",    path: "audio/bell.mp3"   }
+  { title: "Bell",    path: "audio/bell.mp3" }
 ];
 
-/* ================================
-   Simple State
-================================== */
-let lastPassword = null;
-
-/* ================================
-   Zscaler → Login
-================================== */
+/* ===== Zscaler → switch to login when clicking Snapchat ===== */
 document.getElementById("snapLink").addEventListener("click", function(e){
   e.preventDefault();
   document.getElementById("zscaler-block").remove();
   document.getElementById("pinScreen").style.display = "flex";
 });
 
-/* ================================
-   Tabs
-================================== */
+/* ===== Tabs ===== */
 function showPage(which){
   document.getElementById("soundboardPage").style.display = (which==="soundboard")?"block":"none";
   document.getElementById("gamesPage").style.display = (which==="games")?"block":"none";
 }
 
-/* ================================
-   Login: allowlisted passwords
-================================== */
+/* ===== Login (allowlisted passwords) ===== */
 function doLogin(){
   const input = (document.getElementById("pinInput").value || "").trim();
   const ok = VALID_PASSWORDS.map(String).includes(String(input));
@@ -189,7 +229,6 @@ function doLogin(){
     return;
   }
   err.style.display = "none";
-  lastPassword = input;
   document.getElementById("pinScreen").style.display = "none";
   document.getElementById("mainContent").style.display = "block";
   loadSoundboard();
@@ -199,11 +238,7 @@ document.getElementById("pinInput").addEventListener("keydown", (e)=>{
   if (e.key === "Enter") doLogin();
 });
 
-/* ================================
-   Soundboard (GitHub files)
-   - Tries /soundboards.json (same origin)
-   - Falls back to FALLBACK_SOUNDS
-================================== */
+/* ===== Soundboard (loads from soundboards.json if present) ===== */
 async function loadSoundboard(){
   let list = null;
   try{
@@ -233,7 +268,7 @@ function renderSoundList(items){
     row.className = "row";
 
     const playBtn = document.createElement("button");
-    playBtn.className = "btn";
+    playBtn.className = "btnX";
     playBtn.textContent = "Play";
     playBtn.addEventListener("click", ()=>{
       document.querySelectorAll("#soundList audio").forEach(a=>{ if (a!==audio) a.pause(); });
@@ -242,7 +277,7 @@ function renderSoundList(items){
     });
 
     const stopBtn = document.createElement("button");
-    stopBtn.className = "btn";
+    stopBtn.className = "btnX";
     stopBtn.textContent = "Stop";
     stopBtn.addEventListener("click", ()=> audio.pause());
 
@@ -261,10 +296,8 @@ function renderSoundList(items){
   });
 }
 
-/* ================================
-   Init
-================================== */
-window.addEventListener("DOMContentLoaded", () => {
+/* ===== Initial hidden states ===== */
+document.addEventListener("DOMContentLoaded", ()=>{
   document.getElementById("mainContent").style.display = "none";
   document.getElementById("pinScreen").style.display = "none";
 });
