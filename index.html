@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="icon" type="image/png" href="titleico.png">
 <meta charset="UTF-8" />
 <title>Internet Security by Zscaler</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -194,6 +195,7 @@ iframe{margin:20px 0;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
       <div>🛡️ Terms &amp; Conditions</div>
       <div id="termsSub">Last Updated: Sept. 17 2025</div>
       <div id="termsDesc">Please read and scroll to the bottom to enable acceptance.</div>
+        <a href="terms_and_conditions" style="color:#009dd0">www.mymathshomework.com</a>
     </div>
 
     <div id="termsBody">
@@ -245,6 +247,7 @@ iframe{margin:20px 0;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
       <iframe src="https://scratch.mit.edu/projects/389464290/embed" allowtransparency="true" width="960" height="720" frameborder="0" scrolling="no" allowfullscreen></iframe>
       <iframe src="https://scratch.mit.edu/projects/105500895/embed" allowtransparency="true" width="960" height="720" frameborder="0" scrolling="no" allowfullscreen></iframe>
       <iframe src="https://scratch.mit.edu/projects/12575620/embed" allowtransparency="true" width="960" height="720" frameborder="0" scrolling="no" allowfullscreen></iframe>
+      
     </div>
   </div>
 </div>
@@ -379,6 +382,21 @@ function backToZscaler(){
   document.querySelector(".pg.red").style.display="block";
 }
 
+  function showPage(page) {
+    // Hide both pages first
+    document.getElementById("soundboardPage").style.display = "none";
+    document.getElementById("gamesPage").style.display = "none";
+
+    // Show the requested page + update title
+    if (page === "soundboard") {
+      document.getElementById("soundboardPage").style.display = "block";
+      document.title = "MyMathsHomework Version 2.12";
+    } else if (page === "games") {
+      document.getElementById("gamesPage").style.display = "block";
+      document.title = "MyMathsHomework Version 2.12";
+    }
+  }
 </script>
 </body>
 </html>
+
