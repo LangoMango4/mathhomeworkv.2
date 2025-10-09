@@ -43,6 +43,7 @@ hr{margin:0;border:0;border-top:0.5px solid #cfd0d1}
 .uq_cd{font-size:10px;color:#696A6D;white-space:nowrap;margin-left:12px}
 .eu_co.st{font-size:12px;padding:0.1px;line-height:20px;color:#939393;background:#e3e3e3;border:0;text-align:center}
 
+/* Smaller screens */
 @media(max-width:700px){
   .eu_h{font-size:20px}
   .m_tbl{min-width:300px;width:95%}
@@ -104,13 +105,33 @@ iframe{margin:20px 0;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
 #updateFoot{padding:14px 20px;border-top:1px solid #1d2a55;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
 #updateFoot .btn{padding:10px 16px;border-radius:10px}
 
-/* ===== Refresh banner ===== */
-#refreshNotice{position:fixed;left:0;right:0;bottom:0;display:none;z-index:25;background:#17224a;color:#eef3ff;border-top:2px solid #4a5bd1}
-#refreshInner{max-width:900px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:12px;justify-content:space-between}
-#refreshInner .msg{font-size:14px}
-#refreshInner .actions{display:flex;gap:8px}
-#refreshInner .btn{border:1px solid #4a4e5a;background:#1b2a5c;padding:8px 12px;border-radius:10px;cursor:pointer}
+/* ===== Refresh banner (mobile-safe) ===== */
+#refreshNotice{
+  position:fixed;left:0;right:0;bottom:0;display:none;z-index:25;
+  background:#17224a;color:#eef3ff;border-top:2px solid #4a5bd1;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+#refreshInner{
+  max-width:900px;margin:0 auto;padding:12px 16px;
+  display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap;
+}
+#refreshInner .msg{font-size:14px;flex:1 1 240px;min-width:200px}
+#refreshInner .actions{display:flex;gap:8px;flex-wrap:wrap}
+#refreshInner .btn{border:1px solid #4a4e5a;background:#1b2a5c;padding:10px 14px;border-radius:10px;cursor:pointer}
 #refreshInner .btn-ghost{background:transparent;border:1px solid #37457a}
+
+/* Compact on phones */
+@media (max-width: 600px){
+  #refreshInner{gap:10px}
+  #refreshInner .msg{font-size:13px;flex:1 1 100%}
+  #refreshInner .actions{width:100%}
+  #refreshInner .actions .btn, #refreshInner .actions .btn-ghost{
+    flex:1 1 48%;
+  }
+}
+
+/* Hide banner when mobile keyboard is open */
+body.kb-open #refreshNotice{display:none!important}
 
 /* ===== Toasts ===== */
 #toastWrap{position:fixed;right:16px;top:16px;z-index:30;display:flex;flex-direction:column;gap:10px}
@@ -357,7 +378,8 @@ const TERMS_VERSION = "Sept. 17 2025.";
 /* ===== Notification suppression keys ===== */
 const SS_REFRESH_LATER = "mmh_refreshLater";               // session flag
 const LS_LAST_NOTIFIED_VER = "mmh_lastNotifiedRemoteVer";  // last version we notified about
-const LS_SUPPRESS_UNTIL = "mmh_notifySuppressUntil";       // epoch ms until which we suppress
+const LS_SUPPRESS_UNTIL = "mmh_notifySuppressUntil";       // epoch ms
+const LS_BANNER_SEEN_VER = "mmh_bannerSeenVer";            // banner already shown for this version
 const SUPPRESS_HOURS = 12;
 
 const REMOTE_VERSION_URL = "/version.txt";
@@ -442,7 +464,7 @@ updateOkayBtn.addEventListener("click", acknowledgeUpdate);
 updateSkipBtn.addEventListener("click", ()=>hide(updateScreen));
 
 /* =========================================================================
-   REMOTE VERSION POLLING (every 5–10s) + SUPPRESSION
+   REMOTE VERSION POLLING (every 5–10s) + STRONG SUPPRESSION
    ========================================================================= */
 const refreshNotice = document.getElementById("refreshNotice");
 const refreshMsg    = document.getElementById("refreshMsg");
@@ -450,9 +472,20 @@ const refreshLater  = document.getElementById("refreshLaterBtn");
 const refreshNow    = document.getElementById("refreshNowBtn");
 let pollAbort       = false;
 
-document.addEventListener("visibilitychange", ()=>{
-  // keep polling; set pollAbort=true here if you want to pause on hidden tab
-});
+/* Mobile keyboard: hide banner while typing */
+(function setupKeyboardHide(){
+  const hideOnFocus = (e)=>{
+    const t = e.target;
+    if (!t) return;
+    const tag = (t.tagName||"").toUpperCase();
+    if (tag==="INPUT" || tag==="TEXTAREA" || t.isContentEditable){
+      document.body.classList.add("kb-open");
+    }
+  };
+  const showOnBlur = ()=> document.body.classList.remove("kb-open");
+  window.addEventListener("focusin", hideOnFocus);
+  window.addEventListener("focusout", showOnBlur);
+})();
 
 /* Clean remote version: strips non-digits/dots (e.g., 'v2.14' -> '2.14') */
 async function fetchRemoteVersion(){
@@ -469,14 +502,15 @@ function shouldSuppress(remoteVer){
     if (sessionStorage.getItem(SS_REFRESH_LATER)==="1") return true;
     const until = parseInt(localStorage.getItem(LS_SUPPRESS_UNTIL)||"0",10);
     if (until && Date.now() < until) return true;
-    const lastNotified = localStorage.getItem(LS_LAST_NOTIFIED_VER);
-    if (lastNotified && lastNotified === remoteVer) return true;
+    if (localStorage.getItem(LS_LAST_NOTIFIED_VER) === remoteVer) return true;
+    if (localStorage.getItem(LS_BANNER_SEEN_VER) === remoteVer) return true;
   }catch(_){}
   return false;
 }
 function markNotified(remoteVer, withDurationHours=null){
   try{
     localStorage.setItem(LS_LAST_NOTIFIED_VER, remoteVer);
+    localStorage.setItem(LS_BANNER_SEEN_VER, remoteVer); // prevents re-show on reload for same version
     if (withDurationHours && withDurationHours>0){
       const ms = withDurationHours*60*60*1000;
       localStorage.setItem(LS_SUPPRESS_UNTIL, String(Date.now()+ms));
@@ -488,6 +522,7 @@ function clearSuppression(){
     sessionStorage.removeItem(SS_REFRESH_LATER);
     localStorage.removeItem(LS_SUPPRESS_UNTIL);
     localStorage.removeItem(LS_LAST_NOTIFIED_VER);
+    localStorage.removeItem(LS_BANNER_SEEN_VER);
   }catch(_){}
 }
 
@@ -497,43 +532,13 @@ function scheduleNextPoll(){
   setTimeout(pollRemoteVersion, next);
 }
 
-async function pollRemoteVersion(){
-  try{
-    const rv = await fetchRemoteVersion();
-    if (rv){
-      lastRemoteVer = rv;
-      const rLbl = document.getElementById("remoteVerLbl");
-      if (rLbl) rLbl.textContent = rv;
-      setDisplayVersion();
-
-      if (compareVersions(rv, getEffectiveLocalVersion()) > 0){
-        if (!shouldSuppress(rv)){
-          refreshMsg.textContent = `A newer version (v${rv}) is available. You’re on v${getEffectiveLocalVersion()}.`;
-          show(refreshNotice);
-          toast(
-            `New version detected: v${rv}`,
-            [
-              {label:"Refresh", onClick:()=>location.reload()},
-              {label:"Later", onClick:()=>{ 
-                try{sessionStorage.setItem(SS_REFRESH_LATER,"1")}catch(_){}
-                markNotified(rv, SUPPRESS_HOURS);
-                hide(refreshNotice);
-              } }
-            ]
-          );
-          markNotified(rv);
-        }
-      }
-    }
-  }catch(_){}
-  scheduleNextPoll();
+function safeShowBanner(ver, localVer){
+  if (shouldSuppress(ver)) { hide(refreshNotice); return; }
+  refreshMsg.textContent = `A newer version (v${ver}) is available. You’re on v${localVer}.`;
+  show(refreshNotice);
+  // Mark as seen immediately so a reload doesn't re-show the same version
+  markNotified(ver);
 }
-refreshLater.addEventListener("click", ()=>{
-  try{ sessionStorage.setItem(SS_REFRESH_LATER, "1"); }catch(_){}
-  if (lastRemoteVer) markNotified(lastRemoteVer, SUPPRESS_HOURS);
-  hide(refreshNotice);
-});
-refreshNow.addEventListener("click", ()=>location.reload());
 
 /* Initial check */
 async function checkRemoteVersionOnce(){
@@ -545,16 +550,67 @@ async function checkRemoteVersionOnce(){
       if (rLbl) rLbl.textContent = rv;
       setDisplayVersion();
 
-      if (compareVersions(rv, getEffectiveLocalVersion()) > 0){
-        if (!shouldSuppress(rv)){
-          refreshMsg.textContent = `A newer version (v${rv}) is available. You’re on v${getEffectiveLocalVersion()}.`;
-          show(refreshNotice);
-          markNotified(rv);
-        }
+      const local = getEffectiveLocalVersion();
+      if (compareVersions(rv, local) > 0){
+        safeShowBanner(rv, local);
+      } else {
+        hide(refreshNotice);
       }
+    } else {
+      hide(refreshNotice);
     }
   }catch(_){}
 }
+
+/* Polling */
+async function pollRemoteVersion(){
+  try{
+    const rv = await fetchRemoteVersion();
+    if (rv){
+      lastRemoteVer = rv;
+      const rLbl = document.getElementById("remoteVerLbl");
+      if (rLbl) rLbl.textContent = rv;
+      setDisplayVersion();
+
+      const local = getEffectiveLocalVersion();
+      if (compareVersions(rv, local) > 0){
+        if (!shouldSuppress(rv)){
+          safeShowBanner(rv, local);
+          toast(
+            `New version detected: v${rv}`,
+            [
+              {label:"Refresh", onClick:()=>location.reload()},
+              {label:"Later", onClick:()=>{ 
+                try{sessionStorage.setItem(SS_REFRESH_LATER,"1")}catch(_){}
+                markNotified(rv, SUPPRESS_HOURS);
+                hide(refreshNotice);
+              }}
+            ]
+          );
+        }
+      } else {
+        hide(refreshNotice);
+      }
+    }
+  }catch(_){}
+  scheduleNextPoll();
+}
+
+/* Banner buttons */
+refreshLater.addEventListener("click", ()=>{
+  try{ sessionStorage.setItem(SS_REFRESH_LATER, "1"); }catch(_){}
+  if (lastRemoteVer) markNotified(lastRemoteVer, SUPPRESS_HOURS);
+  hide(refreshNotice);
+});
+refreshNow.addEventListener("click", ()=>{
+  if (lastRemoteVer) markNotified(lastRemoteVer, SUPPRESS_HOURS);
+  location.reload();
+});
+
+/* On first paint, proactively hide banner if a version was already seen */
+document.addEventListener("DOMContentLoaded", ()=>{
+  if (localStorage.getItem(LS_BANNER_SEEN_VER)) hide(refreshNotice);
+});
 
 /* =========================================================================
    PAGE / LOGIN / TERMS / INACTIVITY / SHORTCUTS / DEVTOOLS
