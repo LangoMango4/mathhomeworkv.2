@@ -27,64 +27,44 @@ hr{margin:0;border:0;border-top:0.5px solid #cfd0d1}
   border-collapse:separate;
   border-spacing:0;
   background:#fff;
-  overflow:hidden; /* clip inner corners and hr */
+  overflow:hidden;
 }
-/* Remove any legacy per-row borders */
 .pg.red .eu_h,.pg.red .eu_co,.pg.red td.hr{border:0!important}
 
 /* ===== Cells & header ===== */
 .m_tbl table td{padding:0 20px 16px 20px;text-align:left;background:#fff}
 .m_tbl table td.eu_h{padding-top:16px}
-
-/* Header: Arial 24px, weight 400, left with icon */
 .eu_h{
-  background:#fff;
-  font-family:Arial, sans-serif;
-  font-size:24px;
-  font-weight:400;
-  color:#fd4239;
-  text-align:left;
-  padding:16px 18px 14px;
-  display:flex;
-  align-items:center;
-  gap:10px;
+  background:#fff;font-family:Arial,sans-serif;font-size:24px;font-weight:400;color:#fd4239;
+  text-align:left;padding:16px 18px 14px;display:flex;align-items:center;gap:10px;
 }
-.eu_h img.no-icon{
-  width:24px; height:26px;
-  display:inline-block; vertical-align:middle;
-}
-
+.eu_h img.no-icon{width:24px;height:26px;display:inline-block;vertical-align:middle}
 .eu_co{font-size:16px;color:#2a2c30;white-space:normal;word-wrap:break-word}
 .eu_co.rsn{color:#000}
-
-/* Footer row with D-code inside on the right */
 .eu_co.fo{
   height:32px;color:#696A6D;background:#f3f3f3;line-height:32px;font-size:11px;
-  padding:0 20px;
-  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  padding:0 20px;display:flex;align-items:center;justify-content:space-between;gap:8px;
 }
 .uq_cd{font-size:10px;color:#696A6D;white-space:nowrap;margin-left:12px}
+.eu_co.st{font-size:12px;padding:0.1px;line-height:20px;color:#939393;background:#e3e3e3;border:0;text-align:center}
 
-/* Disclaimer (outside the red box) */
-.eu_co.st{
-  font-size:12px;padding:0.1px;line-height:20px;color:#939393;background:#e3e3e3;border:0;text-align:center
-}
-
-/* Smaller screens */
 @media(max-width:700px){
   .eu_h{font-size:20px}
   .m_tbl{min-width:300px;width:95%}
 }
+
+/* ===== Buttons / Inputs ===== */
+.btn{appearance:none;border:1px solid #4a4e5a;background:#17224a;color:#eef3ff;padding:12px 20px;border-radius:12px;cursor:pointer;font-weight:600;font-size:15px}
+.btn:hover{background:#1b2a5c}
+.btn-ghost{background:transparent;border:1px solid #37457a;color:#c7d2ff;padding:10px 16px;border-radius:10px}
+.btn-ghost:hover{background:#1a244a}
+.input{padding:10px 12px;border-radius:10px;border:1px solid #1d2a55;background:#0e1630;color:#eef3ff}
 
 /* ===== PIN/Login ===== */
 #pinScreen{position:fixed;inset:0;background:#0b0e14;display:none;align-items:center;justify-content:center;z-index:10}
 #pinBox{background:#0f111a;padding:30px;border-radius:18px;box-shadow:0 6px 20px rgba(0,0,0,.6);color:#eef3ff;width:min(92vw,420px);text-align:center}
 #pinBox h2{margin:0 0 16px 0;color:#eef3ff;font-weight:600}
 #pinInput{padding:12px;font-size:18px;border-radius:10px;border:1px solid #1d2a55;width:100%;background:#0e1630;color:#eef3ff;text-align:center;margin-bottom:12px}
-.btn{appearance:none;border:1px solid #4a4e5a;background:#17224a;color:#eef3ff;padding:12px 20px;border-radius:12px;cursor:pointer;font-weight:600;font-size:15px}
-.btn:hover{background:#1b2a5c}
-.btn-ghost{background:transparent;border:1px solid #37457a;color:#c7d2ff;padding:10px 16px;border-radius:10px}
-.btn-ghost:hover{background:#1a244a}
 #pinError{color:#ffcc00;display:none;margin-top:10px}
 
 /* ===== Terms ===== */
@@ -101,10 +81,45 @@ hr{margin:0;border:0;border-top:0.5px solid #cfd0d1}
 .check-row input{width:16px;height:16px}
 .check-row label{font-size:13px}
 
-/* ===== Main content placeholder (hidden until unlocked) ===== */
+/* ===== Main ===== */
 #mainContent{display:none;max-width:1100px;margin:40px auto;padding:20px;color:#eef3ff}
-.card{background:#0f111a;border:1px solid #1d2a55;border-radius:18px;box-shadow:0 10px 40px rgba(0,0,0,.25);padding:22px;text-align:center}
+.card{background:#0f111a;border:1px solid #1d2a55;border-radius:18px;box-shadow:0 10px 40px rgba(0,0,0,.25);padding:22px}
+.card h1{margin-top:0;text-align:center}
 iframe{margin:20px 0;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
+.top-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:22px}
+
+/* ===== Soundboard grid ===== */
+.sb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-top:10px}
+.sb-btn{padding:14px;border:1px solid #2a3a7a;background:#121a36;color:#e6ecff;border-radius:12px;cursor:pointer;font-weight:600}
+.sb-btn:hover{background:#1a244a}
+
+/* ===== Admin Panel ===== */
+#adminPanel{display:none;margin-top:12px}
+.admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.admin-card{background:#0f111a;border:1px solid #1d2a55;border-radius:14px;padding:14px}
+.admin-card h3{margin:0 0 8px 0}
+
+/* ===== Update Log modal ===== */
+#updateScreen{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:20;background:rgba(7,10,17,.6)}
+#updateBox{background:#0f111a;border:1px solid #1d2a55;border-radius:18px;width:min(92vw,720px);max-height:min(90vh,780px);color:#eef3ff;box-shadow:0 10px 30px rgba(0,0,0,.5);display:flex;flex-direction:column}
+#updateHead{padding:18px 20px;border-bottom:1px solid #1d2a55;font-weight:700;font-size:18px;display:flex;align-items:center;gap:8px}
+#updateBody{padding:16px 20px;overflow:auto;font-size:14px;line-height:1.6;max-height:360px}
+#updateFoot{padding:14px 20px;border-top:1px solid #1d2a55;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+#updateFoot .btn{padding:10px 16px;border-radius:10px}
+
+/* ===== Refresh banner ===== */
+#refreshNotice{position:fixed;left:0;right:0;bottom:0;display:none;z-index:25;background:#17224a;color:#eef3ff;border-top:2px solid #4a5bd1}
+#refreshInner{max-width:900px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:12px;justify-content:space-between}
+#refreshInner .msg{font-size:14px}
+#refreshInner .actions{display:flex;gap:8px}
+#refreshInner .btn{border:1px solid #4a4e5a;background:#1b2a5c;padding:8px 12px;border-radius:10px;cursor:pointer}
+#refreshInner .btn-ghost{background:transparent;border:1px solid #37457a}
+
+/* ===== Toasts ===== */
+#toastWrap{position:fixed;right:16px;top:16px;z-index:30;display:flex;flex-direction:column;gap:10px}
+.toast{background:#0f111a;border:1px solid #2b3a7a;color:#eaf0ff;border-radius:12px;padding:12px 14px;min-width:260px;box-shadow:0 8px 24px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.toast .t-msg{font-size:13px}
+.toast .t-actions{display:flex;gap:8px}
 </style>
 </head>
 <body>
@@ -112,65 +127,45 @@ iframe{margin:20px 0;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
 <!-- ===== Zscaler block ===== -->
 <div class="pg red">
   <div class="pg_cont">
-
     <div class="logo_container" style="text-align:center;">
       <img src="cnslogo.png" alt="CNS Logo">
     </div>
-
     <table class="m_tbl" cellpadding="0" cellspacing="0" align="center">
-      <tbody>
-        <tr>
-          <td valign="top">
-            <!-- Red rounded rectangle -->
-            <table id="en_US" width="100%" border="0" cellspacing="0" cellpadding="0">
-              <tbody>
-                <tr>
-                  <td class="eu_h">
-                    <img src="no.png" class="no-icon" alt="No">
-                    <span>Sorry, you don't have permission to visit this site.</span>
-                  </td>
-                </tr>
-
-                <tr><td><hr></td></tr>
-
-                <tr><td class="eu_co"><b>Website blocked</b></td></tr>
-
-                <tr>
-                  <td class="eu_co rsn">
-                    Not allowed to browse <b>SAR URL Blacklist Students</b> category.
-                  </td>
-                </tr>
-
-                <tr>
-                  <td class="eu_co">
-                    You tried to visit:
-                    <a href="#" style="color:#009dd0">www.mymathshomework.com</a>
-                  </td>
-                </tr>
-
-                <tr><td><hr></td></tr>
-
-                <tr>
-                  <td class="eu_co fo">
-                    <span>Need help? Contact our support team at 0740509750,
-                      <a href="#" id="toMainArea" style="font-size:12px;color:#009dd0;">servicedesk@cns.catholic.edu.au</a>
-                    </span>
-                    <span class="uq_cd">D55</span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-
-            <!-- Disclaimer OUTSIDE the red box -->
-            <div class="eu_co st" style="max-width:750px;margin:8px auto 0;">
-              <img src="image-removebg-preview (5).png" class="Zscaler-icon" alt="Zscaler" style="width:70px;height:35px;vertical-align:middle;margin-right:6px;transform:translateY(-2px)">
-              Your organization has selected Zscaler to protect you from internet threats.
-            </div>
-          </td>
-        </tr>
-      </tbody>
+      <tbody><tr><td valign="top">
+        <table id="en_US" width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr>
+              <td class="eu_h">
+                <img src="no.png" class="no-icon" alt="No">
+                <span>Sorry, you don't have permission to visit this site.</span>
+              </td>
+            </tr>
+            <tr><td><hr></td></tr>
+            <tr><td class="eu_co"><b>Website blocked</b></td></tr>
+            <tr><td class="eu_co rsn">Not allowed to browse <b>SAR URL Blacklist Students</b> category.</td></tr>
+            <tr>
+              <td class="eu_co">
+                You tried to visit:
+                <a href="#" style="color:#009dd0">www.mymathshomework.com</a>
+              </td>
+            </tr>
+            <tr><td><hr></td></tr>
+            <tr>
+              <td class="eu_co fo">
+                <span>Need help? Contact our support team at 0740509750,
+                  <a href="#" id="toMainArea" style="font-size:12px;color:#009dd0;">servicedesk@cns.catholic.edu.au</a>
+                </span>
+                <span class="uq_cd">D55</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="eu_co st" style="max-width:750px;margin:8px auto 0;">
+          <img src="image-removebg-preview (5).png" class="Zscaler-icon" alt="Zscaler" style="width:70px;height:35px;vertical-align:middle;margin-right:6px;transform:translateY(-2px)">
+          Your organization has selected Zscaler to protect you from internet threats.
+        </div>
+      </td></tr></tbody>
     </table>
-
   </div>
 </div>
 
@@ -195,9 +190,8 @@ iframe{margin:20px 0;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
       <div>🛡️ Terms &amp; Conditions</div>
       <div id="termsSub">Last Updated: Sept. 17 2025</div>
       <div id="termsDesc">Please read and scroll to the bottom to enable acceptance.</div>
-        <a href="terms_and_conditions" style="color:#009dd0">www.mymathshomework.com</a>
+      <a href="terms_and_conditions" style="color:#009dd0">www.mymathshomework.com</a>
     </div>
-
     <div id="termsBody">
       <div class="content">
         <p><b>Welcome!</b> Please review and accept these terms to continue.</p>
@@ -217,7 +211,6 @@ iframe{margin:20px 0;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
       </div>
       <div id="scrollHint"><div>↓ Scroll to continue ↓</div></div>
     </div>
-
     <div id="termsFoot">
       <div class="check-row">
         <input type="checkbox" id="termsChk" disabled>
@@ -229,62 +222,325 @@ iframe{margin:20px 0;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
   </div>
 </div>
 
-<!-- ===== Main Content (hidden until unlocked) ===== -->
+<!-- ===== Update Log Screen ===== -->
+<div id="updateScreen" aria-modal="true" role="dialog">
+  <div id="updateBox">
+    <div id="updateHead">IMPORTANT: Update Available</div>
+    <div id="updateBody">
+      <div id="updateNotes"></div>
+    </div>
+    <div id="updateFoot">
+      <button class="btn-ghost" id="updateSkipBtn" title="Hide this update log until the next version">Skip</button>
+      <button class="btn" id="updateOkayBtn">Okay, got it</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Refresh Banner ===== -->
+<div id="refreshNotice">
+  <div id="refreshInner">
+    <div class="msg" id="refreshMsg">A newer version is available.</div>
+    <div class="actions">
+      <button class="btn-ghost" id="refreshLaterBtn">Later</button>
+      <button class="btn" id="refreshNowBtn">Refresh now</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Toast container ===== -->
+<div id="toastWrap" aria-live="polite" aria-atomic="true"></div>
+
+<!-- ===== Main Content ===== -->
 <div id="mainContent">
   <div class="card">
     <h1>mathshomework v2 😱</h1>
-    <div style="margin-bottom:30px;">
+    <div class="top-actions">
       <button class="btn" onclick="showPage('soundboard')">Soundboard</button>
       <button class="btn" onclick="showPage('games')">Games</button>
-      <button class="btn" onclick="reopenTerms()" title="View terms again">View Terms</button>
+      <button class="btn" id="adminBtn" title="Admin login">Admin</button>
     </div>
-    <div id="soundboardPage">Soundboards Coming Soon</div>
+
+    <!-- Soundboard -->
+    <div id="soundboardPage">
+      <div class="sb-grid" id="sbGrid">
+        <!-- Placeholder buttons for later wiring -->
+        <button class="sb-btn" data-sound="airhorn">Testing</button>
+
+      </div>
+    </div>
+
+    <!-- Games -->
     <div id="gamesPage" style="display:none;">
       <iframe src="https://scratch.mit.edu/projects/3041905/embed" allowtransparency="true" width="960" height="720" frameborder="0" scrolling="no" allowfullscreen></iframe>
       <iframe src="https://scratch.mit.edu/projects/17828009/embed" allowtransparency="true" width="960" height="720" frameborder="0" scrolling="no" allowfullscreen></iframe>
       <iframe src="https://scratch.mit.edu/projects/389464290/embed" allowtransparency="true" width="960" height="720" frameborder="0" scrolling="no" allowfullscreen></iframe>
       <iframe src="https://scratch.mit.edu/projects/105500895/embed" allowtransparency="true" width="960" height="720" frameborder="0" scrolling="no" allowfullscreen></iframe>
       <iframe src="https://scratch.mit.edu/projects/12575620/embed" allowtransparency="true" width="960" height="720" frameborder="0" scrolling="no" allowfullscreen></iframe>
-      
     </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel">
+      <div class="admin-grid">
+        <div class="admin-card">
+          <h3>Version & Update</h3>
+          <div>Current: <b id="curVerLbl">-</b></div>
+          <div>Latest (remote): <b id="remoteVerLbl">–</b></div>
+          <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn" id="btnForceCheck">Force Version Check</button>
+            <button class="btn-ghost" id="btnShowUpdateLog">Preview Update Log</button>
+            <button class="btn" id="btnForceRefresh">Force Refresh</button>
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <h3>Update Log Settings</h3>
+          <label style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <input type="checkbox" id="toggleShowUpdate">
+            Show Update Log on this version
+          </label>
+          <textarea id="notesEditor" class="input" rows="6" style="width:100%" placeholder="Update notes HTML"></textarea>
+          <div style="margin-top:8px;display:flex;gap:8px">
+            <button class="btn" id="btnApplyNotes">Apply Notes</button>
+            <button class="btn-ghost" id="btnAckVersion">Mark Seen</button>
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <h3>Utilities</h3>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn-ghost" id="btnDismissBanner">Dismiss Refresh Banner</button>
+            <button class="btn-ghost" id="btnTestToast">Test Toast</button>
+            <button class="btn-ghost" id="btnTestBeep">Test Beep</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
 <script>
-/* ===== Config ===== */
-const VALID_PINS = ["14312","24680"];
-const LS_TERMS = "termsAccepted_v1";
-const TERMS_VERSION = "Sept. 17 2025.";
+/* =========================================================================
+   CONFIG
+   ========================================================================= */
+let SHOW_UPDATE_LOG = true;        // Show update log modal on entry (if not acknowledged)
+const CURRENT_VERSION = "2.13";    // Your shipped version
+let UPDATE_NOTES_HTML = `
+   <p><b>MyMathsHomework v${CURRENT_VERSION}</b></p>
+   <p><b>Updates are useful to fix up known issues. </b></p>
+  <ul>
+    <li>Fixed: Issues with backend code</li>
+    <li>Soon: Soundboards</li>
+    <li>Soon: More games.</li>
 
-/* ===== Page switching ===== */
-function showPage(which){
-  document.getElementById("soundboardPage").style.display = (which==="soundboard")?"block":"none";
-  document.getElementById("gamesPage").style.display = (which==="games")?"block":"none";
+    <li>NOTE: Games DON'T save if you refresh. (Known issue)</li>
+`;
+
+const VALID_PINS = ["24680"];         // Regular access
+const ADMIN_PINS = ["14312"]     // Admin access
+const LS_SEEN_VERSION = "mmh_seenVersion";
+const LS_TERMS = "termsAccepted_v2";
+const TERMS_VERSION = "Sept. 17 2025.";
+const SS_REFRESH_LATER = "mmh_refreshLater";
+const REMOTE_VERSION_URL = "/version.txt";
+
+/* =========================================================================
+   UTIL
+   ========================================================================= */
+function compareVersions(a,b){
+  const pa=String(a).trim().split('.').map(n=>parseInt(n,10)||0);
+  const pb=String(b).trim().split('.').map(n=>parseInt(n,10)||0);
+  const len=Math.max(pa.length,pb.length);
+  for(let i=0;i<len;i++){const va=pa[i]||0,vb=pb[i]||0;if(va>vb)return 1;if(va<vb)return -1;}
+  return 0;
+}
+function show(el){ if(el) el.style.display = (el.id==="termsScreen"||el.id==="pinScreen"||el.id==="updateScreen") ? "flex" : "block"; }
+function hide(el){ if(el) el.style.display = "none"; }
+function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+/* Toasts */
+const toastWrap = document.getElementById("toastWrap");
+function toast(message, actions=[]){
+  const el = document.createElement("div");
+  el.className="toast";
+  el.innerHTML = `<div class="t-msg">${message}</div><div class="t-actions"></div>`;
+  const actWrap = el.querySelector(".t-actions");
+  actions.forEach(a=>{
+    const b=document.createElement("button");
+    b.className="btn-ghost";
+    b.textContent=a.label||"OK";
+    b.onclick=()=>{ try{a.onClick&&a.onClick();}finally{el.remove();} };
+    actWrap.appendChild(b);
+  });
+  toastWrap.appendChild(el);
+  setTimeout(()=>el.remove(), 10000);
 }
 
-/* ===== Login -> Terms -> Main ===== */
+/* Short beep (WebAudio) */
+function beep(duration=180, freq=880, type="sine"){
+  try{
+    const ctx = new (window.AudioContext||window.webkitAudioContext)();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = type; o.frequency.value=freq;
+    o.connect(g); g.connect(ctx.destination);
+    g.gain.setValueAtTime(0.001, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime+0.02);
+    o.start();
+    setTimeout(()=>{
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.02);
+      o.stop(); ctx.close();
+    }, duration);
+  }catch(_){}
+}
+
+/* =========================================================================
+   UPDATE LOG
+   ========================================================================= */
+const updateScreen = document.getElementById("updateScreen");
+const updateNotes  = document.getElementById("updateNotes");
+const updateOkayBtn= document.getElementById("updateOkayBtn");
+const updateSkipBtn= document.getElementById("updateSkipBtn");
+
+function maybeShowUpdateLog(){
+  try{
+    const seen = localStorage.getItem(LS_SEEN_VERSION);
+    if (SHOW_UPDATE_LOG && seen !== CURRENT_VERSION){
+      updateNotes.innerHTML = UPDATE_NOTES_HTML;
+      show(updateScreen);
+    }
+  }catch(_){}
+}
+function acknowledgeUpdate(){
+  try{ localStorage.setItem(LS_SEEN_VERSION, CURRENT_VERSION); }catch(_){}
+  hide(updateScreen);
+}
+updateOkayBtn.addEventListener("click", acknowledgeUpdate);
+updateSkipBtn.addEventListener("click", ()=>hide(updateScreen));
+
+/* =========================================================================
+   REMOTE VERSION POLLING (every 5–10s)
+   ========================================================================= */
+const refreshNotice = document.getElementById("refreshNotice");
+const refreshMsg    = document.getElementById("refreshMsg");
+const refreshLater  = document.getElementById("refreshLaterBtn");
+const refreshNow    = document.getElementById("refreshNowBtn");
+let lastRemoteVer   = null;
+let pollAbort       = false;
+
+document.addEventListener("visibilitychange", ()=>{
+  // optionally pause polling on hidden tab
+  // (we'll keep it running; but if needed: pollAbort=document.hidden)
+});
+
+async function fetchRemoteVersion(){
+  const res = await fetch(REMOTE_VERSION_URL+"?t="+Date.now(), {cache:"no-store"});
+  if(!res.ok) return null;
+  const t = (await res.text()||"").trim();
+  return t || null;
+}
+function scheduleNextPoll(){
+  if (pollAbort) return;
+  const next = randInt(5,10)*1000;
+  setTimeout(pollRemoteVersion, next);
+}
+async function pollRemoteVersion(){
+  try{
+    if (sessionStorage.getItem(SS_REFRESH_LATER)==="1"){ scheduleNextPoll(); return; }
+    const rv = await fetchRemoteVersion();
+    if (rv){
+      lastRemoteVer = rv;
+      document.getElementById("remoteVerLbl").textContent = rv;
+      if (compareVersions(rv, CURRENT_VERSION) > 0){
+        // Newer version available
+        refreshMsg.textContent = `A newer version (v${rv}) is available. You’re on v${CURRENT_VERSION}.`;
+        show(refreshNotice);
+        // Toast + beep
+        beep();
+        toast(
+          `New version detected: v${rv}`,
+          [
+            {label:"Refresh", onClick:()=>location.reload()},
+            {label:"Later", onClick:()=>{ try{sessionStorage.setItem(SS_REFRESH_LATER,"1")}catch(_){ }; hide(refreshNotice);} }
+          ]
+        );
+      }
+    }
+  }catch(_){}
+  scheduleNextPoll();
+}
+refreshLater.addEventListener("click", ()=>{
+  try{ sessionStorage.setItem(SS_REFRESH_LATER, "1"); }catch(_){}
+  hide(refreshNotice);
+});
+refreshNow.addEventListener("click", ()=>location.reload());
+
+/* Also run once on load */
+async function checkRemoteVersionOnce(){
+  try{
+    const rv = await fetchRemoteVersion();
+    if (rv){
+      lastRemoteVer = rv;
+      document.getElementById("remoteVerLbl").textContent = rv;
+      if (compareVersions(rv, CURRENT_VERSION) > 0){
+        refreshMsg.textContent = `A newer version (v${rv}) is available. You’re on v${CURRENT_VERSION}.`;
+        show(refreshNotice);
+      }
+    }
+  }catch(_){}
+}
+
+/* =========================================================================
+   PAGE / LOGIN / TERMS / INACTIVITY / SHORTCUTS / DEVTOOLS
+   ========================================================================= */
+function showPage(which){
+  document.getElementById("soundboardPage").style.display = (which==="soundboard")?"block":"none";
+  document.getElementById("gamesPage").style.display      = (which==="games")?"block":"none";
+  if (which === "soundboard" || which === "games"){
+    document.title = `MyMathsHomework Version ${CURRENT_VERSION}`;
+  }
+}
+const curVerLbl = document.getElementById("curVerLbl");
+curVerLbl.textContent = CURRENT_VERSION;
+
+/* Soundboard placeholders */
+document.getElementById("sbGrid").addEventListener("click",(e)=>{
+  const btn = e.target.closest(".sb-btn");
+  if(!btn) return;
+  const name = btn.getAttribute("data-sound");
+  console.log("[Soundboard]", name, "(placeholder)");
+  // future: play mapped AudioBuffer or <audio> here
+});
+
+/* Login */
 function checkPin(){
   const pin = (document.getElementById("pinInput").value || "").trim();
-  if (!pin || !VALID_PINS.includes(pin)){
+  if (!pin || (!VALID_PINS.includes(pin) && !ADMIN_PINS.includes(pin))){
     document.getElementById("pinError").style.display="block";
     return;
   }
   document.getElementById("pinError").style.display="none";
-  document.getElementById("pinScreen").style.display="none";
+  hide(document.getElementById("pinScreen"));
+
+  const isAdmin = ADMIN_PINS.includes(pin);
+  sessionStorage.setItem("mmh_isAdmin", isAdmin ? "1" : "0");
+  document.getElementById("adminPanel").style.display = isAdmin ? "block" : "none";
+
   try {
     const accepted = localStorage.getItem(LS_TERMS) === "yes";
     if (accepted){
-      document.getElementById("mainContent").style.display="block";
+      show(document.getElementById("mainContent"));
       startInactivityTimer();
+      maybeShowUpdateLog();
     } else {
-      document.getElementById("termsScreen").style.display="flex";
+      show(document.getElementById("termsScreen"));
     }
   } catch(_){
-    document.getElementById("termsScreen").style.display="flex";
+    show(document.getElementById("termsScreen"));
   }
 }
 
-/* ===== Terms logic ===== */
+/* Terms */
 const termsBody = document.getElementById("termsBody");
 const termsChk  = document.getElementById("termsChk");
 const termsLbl  = document.getElementById("termsLbl");
@@ -292,9 +548,7 @@ const acceptBtn = document.getElementById("acceptBtn");
 const declineBtn= document.getElementById("declineBtn");
 const scrollHint= document.getElementById("scrollHint");
 let hasScrolledToBottom=false, isLogging=false;
-
 function updateAcceptUI(){ acceptBtn.disabled = !(termsChk.checked && hasScrolledToBottom) || isLogging; }
-
 termsBody.addEventListener("scroll", () => {
   const { scrollTop, scrollHeight, clientHeight } = termsBody;
   if (scrollTop >= (scrollHeight - clientHeight - 5)) {
@@ -306,7 +560,6 @@ termsBody.addEventListener("scroll", () => {
   }
 });
 termsChk.addEventListener("change", updateAcceptUI);
-
 acceptBtn.addEventListener("click", async () => {
   if (!hasScrolledToBottom || !termsChk.checked || isLogging) return;
   isLogging = true; updateAcceptUI();
@@ -317,17 +570,18 @@ acceptBtn.addEventListener("click", async () => {
     }).catch(()=>{});
   }catch(_){}
   try{ localStorage.setItem(LS_TERMS,"yes"); }catch(_){}
-  document.getElementById("termsScreen").style.display="none";
-  document.getElementById("mainContent").style.display="block";
+  hide(document.getElementById("termsScreen"));
+  show(document.getElementById("mainContent"));
   startInactivityTimer();
   isLogging=false; updateAcceptUI();
+  maybeShowUpdateLog();
 });
 declineBtn.addEventListener("click", () => {
-  document.getElementById("termsScreen").style.display="none";
-  document.getElementById("mainContent").style.display="none";
+  hide(document.getElementById("termsScreen"));
+  hide(document.getElementById("mainContent"));
   document.querySelector(".pg.red").style.display="block";
 });
-function reopenTerms(){ document.getElementById("termsScreen").style.display="flex"; }
+function reopenTerms(){ show(document.getElementById("termsScreen")); }
 
 /* Footer link → open PIN/login */
 document.addEventListener("DOMContentLoaded", () => {
@@ -336,26 +590,48 @@ document.addEventListener("DOMContentLoaded", () => {
     toMain.addEventListener("click", (e) => {
       e.preventDefault();
       document.querySelector(".pg.red").style.display="none";
-      document.getElementById("pinScreen").style.display="flex";
+      show(document.getElementById("pinScreen"));
     });
   }
+  // Admin button (prompt for admin PIN if not admin yet)
+  document.getElementById("adminBtn").addEventListener("click", ()=>{
+    const already = sessionStorage.getItem("mmh_isAdmin")==="1";
+    if (already){
+      document.getElementById("adminPanel").style.display="block";
+      toast("Admin panel opened");
+      return;
+    }
+    const code = prompt("Enter Admin PIN:");
+    if (!code) return;
+    if (ADMIN_PINS.includes(code)){
+      sessionStorage.setItem("mmh_isAdmin","1");
+      document.getElementById("adminPanel").style.display="block";
+      toast("Admin unlocked");
+    }else{
+      toast("Invalid admin PIN");
+    }
+  });
+
+  // Kick off initial version check & start polling
+  checkRemoteVersionOnce();
+  scheduleNextPoll();
 });
 
-/* ===== ESC + T shortcut ===== */
+/* ESC + T shortcut */
 let escPressed=false;
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape"){ escPressed = true; setTimeout(()=>{escPressed=false},1000); }
   if (escPressed && (e.key === "t" || e.key === "T")) { window.location.href = "https://www.google.com"; }
 });
 
-/* ===== Inactivity lock (10 min) ===== */
+/* Inactivity lock (10 min) */
 let inactivityTimer;
 function resetInactivity(){
   clearTimeout(inactivityTimer);
   inactivityTimer = setTimeout(() => {
-    document.getElementById("mainContent").style.display="none";
-    document.getElementById("pinScreen").style.display="none";
-    document.getElementById("termsScreen").style.display="none";
+    hide(document.getElementById("mainContent"));
+    hide(document.getElementById("pinScreen"));
+    hide(document.getElementById("termsScreen"));
     document.querySelector(".pg.red").style.display="block";
   }, 10*60*1000);
 }
@@ -365,7 +641,7 @@ function startInactivityTimer(){
   document.addEventListener("keydown", resetInactivity);
 }
 
-/* ===== Block DevTools & View Source ===== */
+/* Block DevTools & View Source */
 document.addEventListener("keydown", (e) => {
   if (e.key === "F12"){ e.preventDefault(); backToZscaler(); }
   if (e.ctrlKey && e.shiftKey && (e.key.toLowerCase()==="i" || e.key.toLowerCase()==="j")){
@@ -374,28 +650,53 @@ document.addEventListener("keydown", (e) => {
   if (e.ctrlKey && e.key.toLowerCase()==="u"){ e.preventDefault(); backToZscaler(); }
 });
 function backToZscaler(){
-  document.getElementById("mainContent").style.display="none";
-  document.getElementById("pinScreen").style.display="none";
-  document.getElementById("termsScreen").style.display="none";
+  hide(document.getElementById("mainContent"));
+  hide(document.getElementById("pinScreen"));
+  hide(document.getElementById("termsScreen"));
   document.querySelector(".pg.red").style.display="block";
 }
 
-  function showPage(page) {
-    // Hide both pages first
-    document.getElementById("soundboardPage").style.display = "none";
-    document.getElementById("gamesPage").style.display = "none";
+/* Expose for buttons */
+window.reopenTerms = reopenTerms;
+window.showPage = showPage;
 
-    // Show the requested page + update title
-    if (page === "soundboard") {
-      document.getElementById("soundboardPage").style.display = "block";
-      document.title = "MyMathsHomework Version 2.12";
-    } else if (page === "games") {
-      document.getElementById("gamesPage").style.display = "block";
-      document.title = "MyMathsHomework Version 2.12";
-    }
-  }
+/* =========================================================================
+   ADMIN PANEL HOOKS
+   ========================================================================= */
+document.getElementById("toggleShowUpdate").checked = !!SHOW_UPDATE_LOG;
+document.getElementById("notesEditor").value = UPDATE_NOTES_HTML;
+
+document.getElementById("btnForceCheck").addEventListener("click", ()=>{
+  toast("Checking for updates…");
+  checkRemoteVersionOnce();
+});
+document.getElementById("btnShowUpdateLog").addEventListener("click", ()=>{
+  updateNotes.innerHTML = UPDATE_NOTES_HTML;
+  show(updateScreen);
+});
+document.getElementById("btnForceRefresh").addEventListener("click", ()=>location.reload());
+document.getElementById("btnApplyNotes").addEventListener("click", ()=>{
+  UPDATE_NOTES_HTML = document.getElementById("notesEditor").value;
+  toast("Update notes applied.");
+});
+document.getElementById("btnAckVersion").addEventListener("click", ()=>{
+  localStorage.setItem(LS_SEEN_VERSION, CURRENT_VERSION);
+  toast("Marked this version as acknowledged.");
+});
+document.getElementById("toggleShowUpdate").addEventListener("change", (e)=>{
+  SHOW_UPDATE_LOG = !!e.target.checked;
+  toast("Update log toggle: " + (SHOW_UPDATE_LOG?"ON":"OFF"));
+});
+document.getElementById("btnDismissBanner").addEventListener("click", ()=>{
+  hide(refreshNotice);
+  sessionStorage.setItem(SS_REFRESH_LATER,"1");
+  toast("Refresh banner dismissed for this session.");
+});
+document.getElementById("btnTestToast").addEventListener("click", ()=>{
+  toast("This is a test notification", [{label:"OK"}]);
+});
+document.getElementById("btnTestBeep").addEventListener("click", ()=>beep());
+
 </script>
 </body>
 </html>
-
-
