@@ -22,12 +22,7 @@ hr{margin:0;border:0;border-top:0.5px solid #cfd0d1}
 
 /* ===== One red rounded rectangle on the inner table ===== */
 #en_US{
-  border:3px solid #fd4239;
-  border-radius:10px;
-  border-collapse:separate;
-  border-spacing:0;
-  background:#fff;
-  overflow:hidden;
+  border:3px solid #fd4239;border-radius:10px;border-collapse:separate;border-spacing:0;background:#fff;overflow:hidden;
 }
 .pg.red .eu_h,.pg.red .eu_co,.pg.red td.hr{border:0!important}
 
@@ -59,6 +54,7 @@ hr{margin:0;border:0;border-top:0.5px solid #cfd0d1}
 .btn-ghost{background:transparent;border:1px solid #37457a;color:#c7d2ff;padding:10px 16px;border-radius:10px}
 .btn-ghost:hover{background:#1a244a}
 .input{padding:10px 12px;border-radius:10px;border:1px solid #1d2a55;background:#0e1630;color:#eef3ff}
+.input.inline{width:160px}
 
 /* ===== PIN/Login ===== */
 #pinScreen{position:fixed;inset:0;background:#0b0e14;display:none;align-items:center;justify-content:center;z-index:10}
@@ -95,9 +91,10 @@ iframe{margin:20px 0;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
 
 /* ===== Admin Panel ===== */
 #adminPanel{display:none;margin-top:12px}
-.admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
 .admin-card{background:#0f111a;border:1px solid #1d2a55;border-radius:14px;padding:14px}
 .admin-card h3{margin:0 0 8px 0}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0}
 
 /* ===== Update Log modal ===== */
 #updateScreen{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:20;background:rgba(7,10,17,.6)}
@@ -263,9 +260,7 @@ iframe{margin:20px 0;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
     <!-- Soundboard -->
     <div id="soundboardPage">
       <div class="sb-grid" id="sbGrid">
-        <!-- Placeholder buttons for later wiring -->
         <button class="sb-btn" data-sound="airhorn">Testing</button>
-
       </div>
     </div>
 
@@ -283,11 +278,22 @@ iframe{margin:20px 0;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
       <div class="admin-grid">
         <div class="admin-card">
           <h3>Version & Update</h3>
-          <div>Current: <b id="curVerLbl">-</b></div>
-          <div>Latest (remote): <b id="remoteVerLbl">–</b></div>
-          <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+          <div class="row">Local (code): <b id="curVerLbl">-</b></div>
+          <div class="row">Latest (remote): <b id="remoteVerLbl">–</b></div>
+          <div class="row">
+            <label for="localVerOverride">Session Local Version:</label>
+            <input id="localVerOverride" class="input inline" placeholder="e.g. 2.14">
+            <button class="btn-ghost" id="btnApplyLocalOverride">Apply</button>
+            <button class="btn-ghost" id="btnClearLocalOverride">Clear</button>
+          </div>
+          <div class="row">
+            <label for="remoteVerEditor">Remote Version (version.txt):</label>
+            <input id="remoteVerEditor" class="input inline" placeholder="e.g. 2.14">
+            <button class="btn" id="btnSaveRemoteVersion">Save to server</button>
+            <button class="btn-ghost" id="btnDownloadVersionTxt">Download version.txt</button>
+          </div>
+          <div class="row" style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
             <button class="btn" id="btnForceCheck">Force Version Check</button>
-            <button class="btn-ghost" id="btnShowUpdateLog">Preview Update Log</button>
             <button class="btn" id="btnForceRefresh">Force Refresh</button>
           </div>
         </div>
@@ -298,19 +304,21 @@ iframe{margin:20px 0;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
             <input type="checkbox" id="toggleShowUpdate">
             Show Update Log on this version
           </label>
-          <textarea id="notesEditor" class="input" rows="6" style="width:100%" placeholder="Update notes HTML"></textarea>
-          <div style="margin-top:8px;display:flex;gap:8px">
-            <button class="btn" id="btnApplyNotes">Apply Notes</button>
+          <textarea id="notesEditor" class="input" rows="8" style="width:100%" placeholder="Update notes HTML"></textarea>
+          <div class="row">
+            <button class="btn" id="btnSaveNotesServer">Save to server</button>
+            <button class="btn-ghost" id="btnApplyNotes">Apply (this session)</button>
+            <button class="btn-ghost" id="btnShowUpdateLog">Preview</button>
+            <button class="btn-ghost" id="btnDownloadNotes">Download update_notes.html</button>
             <button class="btn-ghost" id="btnAckVersion">Mark Seen</button>
           </div>
         </div>
 
         <div class="admin-card">
           <h3>Utilities</h3>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <div class="row">
             <button class="btn-ghost" id="btnDismissBanner">Dismiss Refresh Banner</button>
             <button class="btn-ghost" id="btnTestToast">Test Toast</button>
-            <button class="btn-ghost" id="btnTestBeep">Test Beep</button>
           </div>
         </div>
       </div>
@@ -323,25 +331,35 @@ iframe{margin:20px 0;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
 /* =========================================================================
    CONFIG
    ========================================================================= */
-let SHOW_UPDATE_LOG = true;        // Show update log modal on entry (if not acknowledged)
-const CURRENT_VERSION = "2.14";    // Your shipped version
+let SHOW_UPDATE_LOG = true;              // show update log modal on entry (if not acknowledged)
+let CURRENT_VERSION = "2.13";            // your shipped version (can be session-overridden in Admin)
 let UPDATE_NOTES_HTML = `
-   <p><b>MyMathsHomework v${CURRENT_VERSION}</b></p>
-   <p><b>Updates are useful to fix up known issues. </b></p>
+   <p><b>MyMathsHomework v\${CURRENT_VERSION}</b></p>
+   <p><b>Updates are useful to fix up known issues.</b></p>
   <ul>
     <li>Fixed: Issues with backend code</li>
     <li>Soon: Soundboards</li>
     <li>Soon: More games.</li>
-
     <li>NOTE: Games DON'T save if you refresh. (Known issue)</li>
+  </ul>
 `;
 
-const VALID_PINS = ["24680"];         // Regular access
-const ADMIN_PINS = ["14312"]     // Admin access
+/* Admin endpoints (adjust to match your backend) */
+const ADMIN_VERSION_ENDPOINT = "/admin/version";     // expects JSON: { version: "2.14" }
+const ADMIN_NOTES_ENDPOINT   = "/admin/update-log";  // expects JSON: { notesHtml: "<p>...</p>" }
+
+const VALID_PINS = ["24680"];      // Regular access
+const ADMIN_PINS = ["14312"];      // Admin access
 const LS_SEEN_VERSION = "mmh_seenVersion";
 const LS_TERMS = "termsAccepted_v2";
 const TERMS_VERSION = "Sept. 17 2025.";
-const SS_REFRESH_LATER = "mmh_refreshLater";
+
+/* ===== Notification suppression keys ===== */
+const SS_REFRESH_LATER = "mmh_refreshLater";               // session flag
+const LS_LAST_NOTIFIED_VER = "mmh_lastNotifiedRemoteVer";  // last version we notified about
+const LS_SUPPRESS_UNTIL = "mmh_notifySuppressUntil";       // epoch ms until which we suppress
+const SUPPRESS_HOURS = 12;
+
 const REMOTE_VERSION_URL = "/version.txt";
 
 /* =========================================================================
@@ -366,8 +384,7 @@ function toast(message, actions=[]){
   el.innerHTML = `<div class="t-msg">${message}</div><div class="t-actions"></div>`;
   const actWrap = el.querySelector(".t-actions");
   actions.forEach(a=>{
-    const b=document.createElement("button");
-    b.className="btn-ghost";
+    const b=document.createElement("button"); b.className="btn-ghost";
     b.textContent=a.label||"OK";
     b.onclick=()=>{ try{a.onClick&&a.onClick();}finally{el.remove();} };
     actWrap.appendChild(b);
@@ -376,22 +393,27 @@ function toast(message, actions=[]){
   setTimeout(()=>el.remove(), 10000);
 }
 
-/* Short beep (WebAudio) */
-function beep(duration=180, freq=880, type="sine"){
-  try{
-    const ctx = new (window.AudioContext||window.webkitAudioContext)();
-    const o = ctx.createOscillator();
-    const g = ctx.createGain();
-    o.type = type; o.frequency.value=freq;
-    o.connect(g); g.connect(ctx.destination);
-    g.gain.setValueAtTime(0.001, ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime+0.02);
-    o.start();
-    setTimeout(()=>{
-      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.02);
-      o.stop(); ctx.close();
-    }, duration);
-  }catch(_){}
+/* File download helper (fallback if server endpoints aren’t available) */
+function downloadFile(name, content, mime="text/plain"){
+  const blob = new Blob([content], {type: mime});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = name; document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 0);
+}
+
+/* Display version helper: prefer remote if it’s >= local */
+let lastRemoteVer = null;
+function getEffectiveLocalVersion(){
+  const override = sessionStorage.getItem("mmh_localOverride");
+  return override && override.trim() ? override.trim() : CURRENT_VERSION;
+}
+function setDisplayVersion(){
+  const local = getEffectiveLocalVersion();
+  const v = (lastRemoteVer && compareVersions(lastRemoteVer, local) >= 0) ? lastRemoteVer : local;
+  const lbl = document.getElementById("curVerLbl");
+  if (lbl) lbl.textContent = local; // show local code version here
+  document.title = `MyMathsHomework Version ${v}`;
 }
 
 /* =========================================================================
@@ -405,65 +427,102 @@ const updateSkipBtn= document.getElementById("updateSkipBtn");
 function maybeShowUpdateLog(){
   try{
     const seen = localStorage.getItem(LS_SEEN_VERSION);
-    if (SHOW_UPDATE_LOG && seen !== CURRENT_VERSION){
-      updateNotes.innerHTML = UPDATE_NOTES_HTML;
+    const local = getEffectiveLocalVersion();
+    if (SHOW_UPDATE_LOG && seen !== local){
+      updateNotes.innerHTML = UPDATE_NOTES_HTML.replaceAll("${CURRENT_VERSION}", local).replaceAll("\\${CURRENT_VERSION}", local);
       show(updateScreen);
     }
   }catch(_){}
 }
 function acknowledgeUpdate(){
-  try{ localStorage.setItem(LS_SEEN_VERSION, CURRENT_VERSION); }catch(_){}
+  try{ localStorage.setItem(LS_SEEN_VERSION, getEffectiveLocalVersion()); }catch(_){}
   hide(updateScreen);
 }
 updateOkayBtn.addEventListener("click", acknowledgeUpdate);
 updateSkipBtn.addEventListener("click", ()=>hide(updateScreen));
 
 /* =========================================================================
-   REMOTE VERSION POLLING (every 5–10s)
+   REMOTE VERSION POLLING (every 5–10s) + SUPPRESSION
    ========================================================================= */
 const refreshNotice = document.getElementById("refreshNotice");
 const refreshMsg    = document.getElementById("refreshMsg");
 const refreshLater  = document.getElementById("refreshLaterBtn");
 const refreshNow    = document.getElementById("refreshNowBtn");
-let lastRemoteVer   = null;
 let pollAbort       = false;
 
 document.addEventListener("visibilitychange", ()=>{
-  // optionally pause polling on hidden tab
-  // (we'll keep it running; but if needed: pollAbort=document.hidden)
+  // keep polling; set pollAbort=true here if you want to pause on hidden tab
 });
 
+/* Clean remote version: strips non-digits/dots (e.g., 'v2.14' -> '2.14') */
 async function fetchRemoteVersion(){
   const res = await fetch(REMOTE_VERSION_URL+"?t="+Date.now(), {cache:"no-store"});
   if(!res.ok) return null;
-  const t = (await res.text()||"").trim();
-  return t || null;
+  const raw = (await res.text()) || "";
+  const cleaned = raw.replace(/[^\d.]/g, "").trim();
+  return cleaned || null;
 }
+
+/* Suppression helpers */
+function shouldSuppress(remoteVer){
+  try{
+    if (sessionStorage.getItem(SS_REFRESH_LATER)==="1") return true;
+    const until = parseInt(localStorage.getItem(LS_SUPPRESS_UNTIL)||"0",10);
+    if (until && Date.now() < until) return true;
+    const lastNotified = localStorage.getItem(LS_LAST_NOTIFIED_VER);
+    if (lastNotified && lastNotified === remoteVer) return true;
+  }catch(_){}
+  return false;
+}
+function markNotified(remoteVer, withDurationHours=null){
+  try{
+    localStorage.setItem(LS_LAST_NOTIFIED_VER, remoteVer);
+    if (withDurationHours && withDurationHours>0){
+      const ms = withDurationHours*60*60*1000;
+      localStorage.setItem(LS_SUPPRESS_UNTIL, String(Date.now()+ms));
+    }
+  }catch(_){}
+}
+function clearSuppression(){
+  try{
+    sessionStorage.removeItem(SS_REFRESH_LATER);
+    localStorage.removeItem(LS_SUPPRESS_UNTIL);
+    localStorage.removeItem(LS_LAST_NOTIFIED_VER);
+  }catch(_){}
+}
+
 function scheduleNextPoll(){
   if (pollAbort) return;
   const next = randInt(5,10)*1000;
   setTimeout(pollRemoteVersion, next);
 }
+
 async function pollRemoteVersion(){
   try{
-    if (sessionStorage.getItem(SS_REFRESH_LATER)==="1"){ scheduleNextPoll(); return; }
     const rv = await fetchRemoteVersion();
     if (rv){
       lastRemoteVer = rv;
-      document.getElementById("remoteVerLbl").textContent = rv;
-      if (compareVersions(rv, CURRENT_VERSION) > 0){
-        // Newer version available
-        refreshMsg.textContent = `A newer version (v${rv}) is available. You’re on v${CURRENT_VERSION}.`;
-        show(refreshNotice);
-        // Toast + beep
-        beep();
-        toast(
-          `New version detected: v${rv}`,
-          [
-            {label:"Refresh", onClick:()=>location.reload()},
-            {label:"Later", onClick:()=>{ try{sessionStorage.setItem(SS_REFRESH_LATER,"1")}catch(_){ }; hide(refreshNotice);} }
-          ]
-        );
+      const rLbl = document.getElementById("remoteVerLbl");
+      if (rLbl) rLbl.textContent = rv;
+      setDisplayVersion();
+
+      if (compareVersions(rv, getEffectiveLocalVersion()) > 0){
+        if (!shouldSuppress(rv)){
+          refreshMsg.textContent = `A newer version (v${rv}) is available. You’re on v${getEffectiveLocalVersion()}.`;
+          show(refreshNotice);
+          toast(
+            `New version detected: v${rv}`,
+            [
+              {label:"Refresh", onClick:()=>location.reload()},
+              {label:"Later", onClick:()=>{ 
+                try{sessionStorage.setItem(SS_REFRESH_LATER,"1")}catch(_){}
+                markNotified(rv, SUPPRESS_HOURS);
+                hide(refreshNotice);
+              } }
+            ]
+          );
+          markNotified(rv);
+        }
       }
     }
   }catch(_){}
@@ -471,20 +530,27 @@ async function pollRemoteVersion(){
 }
 refreshLater.addEventListener("click", ()=>{
   try{ sessionStorage.setItem(SS_REFRESH_LATER, "1"); }catch(_){}
+  if (lastRemoteVer) markNotified(lastRemoteVer, SUPPRESS_HOURS);
   hide(refreshNotice);
 });
 refreshNow.addEventListener("click", ()=>location.reload());
 
-/* Also run once on load */
+/* Initial check */
 async function checkRemoteVersionOnce(){
   try{
     const rv = await fetchRemoteVersion();
     if (rv){
       lastRemoteVer = rv;
-      document.getElementById("remoteVerLbl").textContent = rv;
-      if (compareVersions(rv, CURRENT_VERSION) > 0){
-        refreshMsg.textContent = `A newer version (v${rv}) is available. You’re on v${CURRENT_VERSION}.`;
-        show(refreshNotice);
+      const rLbl = document.getElementById("remoteVerLbl");
+      if (rLbl) rLbl.textContent = rv;
+      setDisplayVersion();
+
+      if (compareVersions(rv, getEffectiveLocalVersion()) > 0){
+        if (!shouldSuppress(rv)){
+          refreshMsg.textContent = `A newer version (v${rv}) is available. You’re on v${getEffectiveLocalVersion()}.`;
+          show(refreshNotice);
+          markNotified(rv);
+        }
       }
     }
   }catch(_){}
@@ -496,12 +562,11 @@ async function checkRemoteVersionOnce(){
 function showPage(which){
   document.getElementById("soundboardPage").style.display = (which==="soundboard")?"block":"none";
   document.getElementById("gamesPage").style.display      = (which==="games")?"block":"none";
-  if (which === "soundboard" || which === "games"){
-    document.title = `MyMathsHomework Version ${CURRENT_VERSION}`;
-  }
+  setDisplayVersion();
 }
 const curVerLbl = document.getElementById("curVerLbl");
-curVerLbl.textContent = CURRENT_VERSION;
+curVerLbl.textContent = getEffectiveLocalVersion();
+setDisplayVersion();
 
 /* Soundboard placeholders */
 document.getElementById("sbGrid").addEventListener("click",(e)=>{
@@ -509,7 +574,6 @@ document.getElementById("sbGrid").addEventListener("click",(e)=>{
   if(!btn) return;
   const name = btn.getAttribute("data-sound");
   console.log("[Soundboard]", name, "(placeholder)");
-  // future: play mapped AudioBuffer or <audio> here
 });
 
 /* Login */
@@ -583,7 +647,7 @@ declineBtn.addEventListener("click", () => {
 });
 function reopenTerms(){ show(document.getElementById("termsScreen")); }
 
-/* Footer link → open PIN/login */
+/* Footer link → open PIN/login & startup */
 document.addEventListener("DOMContentLoaded", () => {
   const toMain = document.getElementById("toMainArea");
   if (toMain){
@@ -593,7 +657,7 @@ document.addEventListener("DOMContentLoaded", () => {
       show(document.getElementById("pinScreen"));
     });
   }
-  // Admin button (prompt for admin PIN if not admin yet)
+  // Admin open
   document.getElementById("adminBtn").addEventListener("click", ()=>{
     const already = sessionStorage.getItem("mmh_isAdmin")==="1";
     if (already){
@@ -612,9 +676,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Kick off initial version check & start polling
+  // Init remote check & polling
   checkRemoteVersionOnce();
   scheduleNextPoll();
+
+  // Prefill editors
+  document.getElementById("toggleShowUpdate").checked = !!SHOW_UPDATE_LOG;
+  document.getElementById("notesEditor").value = UPDATE_NOTES_HTML;
+  document.getElementById("localVerOverride").value = sessionStorage.getItem("mmh_localOverride")||"";
 });
 
 /* ESC + T shortcut */
@@ -661,42 +730,109 @@ window.reopenTerms = reopenTerms;
 window.showPage = showPage;
 
 /* =========================================================================
-   ADMIN PANEL HOOKS
+   ADMIN PANEL HOOKS (server save + local fallbacks)
    ========================================================================= */
-document.getElementById("toggleShowUpdate").checked = !!SHOW_UPDATE_LOG;
-document.getElementById("notesEditor").value = UPDATE_NOTES_HTML;
+function sanitizeVersionInput(v){ return (v||"").replace(/[^\d.]/g,"").trim(); }
 
-document.getElementById("btnForceCheck").addEventListener("click", ()=>{
-  toast("Checking for updates…");
-  checkRemoteVersionOnce();
-});
-document.getElementById("btnShowUpdateLog").addEventListener("click", ()=>{
-  updateNotes.innerHTML = UPDATE_NOTES_HTML;
-  show(updateScreen);
-});
-document.getElementById("btnForceRefresh").addEventListener("click", ()=>location.reload());
-document.getElementById("btnApplyNotes").addEventListener("click", ()=>{
-  UPDATE_NOTES_HTML = document.getElementById("notesEditor").value;
-  toast("Update notes applied.");
-});
-document.getElementById("btnAckVersion").addEventListener("click", ()=>{
-  localStorage.setItem(LS_SEEN_VERSION, CURRENT_VERSION);
-  toast("Marked this version as acknowledged.");
-});
+async function postJSON(url, body){
+  const res = await fetch(url, {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify(body)
+  });
+  if (!res.ok) throw new Error("HTTP "+res.status);
+  return res;
+}
+
+/* Toggles and notes apply (session) */
 document.getElementById("toggleShowUpdate").addEventListener("change", (e)=>{
   SHOW_UPDATE_LOG = !!e.target.checked;
   toast("Update log toggle: " + (SHOW_UPDATE_LOG?"ON":"OFF"));
 });
+document.getElementById("btnApplyNotes").addEventListener("click", ()=>{
+  UPDATE_NOTES_HTML = document.getElementById("notesEditor").value;
+  toast("Update notes applied for this session.");
+});
+document.getElementById("btnShowUpdateLog").addEventListener("click", ()=>{
+  updateNotes.innerHTML = UPDATE_NOTES_HTML.replaceAll("${CURRENT_VERSION}", getEffectiveLocalVersion()).replaceAll("\\${CURRENT_VERSION}", getEffectiveLocalVersion());
+  show(updateScreen);
+});
+document.getElementById("btnAckVersion").addEventListener("click", ()=>{
+  localStorage.setItem(LS_SEEN_VERSION, getEffectiveLocalVersion());
+  toast("Marked this version as acknowledged.");
+});
+
+/* Save Update Log to server (fallback → download file) */
+document.getElementById("btnSaveNotesServer").addEventListener("click", async ()=>{
+  const html = document.getElementById("notesEditor").value;
+  try{
+    await postJSON(ADMIN_NOTES_ENDPOINT, { notesHtml: html });
+    toast("Update log saved to server.");
+  }catch(e){
+    toast("Server save failed — downloading file instead.");
+    downloadFile("update_notes.html", html, "text/html");
+  }
+});
+
+/* Local (session) version overrides */
+document.getElementById("btnApplyLocalOverride").addEventListener("click", ()=>{
+  const v = sanitizeVersionInput(document.getElementById("localVerOverride").value);
+  if (!v){ sessionStorage.removeItem("mmh_localOverride"); toast("Cleared override."); }
+  else { sessionStorage.setItem("mmh_localOverride", v); toast("Local version override set to v"+v); }
+  curVerLbl.textContent = getEffectiveLocalVersion();
+  setDisplayVersion();
+});
+document.getElementById("btnClearLocalOverride").addEventListener("click", ()=>{
+  sessionStorage.removeItem("mmh_localOverride");
+  document.getElementById("localVerOverride").value = "";
+  toast("Local version override cleared.");
+  curVerLbl.textContent = getEffectiveLocalVersion();
+  setDisplayVersion();
+});
+
+/* Remote version editing (server save + fallback) */
+document.getElementById("btnSaveRemoteVersion").addEventListener("click", async ()=>{
+  const input = document.getElementById("remoteVerEditor");
+  const v = sanitizeVersionInput(input.value);
+  if (!v){ toast("Enter a version like 2.14"); return; }
+  try{
+    await postJSON(ADMIN_VERSION_ENDPOINT, { version: v });
+    toast("version.txt updated on server to v"+v);
+    // Immediately reflect in UI by forcing a check:
+    clearSuppression();
+    checkRemoteVersionOnce();
+  }catch(e){
+    toast("Server save failed — downloading version.txt instead.");
+    downloadFile("version.txt", v+"\n", "text/plain");
+  }
+});
+
+/* Direct download actions */
+document.getElementById("btnDownloadVersionTxt").addEventListener("click", ()=>{
+  const v = sanitizeVersionInput(document.getElementById("remoteVerEditor").value || lastRemoteVer || getEffectiveLocalVersion());
+  downloadFile("version.txt", (v||"").trim()+"\n", "text/plain");
+});
+document.getElementById("btnDownloadNotes").addEventListener("click", ()=>{
+  const html = document.getElementById("notesEditor").value || UPDATE_NOTES_HTML;
+  downloadFile("update_notes.html", html, "text/html");
+});
+
+/* Version check & misc admin utilities */
+document.getElementById("btnForceCheck").addEventListener("click", ()=>{
+  toast("Checking for updates…");
+  clearSuppression();
+  checkRemoteVersionOnce();
+});
+document.getElementById("btnForceRefresh").addEventListener("click", ()=>location.reload());
 document.getElementById("btnDismissBanner").addEventListener("click", ()=>{
   hide(refreshNotice);
   sessionStorage.setItem(SS_REFRESH_LATER,"1");
-  toast("Refresh banner dismissed for this session.");
+  if (lastRemoteVer) markNotified(lastRemoteVer, SUPPRESS_HOURS);
+  toast("Refresh banner dismissed.");
 });
 document.getElementById("btnTestToast").addEventListener("click", ()=>{
   toast("This is a test notification", [{label:"OK"}]);
 });
-document.getElementById("btnTestBeep").addEventListener("click", ()=>beep());
-
 </script>
 </body>
 </html>
