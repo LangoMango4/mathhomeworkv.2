@@ -282,26 +282,26 @@ body.kb-open #refreshNotice{display:none!important}
     <div id="soundboardPage">
       <div class="sb-grid" id="sbGrid">
         <button class="sb-btn" data-sound="androidbeep">Andriod</button>
-         <button class="sb-btn" data-sound="backintheday">Back in the day</button>
-          <button class="sb-btn" data-sound="bingchilling">Bing Chilling</button>
-           <button class="sb-btn" data-sound="clashroyal">Clash Royale</button>
-            <button class="sb-btn" data-sound="crickets">Crickets</button>
-              <button class="sb-btn" data-sound="crickets">Crickets</button>
-              <button class="sb-btn" data-sound="fail">Fail</button>
-              <button class="sb-btn" data-sound="getout">Get out</button>
-              <button class="sb-btn" data-sound="goofyahhsounds">Goofy ahh sounds</button>
-              <button class="sb-btn" data-sound="hogrida">Hog rida</button>
-              <button class="sb-btn" data-sound="incorrectbuzzer">Incorrect Buzzer</button>
-              <button class="sb-btn" data-sound="italianbrainrot">Italian brainrot</button>
-              <button class="sb-btn" data-sound="legobreak">Lego Breaking</button>
-              <button class="sb-btn" data-sound="lionsleep">Sleeping lion</button>
-              <button class="sb-btn" data-sound="metalpipe">Metal Pipe</button>
-              <button class="sb-btn" data-sound="ohio">Ohio</button>
-              <button class="sb-btn" data-sound="rahhh">Rahh</button>
-              <button class="sb-btn" data-sound="shutup">Shut up</button>
-              <button class="sb-btn" data-sound="text">Iphone text</button>  
-              <button class="sb-btn" data-sound="vineboom">Vine boom</button>
-              <button class="sb-btn" data-sound="what the sigma">What the sigma</button>   
+        <button class="sb-btn" data-sound="backintheday">Back in the day</button>
+        <button class="sb-btn" data-sound="bingchilling">Bing Chilling</button>
+        <button class="sb-btn" data-sound="clashroyal">Clash Royale</button>
+        <button class="sb-btn" data-sound="crickets">Crickets</button>
+        <button class="sb-btn" data-sound="crickets">Crickets</button>
+        <button class="sb-btn" data-sound="fail">Fail</button>
+        <button class="sb-btn" data-sound="getout">Get out</button>
+        <button class="sb-btn" data-sound="goofyahhsounds">Goofy ahh sounds</button>
+        <button class="sb-btn" data-sound="hogrida">Hog rida</button>
+        <button class="sb-btn" data-sound="incorrectbuzzer">Incorrect Buzzer</button>
+        <button class="sb-btn" data-sound="italianbrainrot">Italian brainrot</button>
+        <button class="sb-btn" data-sound="legobreak">Lego Breaking</button>
+        <button class="sb-btn" data-sound="lionsleep">Sleeping lion</button>
+        <button class="sb-btn" data-sound="metalpipe">Metal Pipe</button>
+        <button class="sb-btn" data-sound="ohio">Ohio</button>
+        <button class="sb-btn" data-sound="rahhh">Rahh</button>
+        <button class="sb-btn" data-sound="shutup">Shut up</button>
+        <button class="sb-btn" data-sound="text">Iphone text</button>
+        <button class="sb-btn" data-sound="vineboom">Vine boom</button>
+        <button class="sb-btn" data-sound="what the sigma">What the sigma</button>
       </div>
     </div>
 
@@ -313,6 +313,139 @@ body.kb-open #refreshNotice{display:none!important}
       <iframe src="https://scratch.mit.edu/projects/105500895/embed" allowtransparency="true" width="960" height="720" frameborder="0" scrolling="no" allowfullscreen></iframe>
       <iframe src="https://scratch.mit.edu/projects/12575620/embed" allowtransparency="true" width="960" height="720" frameborder="0" scrolling="no" allowfullscreen></iframe>
     </div>
+  </div>
+</div>
+
+<!-- ===== Soundboard playback (merged) ===== -->
+<script>
+  // Map data-sound keys to exact files inside /Sounds (case-sensitive!)
+  const SOUND_FILES = {
+    androidbeep:        "androidbeep.mp3",
+    backintheday:       "backintheday.mp3",
+    bingchilling:       "bingchilling.mp3",
+    clashroyal:         "clashroyal.mp3",
+    crickets:           "crickets.mp3",
+    fail:               "fail.mp3",
+    getout:             "getout.mp3",
+    goofyahhsounds:     "goofyahhsounds.mp3",
+    hogrida:            "hogrida.mp3",
+    incorrectbuzzer:    "incorrectbuzzer.mp3",
+    italianbrainrot:    "italianbrainrot.mp3",
+    legobreak:          "legobreak.mp3",
+    lionsleep:          "lionsleep.mp3",
+    metalpipe:          "metalpipe.mp3",
+    ohio:               "ohio.mp3",
+    rahhh:              "rahhh.mp3",
+    shutup:             "shutup.mp3",
+    text:               "text.mp3",
+    vineboom:           "vineboom.mp3",
+    whatthesigma:       "whatthesigma.mp3"
+  };
+
+  // If you used different names/extensions, change them above to match your GitHub files.
+
+  // Detect GitHub Pages base (user site "" vs project site "/RepoName")
+  function ghBasePath(){
+    const segs = location.pathname.split("/").filter(Boolean);
+    return segs.length ? `/${segs[0]}` : "";
+  }
+  const SOUND_BASE = `${ghBasePath()}/Sounds`;
+
+  // Normalize keys like "what the sigma" -> "whatthesigma"
+  function keyify(s){
+    return String(s||"").toLowerCase().replace(/[^a-z0-9]+/g,"").trim();
+  }
+
+  // Safe toast (falls back to console if your toast() isn’t on the page yet)
+  const safeToast = (msg) => {
+    if (typeof toast === "function") toast(msg, [{label:"OK"}]);
+    else console.warn(msg);
+  };
+
+  // One active audio at a time
+  let current = { key: null, audio: null };
+
+  function makeAudio(src){
+    const a = new Audio(src);
+    a.preload = "auto";
+    a.crossOrigin = "anonymous";
+    return a;
+  }
+
+  async function fileExists(url){
+    try{
+      const res = await fetch(url, { method: "HEAD", cache: "no-store" });
+      return res.ok;
+    }catch(_){ return false; }
+  }
+
+  async function playToggleByKey(rawKey, button){
+    const key  = keyify(rawKey);
+    const file = SOUND_FILES[key];
+    if(!file){ safeToast(`Sound not mapped: ${rawKey}`); return; }
+
+    const url = `${SOUND_BASE}/${encodeURIComponent(file)}`;
+
+    // Toggle same sound
+    if (current.audio && current.key === key){
+      if (current.audio.paused){
+        await current.audio.play().catch(()=>{});
+        button.classList.add("playing");
+      } else {
+        current.audio.pause();
+        current.audio.currentTime = 0;
+        button.classList.remove("playing");
+      }
+      return;
+    }
+
+    // Stop previous
+    if (current.audio){
+      current.audio.pause();
+      current.audio.currentTime = 0;
+      document.querySelectorAll(".sb-btn.playing").forEach(b=>b.classList.remove("playing"));
+    }
+
+    // Check file exists to avoid silent 404s
+    if (!(await fileExists(url))){
+      safeToast(`Missing file: ${url}`);
+      return;
+    }
+
+    // Create + play
+    const audio = makeAudio(url);
+    current = { key, audio };
+
+    button.classList.add("playing");
+    audio.addEventListener("ended", () => {
+      if (current.key === key){
+        button.classList.remove("playing");
+        current.key = null; current.audio = null;
+      }
+    });
+
+    try{ await audio.play(); }
+    catch{ safeToast("Couldn’t start audio. Tap again."); }
+  }
+
+  // Wire the grid
+  (function(){
+    const sbGrid = document.getElementById("sbGrid");
+    if (!sbGrid) return;
+    sbGrid.addEventListener("click", (e)=>{
+      const btn = e.target.closest(".sb-btn");
+      if(!btn) return;
+      const name = btn.getAttribute("data-sound") || btn.textContent || "";
+      playToggleByKey(name, btn);
+    });
+
+    // Visual cue for playing buttons
+    const stylePlay = document.createElement("style");
+    stylePlay.textContent = `.sb-btn.playing{outline:2px solid #4a5bd1;box-shadow:0 0 0 3px rgba(74,91,209,.25) inset}`;
+    document.head.appendChild(stylePlay);
+  })();
+</script>
+
 
     <!-- Admin Panel -->
     <div id="adminPanel">
