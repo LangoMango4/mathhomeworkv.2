@@ -506,13 +506,13 @@ body.kb-open #refreshNotice{display:none!important}
    CONFIG
    ========================================================================= */
 let SHOW_UPDATE_LOG = true;              // show update log modal on entry (if not acknowledged)
-let CURRENT_VERSION = "2.13";            // your shipped version (can be session-overridden in Admin)
+let CURRENT_VERSION = "2.20";            // your shipped version (can be session-overridden in Admin)
 let UPDATE_NOTES_HTML = `
    <p><b>MyMathsHomework v\${CURRENT_VERSION}</b></p>
    <p><b>Updates are useful to fix up known issues.</b></p>
   <ul>
     <li>Fixed: Issues with backend code</li>
-    <li>Soon: Soundboards</li>
+    <li>Added: Soundboards</li>
     <li>Soon: More games.</li>
     <li>NOTE: Games DON'T save if you refresh. (Known issue)</li>
   </ul>
@@ -588,7 +588,7 @@ function setDisplayVersion(){
   const v = (lastRemoteVer && compareVersions(lastRemoteVer, local) >= 0) ? lastRemoteVer : local;
   const lbl = document.getElementById("curVerLbl");
   if (lbl) lbl.textContent = local; // show local code version here
-  document.title = `Version ${v}`;
+  document.title = `MMM | MyMathsHomework - V ${v}`;
 }
 
 /* =========================================================================
