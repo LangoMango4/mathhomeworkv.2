@@ -758,15 +758,48 @@ declineBtn.addEventListener("click", () => {
   document.querySelector(".pg.red").style.display="block";
 });
 
-/* Footer link → open PIN/login & startup */
+/* Footer link → open PIN/login & startup (FIXED ROUTER) */
 document.addEventListener("DOMContentLoaded", () => {
   const toMain = document.getElementById("toMainArea");
+  const pgBlock = document.querySelector(".pg.red");
+  const pinScreen = document.getElementById("pinScreen");
+  const termsScreen = document.getElementById("termsScreen");
+  const mainContent = document.getElementById("mainContent");
+
+  // Always keep showPage global
+  window.showPage = showPage;
+
+  // Click on the footer email link still opens the login
   if (toMain){
     toMain.addEventListener("click", (e) => {
       e.preventDefault();
-      document.querySelector(".pg.red").style.display="none";
-      show(document.getElementById("pinScreen"));
+      if (pgBlock) pgBlock.style.display = "none";
+      show(pinScreen);
     });
+  }
+
+  // --- STARTUP ROUTER (new) ---
+  // If Terms already accepted → go straight to app.
+  // Else → show the PIN screen automatically (so you don’t rely on the footer link).
+  try {
+    const accepted = localStorage.getItem(LS_TERMS) === "yes";
+    if (accepted) {
+      if (pgBlock) pgBlock.style.display = "none";
+      hide(pinScreen);
+      hide(termsScreen);
+      show(mainContent);
+      startInactivityTimer();
+      maybeShowUpdateLog();
+    } else {
+      // Terms not accepted yet: show the PIN screen by default
+      if (pgBlock) pgBlock.style.display = "none";
+      hide(termsScreen);
+      show(pinScreen);
+    }
+  } catch(_) {
+    // If LS fails, at least show the PIN screen so the user can proceed
+    if (pgBlock) pgBlock.style.display = "none";
+    show(pinScreen);
   }
 
   // Admin open / unlock
@@ -789,11 +822,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Init remote check & polling for version banner
+  checkRemoteVersionOnce();
+  scheduleNextPoll();
+
   // Prefill editors
   document.getElementById("toggleShowUpdate").checked = !!SHOW_UPDATE_LOG;
   document.getElementById("notesEditor").value = UPDATE_NOTES_HTML;
   document.getElementById("localVerOverride").value = sessionStorage.getItem("mmh_localOverride")||"";
 });
+
 
 /* ESC + T shortcut */
 let escPressed=false;
