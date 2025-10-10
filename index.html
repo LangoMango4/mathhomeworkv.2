@@ -1,223 +1,968 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>MyMathsHomework</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    body{margin:0;background:#0b0e14;color:#eef3ff;font-family:Arial,sans-serif}
-    .wrap{max-width:1100px;margin:32px auto;padding:16px}
-    .card{background:#0f111a;border:1px solid #1d2a55;border-radius:18px;box-shadow:0 10px 40px rgba(0,0,0,.25);padding:22px}
-    .top-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:22px}
-    .btn{appearance:none;border:1px solid #4a4e5a;background:#17224a;color:#eef3ff;padding:12px 20px;border-radius:12px;cursor:pointer;font-weight:600;font-size:15px}
-    .btn:hover{background:#1b2a5c}
-    .sb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-top:10px}
-    .sb-btn{padding:14px;border:1px solid #2a3a7a;background:#121a36;color:#e6ecff;border-radius:12px;cursor:pointer;font-weight:600}
-    .sb-btn:hover{background:#1a244a}
-    .sb-btn.playing{outline:2px solid #4a5bd1; box-shadow:0 0 0 3px rgba(74,91,209,.25) inset}
-    .login{display:flex;gap:8px;justify-content:center;margin-bottom:14px;flex-wrap:wrap}
-    input{padding:10px 12px;border-radius:10px;border:1px solid #1d2a55;background:#0e1630;color:#eef3ff}
-    .muted{opacity:.8;font-size:12px;margin-top:6px;text-align:center}
-    iframe{margin:20px 0;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
-    .hidden{display:none}
-  </style>
+<link rel="icon" type="image/png" href="titleico.png">
+<meta charset="UTF-8" />
+<title>Internet Security by Zscaler</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<style>
+/* ===== Base ===== */
+body{margin:0;background:#e3e3e3;font-family:Arial,sans-serif;font-size:12px;color:#4B4F54}
+a{cursor:pointer;text-decoration:none;color:#009dd0}
+img{max-height:75px;max-width:430px}
+
+/* ===== Zscaler layout scaffolding ===== */
+.pg{position:absolute;inset:0;overflow-x:hidden;white-space:nowrap}
+.pg:before{content:"";display:inline-block;height:100%;vertical-align:middle}
+.pg_cont{display:inline-block;vertical-align:middle;width:100%;position:relative}
+.m_tbl{width:100%;max-width:758px;background:#e3e3e3;min-width:600px}
+.logo_container{position:relative;max-width:758px;margin:0 auto 15px}
+hr{margin:0;border:0;border-top:0.5px solid #cfd0d1}
+
+/* ===== One red rounded rectangle on the inner table ===== */
+#en_US{
+  border:3px solid #fd4239;border-radius:10px;border-collapse:separate;border-spacing:0;background:#fff;overflow:hidden;
+}
+.pg.red .eu_h,.pg.red .eu_co,.pg.red td.hr{border:0!important}
+
+/* ===== Cells & header ===== */
+.m_tbl table td{padding:0 20px 16px 20px;text-align:left;background:#fff}
+.m_tbl table td.eu_h{padding-top:16px}
+.eu_h{
+  background:#fff;font-family:Arial,sans-serif;font-size:24px;font-weight:400;color:#fd4239;
+  text-align:left;padding:16px 18px 14px;display:flex;align-items:center;gap:10px;
+}
+.eu_h img.no-icon{width:24px;height:26px;display:inline-block;vertical-align:middle}
+.eu_co{font-size:16px;color:#2a2c30;white-space:normal;word-wrap:break-word}
+.eu_co.rsn{color:#000}
+.eu_co.fo{
+  height:32px;color:#696A6D;background:#f3f3f3;line-height:32px;font-size:11px;
+  padding:0 20px;display:flex;align-items:center;justify-content:space-between;gap:8px;
+}
+.uq_cd{font-size:10px;color:#696A6D;white-space:nowrap;margin-left:12px}
+.eu_co.st{font-size:12px;padding:0.1px;line-height:20px;color:#939393;background:#e3e3e3;border:0;text-align:center}
+
+/* Smaller screens */
+@media(max-width:700px){
+  .eu_h{font-size:20px}
+  .m_tbl{min-width:300px;width:95%}
+}
+
+/* ===== Buttons / Inputs ===== */
+.btn{appearance:none;border:1px solid #4a4e5a;background:#17224a;color:#eef3ff;padding:12px 20px;border-radius:12px;cursor:pointer;font-weight:600;font-size:15px}
+.btn:hover{background:#1b2a5c}
+.btn-ghost{background:transparent;border:1px solid #37457a;color:#c7d2ff;padding:10px 16px;border-radius:10px}
+.btn-ghost:hover{background:#1a244a}
+.input{padding:10px 12px;border-radius:10px;border:1px solid #1d2a55;background:#0e1630;color:#eef3ff}
+.input.inline{width:160px}
+
+/* ===== PIN/Login ===== */
+#pinScreen{position:fixed;inset:0;background:#0b0e14;display:none;align-items:center;justify-content:center;z-index:10}
+#pinBox{background:#0f111a;padding:30px;border-radius:18px;box-shadow:0 6px 20px rgba(0,0,0,.6);color:#eef3ff;width:min(92vw,420px);text-align:center}
+#pinBox h2{margin:0 0 16px 0;color:#eef3ff;font-weight:600}
+#pinInput{padding:12px;font-size:18px;border-radius:10px;border:1px solid #1d2a55;width:100%;background:#0e1630;color:#eef3ff;text-align:center;margin-bottom:12px}
+#pinError{color:#ffcc00;display:none;margin-top:10px}
+
+/* ===== Terms ===== */
+#termsScreen{position:fixed;inset:0;background:#0b0e14;display:none;align-items:center;justify-content:center;z-index:15}
+#termsBox{background:#0f111a;border:1px solid #1d2a55;border-radius:18px;width:min(92vw,720px);max-height:min(90vh,780px);color:#eef3ff;box-shadow:0 10px 30px rgba(0,0,0,.5);display:flex;flex-direction:column}
+#termsHead{padding:18px 20px;border-bottom:1px solid #1d2a55;font-weight:700;font-size:18px;display:flex;flex-direction:column;gap:4px}
+#termsSub{font-size:11px;color:#a7b1d6}
+#termsDesc{font-size:12px;color:#b9c2e8}
+#termsBody{padding:16px 20px;overflow:auto;font-size:14px;line-height:1.6;max-height:300px;position:relative}
+#scrollHint{position:sticky;bottom:0;display:flex;justify-content:center}
+#scrollHint>div{background:rgba(87,111,201,.15);color:#c7d2ff;border:1px solid rgba(87,111,201,.35);padding:6px 10px;border-radius:999px;font-size:12px;backdrop-filter:blur(2px)}
+#termsFoot{padding:14px 20px;border-top:1px solid #1d2a5;display:flex;gap:10px;justify-content:flex-end;align-items:center;flex-wrap:wrap}
+.check-row{display:flex;align-items:center;gap:8px;margin-right:auto}
+.check-row input{width:16px;height:16px}
+.check-row label{font-size:13px}
+
+/* ===== Main ===== */
+#mainContent{display:none;max-width:1100px;margin:40px auto;padding:20px;color:#eef3ff}
+.card{background:#0f111a;border:1px solid #1d2a55;border-radius:18px;box-shadow:0 10px 40px rgba(0,0,0,.25);padding:22px}
+.card h1{margin-top:0;text-align:center}
+iframe{margin:20px 0;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
+.top-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:22px}
+
+/* ===== Soundboard grid ===== */
+.sb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-top:10px}
+.sb-btn{padding:14px;border:1px solid #2a3a7a;background:#121a36;color:#e6ecff;border-radius:12px;cursor:pointer;font-weight:600}
+.sb-btn:hover{background:#1a244a}
+.sb-btn.playing{outline:2px solid #4a5bd1; box-shadow:0 0 0 3px rgba(74,91,209,.25) inset}
+
+/* ===== Admin Panel ===== */
+#adminPanel{display:none;margin-top:12px}
+.admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.admin-card{background:#0f111a;border:1px solid #1d2a55;border-radius:14px;padding:14px}
+.admin-card h3{margin:0 0 8px 0}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0}
+
+/* ===== Update Log modal ===== */
+#updateScreen{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:20;background:rgba(7,10,17,.6)}
+#updateBox{background:#0f111a;border:1px solid #1d2a55;border-radius:18px;width:min(92vw,720px);max-height:min(90vh,780px);color:#eef3ff;box-shadow:0 10px 30px rgba(0,0,0,.5);display:flex;flex-direction:column}
+#updateHead{padding:18px 20px;border-bottom:1px solid #1d2a55;font-weight:700;font-size:18px;display:flex;align-items:center;gap:8px}
+#updateBody{padding:16px 20px;overflow:auto;font-size:14px;line-height:1.6;max-height:360px}
+#updateFoot{padding:14px 20px;border-top:1px solid #1d2a55;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+#updateFoot .btn{padding:10px 16px;border-radius:10px}
+
+/* ===== Refresh banner (mobile-safe) ===== */
+#refreshNotice{
+  position:fixed;left:0;right:0;bottom:0;display:none;z-index:25;
+  background:#17224a;color:#eef3ff;border-top:2px solid #4a5bd1;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+#refreshInner{
+  max-width:900px;margin:0 auto;padding:12px 16px;
+  display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap;
+}
+#refreshInner .msg{font-size:14px;flex:1 1 240px;min-width:200px}
+#refreshInner .actions{display:flex;gap:8px;flex-wrap:wrap}
+#refreshInner .btn{border:1px solid #4a4e5a;background:#1b2a5c;padding:10px 14px;border-radius:10px;cursor:pointer}
+#refreshInner .btn-ghost{background:transparent;border:1px solid #37457a}
+@media (max-width: 600px){
+  #refreshInner{gap:10px}
+  #refreshInner .msg{font-size:13px;flex:1 1 100%}
+  #refreshInner .actions{width:100%}
+  #refreshInner .actions .btn, #refreshInner .actions .btn-ghost{flex:1 1 48%}
+}
+body.kb-open #refreshNotice{display:none!important}
+
+/* ===== Toasts ===== */
+#toastWrap{position:fixed;right:16px;top:16px;z-index:30;display:flex;flex-direction:column;gap:10px}
+.toast{background:#0f111a;border:1px solid #2b3a7a;color:#eaf0ff;border-radius:12px;padding:12px 14px;min-width:260px;box-shadow:0 8px 24px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.toast .t-msg{font-size:13px}
+.toast .t-actions{display:flex;gap:8px}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card">
-      <h1 style="text-align:center;margin-top:0">mathshomework v2 😱</h1>
 
-      <!-- Simple login row -->
-      <div class="login" id="loginRow">
-        <!-- You can use either a PIN or username/password -->
-        <input id="userField" placeholder="Username (or leave blank to use PIN)">
-        <input id="passField" type="password" placeholder="Password or PIN">
-        <button class="btn" id="loginBtn">Unlock</button>
-        <div id="loginErr" class="muted" style="color:#ffcc00;display:none">Invalid credentials.</div>
-        <div class="muted">Tip: Use a PIN from config, or enter <b>username + password</b>.</div>
-      </div>
-
-      <div class="top-actions">
-        <button class="btn" data-tab="soundboard">Soundboard</button>
-        <button class="btn" data-tab="games">Games</button>
-        <button class="btn" id="adminBtn" title="Admin login">Admin</button>
-      </div>
-
-      <!-- Soundboard -->
-      <div id="soundboardPage">
-        <div class="sb-grid" id="sbGrid">
-          <button class="sb-btn" data-sound="androidbeep">Andriod</button>
-          <button class="sb-btn" data-sound="backintheday">Back in the day</button>
-          <button class="sb-btn" data-sound="bingchilling">Bing Chilling</button>
-          <button class="sb-btn" data-sound="clashroyal">Clash Royale</button>
-          <button class="sb-btn" data-sound="crickets">Crickets</button>
-          <button class="sb-btn" data-sound="crickets">Crickets</button>
-          <button class="sb-btn" data-sound="fail">Fail</button>
-          <button class="sb-btn" data-sound="getout">Get out</button>
-          <button class="sb-btn" data-sound="goofyahhsounds">Goofy ahh sounds</button>
-          <button class="sb-btn" data-sound="hogrida">Hog rida</button>
-          <button class="sb-btn" data-sound="incorrectbuzzer">Incorrect Buzzer</button>
-          <button class="sb-btn" data-sound="italianbrainrot">Italian brainrot</button>
-          <button class="sb-btn" data-sound="legobreak">Lego Breaking</button>
-          <button class="sb-btn" data-sound="lionsleep">Sleeping lion</button>
-          <button class="sb-btn" data-sound="metalpipe">Metal Pipe</button>
-          <button class="sb-btn" data-sound="ohio">Ohio</button>
-          <button class="sb-btn" data-sound="rahhh">Rahh</button>
-          <button class="sb-btn" data-sound="shutup">Shut up</button>
-          <button class="sb-btn" data-sound="text">Iphone text</button>
-          <button class="sb-btn" data-sound="vineboom">Vine boom</button>
-          <button class="sb-btn" data-sound="what the sigma">What the sigma</button>
+<!-- ===== Zscaler block ===== -->
+<div class="pg red">
+  <div class="pg_cont">
+    <div class="logo_container" style="text-align:center;">
+      <img src="cnslogo.png" alt="CNS Logo">
+    </div>
+    <table class="m_tbl" cellpadding="0" cellspacing="0" align="center">
+      <tbody><tr><td valign="top">
+        <table id="en_US" width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr>
+              <td class="eu_h">
+                <img src="no.png" class="no-icon" alt="No">
+                <span>Sorry, you don't have permission to visit this site.</span>
+              </td>
+            </tr>
+            <tr><td><hr></td></tr>
+            <tr><td class="eu_co"><b>Website blocked</b></td></tr>
+            <tr><td class="eu_co rsn">Not allowed to browse <b>SAR URL Blacklist Students</b> category.</td></tr>
+            <tr>
+              <td class="eu_co">
+                You tried to visit:
+                <a href="#" style="color:#009dd0">www.mymathshomework.com</a>
+              </td>
+            </tr>
+            <tr><td><hr></td></tr>
+            <tr>
+              <td class="eu_co fo">
+                <span>Need help? Contact our support team at 0740509750,
+                  <a href="#" id="toMainArea" style="font-size:12px;color:#009dd0;">servicedesk@cns.catholic.edu.au</a>
+                </span>
+                <span class="uq_cd">D55</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="eu_co st" style="max-width:750px;margin:8px auto 0;">
+          <img src="image-removebg-preview (5).png" class="Zscaler-icon" alt="Zscaler" style="width:70px;height:35px;vertical-align:middle;margin-right:6px;transform:translateY(-2px)">
+          Your organization has selected Zscaler to protect you from internet threats.
         </div>
-      </div>
+      </td></tr></tbody>
+    </table>
+  </div>
+</div>
 
-      <!-- Games -->
-      <div id="gamesPage" class="hidden">
-        <iframe src="https://scratch.mit.edu/projects/3041905/embed" allowtransparency="true" width="960" height="720" frameborder="0" scrolling="no" allowfullscreen></iframe>
-        <iframe src="https://scratch.mit.edu/projects/17828009/embed" allowtransparency="true" width="960" height="720" frameborder="0" scrolling="no" allowfullscreen></iframe>
-        <iframe src="https://scratch.mit.edu/projects/389464290/embed" allowtransparency="true" width="960" height="720" frameborder="0" scrolling="no" allowfullscreen></iframe>
-        <iframe src="https://scratch.mit.edu/projects/105500895/embed" allowtransparency="true" width="960" height="720" frameborder="0" scrolling="no" allowfullscreen></iframe>
-        <iframe src="https://scratch.mit.edu/projects/12575620/embed" allowtransparency="true" width="960" height="720" frameborder="0" scrolling="no" allowfullscreen></iframe>
+<!-- ===== PIN/Login Screen ===== -->
+<div id="pinScreen">
+  <div id="pinBox">
+    <h2>Enter PIN or Username:Password</h2>
+    <div class="eu_co st" style="background:#0f111a;border:0;color:#b9c2e8;padding:0 0 6px 0">
+      Password is changed every week for security. - Last changed: Sept. 17th 2025
+    </div>
+    <input id="pinInput" type="password" maxlength="128" placeholder="PIN  •  or  username:password">
+    <br />
+    <button class="btn" onclick="checkPin()">Unlock</button>
+    <p id="pinError">Error! Do you have the correct PIN or account?</p>
+  </div>
+</div>
+
+<!-- ===== Terms & Conditions ===== -->
+<div id="termsScreen" aria-modal="true" role="dialog">
+  <div id="termsBox">
+    <div id="termsHead">
+      <div>🛡️ Terms &amp; Conditions</div>
+      <div id="termsSub">Last Updated: Sept. 17 2025</div>
+      <div id="termsDesc">Please read and scroll to the bottom to enable acceptance.</div>
+      <a href="terms_and_conditions" style="color:#009dd0">www.mymathshomework.com</a>
+    </div>
+    <div id="termsBody">
+      <div class="content">
+        <p><b>Welcome!</b> Please review and accept these terms to continue.</p>
+        <p><b>CES Guideline Compliance:</b> Users must agree to follow all Catholic Education Services (CES) Cairns guidelines while using this website.</p>
+        <p><b>Disclaimer of Responsibility:</b> The creator of this website is not responsible for any consequences or disciplinary actions.</p>
+        <p><b>Usage Guidelines:</b> This website is intended for educational and entertainment purposes only.</p>
+        <p><b>Privacy & Data:</b> Data or scores may be reset at any time without notice.</p>
+        <p><b>Inactivity Policy:</b> You’ll be logged out after 10 minutes of inactivity.</p>
+        <p><b>Emergency Shortcuts:</b> Press Escape then T to quickly navigate away.</p>
+        <p><b>Screen Locking Disclaimer:</b> We are not liable for any unsaved progress when the screen is locked.</p>
+        <p><b>IT Notice:</b> IT can monitor school devices; we are not liable for consequences of your actions.</p>
+        <p><b>Changes to Terms:</b> Terms may change at any time without notice.</p>
+        <p><b>School Work:</b> We are not responsible for lost or incomplete work.</p>
+        <p><b>Sharing:</b> Do not share the site without permission.</p>
+        <p class="border-top"><b>Acknowledgment:</b> By scrolling to the bottom and accepting these terms, you agree to be bound by them.</p>
+        <p>Credits to skibidi._fish - 2025</p>
       </div>
+      <div id="scrollHint"><div>↓ Scroll to continue ↓</div></div>
+    </div>
+    <div id="termsFoot">
+      <div class="check-row">
+        <input type="checkbox" id="termsChk" disabled>
+        <label for="termsChk" id="termsLbl">Please scroll to the bottom to enable this checkbox</label>
+      </div>
+      <button class="btn-ghost" id="declineBtn">Decline</button>
+      <button class="btn" id="acceptBtn" disabled>Accept and Continue</button>
     </div>
   </div>
+</div>
 
-  <!-- CONFIG (plaintext passwords) -->
-  <script src="config.js"></script>
+<!-- ===== Update Log Screen ===== -->
+<div id="updateScreen" aria-modal="true" role="dialog">
+  <div id="updateBox">
+    <div id="updateHead">IMPORTANT: Update Available</div>
+    <div id="updateBody">
+      <div id="updateNotes"></div>
+    </div>
+    <div id="updateFoot">
+      <button class="btn-ghost" id="updateSkipBtn" title="Hide this update log until the next version">Skip</button>
+      <button class="btn" id="updateOkayBtn">Okay, got it</button>
+    </div>
+  </div>
+</div>
 
-  <!-- Main logic -->
-  <script>
-    // ==== tab switch ====
-    const tabs = { soundboard: document.getElementById('soundboardPage'), games: document.getElementById('gamesPage') };
-    document.querySelectorAll('[data-tab]').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        const t = btn.getAttribute('data-tab');
-        Object.entries(tabs).forEach(([k,el])=> el.classList.toggle('hidden', k!==t));
-      });
-    });
+<!-- ===== Refresh Banner ===== -->
+<div id="refreshNotice">
+  <div id="refreshInner">
+    <div class="msg" id="refreshMsg">A newer version is available.</div>
+    <div class="actions">
+      <button class="btn-ghost" id="refreshLaterBtn">Later</button>
+      <button class="btn" id="refreshNowBtn">Refresh now</button>
+    </div>
+  </div>
+</div>
 
-    // ==== auth (pins OR username/password from config) ====
-    const loginBtn = document.getElementById('loginBtn');
-    const loginErr = document.getElementById('loginErr');
-    const loginRow = document.getElementById('loginRow');
-    const userField = document.getElementById('userField');
-    const passField = document.getElementById('passField');
-    const adminBtn  = document.getElementById('adminBtn');
+<!-- ===== Toast container ===== -->
+<div id="toastWrap" aria-live="polite" aria-atomic="true"></div>
 
-    let isAdmin = false;
+<!-- ===== Main Content ===== -->
+<div id="mainContent">
+  <div class="card">
+    <h1>mathshomework v2 😱</h1>
+    <div class="top-actions">
+      <button class="btn" onclick="showPage('soundboard')">Soundboard</button>
+      <button class="btn" onclick="showPage('games')">Games</button>
+      <button class="btn" id="adminBtn" title="Admin login">Admin</button>
+    </div>
 
-    function pinsValid(pin){
-      const pins = (window.MMHC?.pins)||{user:[],admin:[]};
-      if (pins.admin.includes(pin)) return {ok:true,role:'admin'};
-      if (pins.user.includes(pin))  return {ok:true,role:'user'};
-      return {ok:false};
+    <!-- Soundboard -->
+    <div id="soundboardPage">
+      <div class="sb-grid" id="sbGrid">
+        <button class="sb-btn" data-sound="androidbeep">Andriod</button>
+        <button class="sb-btn" data-sound="backintheday">Back in the day</button>
+        <button class="sb-btn" data-sound="bingchilling">Bing Chilling</button>
+        <button class="sb-btn" data-sound="clashroyal">Clash Royale</button>
+        <button class="sb-btn" data-sound="crickets">Crickets</button>
+        <button class="sb-btn" data-sound="crickets">Crickets</button>
+        <button class="sb-btn" data-sound="fail">Fail</button>
+        <button class="sb-btn" data-sound="getout">Get out</button>
+        <button class="sb-btn" data-sound="goofyahhsounds">Goofy ahh sounds</button>
+        <button class="sb-btn" data-sound="hogrida">Hog rida</button>
+        <button class="sb-btn" data-sound="incorrectbuzzer">Incorrect Buzzer</button>
+        <button class="sb-btn" data-sound="italianbrainrot">Italian brainrot</button>
+        <button class="sb-btn" data-sound="legobreak">Lego Breaking</button>
+        <button class="sb-btn" data-sound="lionsleep">Sleeping lion</button>
+        <button class="sb-btn" data-sound="metalpipe">Metal Pipe</button>
+        <button class="sb-btn" data-sound="ohio">Ohio</button>
+        <button class="sb-btn" data-sound="rahhh">Rahh</button>
+        <button class="sb-btn" data-sound="shutup">Shut up</button>
+        <button class="sb-btn" data-sound="text">Iphone text</button>
+        <button class="sb-btn" data-sound="vineboom">Vine boom</button>
+        <button class="sb-btn" data-sound="what the sigma">What the sigma</button>
+      </div>
+    </div>
+
+    <!-- Games -->
+    <div id="gamesPage" style="display:none;">
+      <iframe src="https://scratch.mit.edu/projects/3041905/embed" allowtransparency="true" width="960" height="720" frameborder="0" scrolling="no" allowfullscreen></iframe>
+      <iframe src="https://scratch.mit.edu/projects/17828009/embed" allowtransparency="true" width="960" height="720" frameborder="0" scrolling="no" allowfullscreen></iframe>
+      <iframe src="https://scratch.mit.edu/projects/389464290/embed" allowtransparency="true" width="960" height="720" frameborder="0" scrolling="no" allowfullscreen></iframe>
+      <iframe src="https://scratch.mit.edu/projects/105500895/embed" allowtransparency="true" width="960" height="720" frameborder="0" scrolling="no" allowfullscreen></iframe>
+      <iframe src="https://scratch.mit.edu/projects/12575620/embed" allowtransparency="true" width="960" height="720" frameborder="0" scrolling="no" allowfullscreen></iframe>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel">
+      <div class="admin-grid">
+        <div class="admin-card">
+          <h3>Version & Update</h3>
+          <div class="row">Local (code): <b id="curVerLbl">-</b></div>
+          <div class="row">Latest (remote): <b id="remoteVerLbl">–</b></div>
+          <div class="row">
+            <label for="localVerOverride">Session Local Version:</label>
+            <input id="localVerOverride" class="input inline" placeholder="e.g. 2.14">
+            <button class="btn-ghost" id="btnApplyLocalOverride">Apply</button>
+            <button class="btn-ghost" id="btnClearLocalOverride">Clear</button>
+          </div>
+          <div class="row">
+            <label for="remoteVerEditor">Remote Version (version.txt):</label>
+            <input id="remoteVerEditor" class="input inline" placeholder="e.g. 2.14">
+            <button class="btn" id="btnSaveRemoteVersion">Save to server</button>
+            <button class="btn-ghost" id="btnDownloadVersionTxt">Download version.txt</button>
+          </div>
+          <div class="row" style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn" id="btnForceCheck">Force Version Check</button>
+            <button class="btn" id="btnForceRefresh">Force Refresh</button>
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <h3>Update Log Settings</h3>
+          <label style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <input type="checkbox" id="toggleShowUpdate">
+            Show Update Log on this version
+          </label>
+          <textarea id="notesEditor" class="input" rows="8" style="width:100%" placeholder="Update notes HTML"></textarea>
+          <div class="row">
+            <button class="btn" id="btnSaveNotesServer">Save to server</button>
+            <button class="btn-ghost" id="btnApplyNotes">Apply (this session)</button>
+            <button class="btn-ghost" id="btnShowUpdateLog">Preview</button>
+            <button class="btn-ghost" id="btnDownloadNotes">Download update_notes.html</button>
+            <button class="btn-ghost" id="btnAckVersion">Mark Seen</button>
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <h3>Utilities</h3>
+          <div class="row">
+            <button class="btn-ghost" id="btnDismissBanner">Dismiss Refresh Banner</button>
+            <button class="btn-ghost" id="btnTestToast">Test Toast</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== Load plaintext config FIRST ===== -->
+<script src="config.js"></script>
+
+<script>
+/* =========================================================================
+   CONFIG (defaults; overridden by config.js)
+   ========================================================================= */
+let SHOW_UPDATE_LOG = true;
+let CURRENT_VERSION = "2.13";
+let UPDATE_NOTES_HTML = `
+   <p><b>MyMathsHomework v\${CURRENT_VERSION}</b></p>
+   <p><b>Updates are useful to fix up known issues.</b></p>
+  <ul>
+    <li>Fixed: Issues with backend code</li>
+    <li>Soon: Soundboards</li>
+    <li>Soon: More games.</li>
+    <li>NOTE: Games DON'T save if you refresh. (Known issue)</li>
+  </ul>
+`;
+
+const ADMIN_VERSION_ENDPOINT = "/admin/version";
+const ADMIN_NOTES_ENDPOINT   = "/admin/update-log";
+
+const VALID_PINS = ["24680"];   // fallback if config.js missing
+const ADMIN_PINS = ["14312"];   // fallback if config.js missing
+const LS_SEEN_VERSION = "mmh_seenVersion";
+const LS_TERMS = "termsAccepted_v2";
+const TERMS_VERSION = "Sept. 17 2025.";
+const SS_REFRESH_LATER = "mmh_refreshLater";
+const LS_LAST_NOTIFIED_VER = "mmh_lastNotifiedRemoteVer";
+const LS_SUPPRESS_UNTIL = "mmh_notifySuppressUntil";
+const LS_BANNER_SEEN_VER = "mmh_bannerSeenVer";
+const SUPPRESS_HOURS = 12;
+const REMOTE_VERSION_URL = "/version.txt";
+
+/* =========================================================================
+   APPLY config.js OVERRIDES
+   ========================================================================= */
+const MM = window.MMHC || {};
+const APP   = MM.app || {};
+const PINS  = MM.pins || { user:VALID_PINS, admin:ADMIN_PINS };
+const ACCTS = Array.isArray(MM.accounts) ? MM.accounts : [];
+const SOUND_FILES = MM.sounds || {};
+const SOUND_META  = MM.soundMeta || {};
+const PLAYER_DEF  = MM.player || { defaultVolume:1.0, stopPrevious:true };
+
+if (typeof APP.showUpdateLog === "boolean") SHOW_UPDATE_LOG = APP.showUpdateLog;
+if (APP.currentVersion) CURRENT_VERSION = String(APP.currentVersion);
+
+function ghBasePath(){
+  if (APP.repoBaseOverride) return APP.repoBaseOverride;
+  const segs = location.pathname.split("/").filter(Boolean);
+  return segs.length ? `/${segs[0]}` : "";
+}
+const SOUND_BASE = `${ghBasePath()}/Sounds`;
+
+/* =========================================================================
+   UTIL
+   ========================================================================= */
+function compareVersions(a,b){
+  const pa=String(a).trim().split('.').map(n=>parseInt(n,10)||0);
+  const pb=String(b).trim().split('.').map(n=>parseInt(n,10)||0);
+  const len=Math.max(pa.length,pb.length);
+  for(let i=0;i<len;i++){const va=pa[i]||0,vb=pb[i]||0;if(va>vb)return 1;if(va<vb)return -1;}
+  return 0;
+}
+function keyify(s){ return String(s||"").toLowerCase().replace(/[^a-z0-9]+/g,"").trim(); }
+function show(el){ if(el) el.style.display = (el.id==="termsScreen"||el.id==="pinScreen"||el.id==="updateScreen") ? "flex" : "block"; }
+function hide(el){ if(el) el.style.display = "none"; }
+function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+/* Toasts */
+const toastWrap = document.getElementById("toastWrap");
+function toast(message, actions=[]){
+  const el = document.createElement("div");
+  el.className="toast";
+  el.innerHTML = `<div class="t-msg">${message}</div><div class="t-actions"></div>`;
+  const actWrap = el.querySelector(".t-actions");
+  actions.forEach(a=>{
+    const b=document.createElement("button"); b.className="btn-ghost";
+    b.textContent=a.label||"OK";
+    b.onclick=()=>{ try{a.onClick&&a.onClick();}finally{el.remove();} };
+    actWrap.appendChild(b);
+  });
+  toastWrap.appendChild(el);
+  setTimeout(()=>el.remove(), 10000);
+}
+
+/* File download helper */
+function downloadFile(name, content, mime="text/plain"){
+  const blob = new Blob([content], {type: mime});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = name; document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 0);
+}
+
+/* Display version helper */
+let lastRemoteVer = null;
+function getEffectiveLocalVersion(){
+  const override = sessionStorage.getItem("mmh_localOverride");
+  return override && override.trim() ? override.trim() : CURRENT_VERSION;
+}
+function setDisplayVersion(){
+  const local = getEffectiveLocalVersion();
+  const v = (lastRemoteVer && compareVersions(lastRemoteVer, local) >= 0) ? lastRemoteVer : local;
+  const lbl = document.getElementById("curVerLbl");
+  if (lbl) lbl.textContent = local;
+  document.title = `MyMathsHomework Version ${v}`;
+}
+
+/* =========================================================================
+   UPDATE LOG
+   ========================================================================= */
+const updateScreen = document.getElementById("updateScreen");
+const updateNotes  = document.getElementById("updateNotes");
+const updateOkayBtn= document.getElementById("updateOkayBtn");
+const updateSkipBtn= document.getElementById("updateSkipBtn");
+
+function maybeShowUpdateLog(){
+  try{
+    const seen = localStorage.getItem(LS_SEEN_VERSION);
+    const local = getEffectiveLocalVersion();
+    if (SHOW_UPDATE_LOG && seen !== local){
+      updateNotes.innerHTML = UPDATE_NOTES_HTML.replaceAll("${CURRENT_VERSION}", local).replaceAll("\\${CURRENT_VERSION}", local);
+      show(updateScreen);
     }
-    function accountValid(user, pass){
-      const accounts = Array.isArray(window.MMHC?.accounts) ? window.MMHC.accounts : [];
-      const rec = accounts.find(a => a.username.toLowerCase() === String(user).toLowerCase());
-      if (!rec) return {ok:false};
-      return (rec.password === pass) ? {ok:true,role:(rec.role||'user')} : {ok:false};
+  }catch(_){}
+}
+function acknowledgeUpdate(){
+  try{ localStorage.setItem(LS_SEEN_VERSION, getEffectiveLocalVersion()); }catch(_){}
+  hide(updateScreen);
+}
+updateOkayBtn.addEventListener("click", acknowledgeUpdate);
+updateSkipBtn.addEventListener("click", ()=>hide(updateScreen));
+
+/* =========================================================================
+   REMOTE VERSION POLLING
+   ========================================================================= */
+const refreshNotice = document.getElementById("refreshNotice");
+const refreshMsg    = document.getElementById("refreshMsg");
+const refreshLater  = document.getElementById("refreshLaterBtn");
+const refreshNow    = document.getElementById("refreshNowBtn");
+let pollAbort       = false;
+
+(function setupKeyboardHide(){
+  const hideOnFocus = (e)=>{
+    const t = e.target;
+    if (!t) return;
+    const tag = (t.tagName||"").toUpperCase();
+    if (tag==="INPUT" || tag==="TEXTAREA" || t.isContentEditable){
+      document.body.classList.add("kb-open");
     }
+  };
+  const showOnBlur = ()=> document.body.classList.remove("kb-open");
+  window.addEventListener("focusin", hideOnFocus);
+  window.addEventListener("focusout", showOnBlur);
+})();
 
-    function setAdminUI(enabled){
-      isAdmin = !!enabled;
-      adminBtn.textContent = isAdmin ? "Admin (on)" : "Admin";
-      adminBtn.title = isAdmin ? "Admin unlocked" : "Admin login";
+async function fetchRemoteVersion(){
+  const res = await fetch(REMOTE_VERSION_URL+"?t="+Date.now(), {cache:"no-store"});
+  if(!res.ok) return null;
+  const raw = (await res.text()) || "";
+  const cleaned = raw.replace(/[^\d.]/g, "").trim();
+  return cleaned || null;
+}
+function shouldSuppress(remoteVer){
+  try{
+    if (sessionStorage.getItem(SS_REFRESH_LATER)==="1") return true;
+    const until = parseInt(localStorage.getItem(LS_SUPPRESS_UNTIL)||"0",10);
+    if (until && Date.now() < until) return true;
+    if (localStorage.getItem(LS_LAST_NOTIFIED_VER) === remoteVer) return true;
+    if (localStorage.getItem(LS_BANNER_SEEN_VER) === remoteVer) return true;
+  }catch(_){}
+  return false;
+}
+function markNotified(remoteVer, withDurationHours=null){
+  try{
+    localStorage.setItem(LS_LAST_NOTIFIED_VER, remoteVer);
+    localStorage.setItem(LS_BANNER_SEEN_VER, remoteVer);
+    if (withDurationHours && withDurationHours>0){
+      const ms = withDurationHours*60*60*1000;
+      localStorage.setItem(LS_SUPPRESS_UNTIL, String(Date.now()+ms));
     }
+  }catch(_){}
+}
+function clearSuppression(){
+  try{
+    sessionStorage.removeItem(SS_REFRESH_LATER);
+    localStorage.removeItem(LS_SUPPRESS_UNTIL);
+    localStorage.removeItem(LS_LAST_NOTIFIED_VER);
+    localStorage.removeItem(LS_BANNER_SEEN_VER);
+  }catch(_){}
+}
+function scheduleNextPoll(){
+  if (pollAbort) return;
+  const next = randInt(5,10)*1000;
+  setTimeout(pollRemoteVersion, next);
+}
+function safeShowBanner(ver, localVer){
+  if (shouldSuppress(ver)) { hide(refreshNotice); return; }
+  refreshMsg.textContent = `A newer version (v${ver}) is available. You’re on v${localVer}.`;
+  show(refreshNotice);
+  markNotified(ver);
+}
+async function checkRemoteVersionOnce(){
+  try{
+    const rv = await fetchRemoteVersion();
+    if (rv){
+      lastRemoteVer = rv;
+      const rLbl = document.getElementById("remoteVerLbl");
+      if (rLbl) rLbl.textContent = rv;
+      setDisplayVersion();
 
-    loginBtn.addEventListener('click', ()=>{
-      const u = userField.value.trim();
-      const p = passField.value.trim();
-      let auth = {ok:false,role:null};
-
-      if (u) auth = accountValid(u,p);
-      else   auth = pinsValid(p);
-
-      if (!auth.ok){
-        loginErr.style.display = 'block';
-        return;
+      const local = getEffectiveLocalVersion();
+      if (compareVersions(rv, local) > 0){
+        safeShowBanner(rv, local);
+      } else {
+        hide(refreshNotice);
       }
-      loginErr.style.display = 'none';
-      loginRow.style.display = 'none';
-      setAdminUI(auth.role === 'admin');
-    });
-
-    adminBtn.addEventListener('click', ()=>{
-      if (isAdmin) { alert('Admin already unlocked.'); return; }
-      const pin = prompt('Enter admin PIN:');
-      if (!pin) return;
-      const res = pinsValid(pin);
-      if (res.ok && res.role === 'admin') setAdminUI(true);
-      else alert('Invalid admin PIN');
-    });
-
-    // ==== soundboard ====
-    function ghBasePath(){
-      const override = window.MMHC?.app?.repoBaseOverride;
-      if (override) return override;
-      const segs = location.pathname.split('/').filter(Boolean);
-      return segs.length ? `/${segs[0]}` : '';
+    } else {
+      hide(refreshNotice);
     }
-    const SOUND_BASE = `${ghBasePath()}/Sounds`;
-    const SOUND_MAP  = window.MMHC?.sounds || {};
-    const SOUND_META = window.MMHC?.soundMeta || {};
-    const PLAYER     = window.MMHC?.player || { defaultVolume: 1.0, stopPrevious: true };
+  }catch(_){}
+}
+async function pollRemoteVersion(){
+  try{
+    const rv = await fetchRemoteVersion();
+    if (rv){
+      lastRemoteVer = rv;
+      const rLbl = document.getElementById("remoteVerLbl");
+      if (rLbl) rLbl.textContent = rv;
+      setDisplayVersion();
 
-    function keyify(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'').trim(); }
-    async function fileExists(url){
-      try{ const r = await fetch(url, {method:'HEAD',cache:'no-store'}); return r.ok; }
-      catch(_){ return false; }
-    }
-
-    let current = { key:null, audio:null, endHandler:null, timeoutId:null };
-    function clearPlaying(){
-      document.querySelectorAll('.sb-btn.playing').forEach(b=>b.classList.remove('playing'));
-      if (current.audio && current.endHandler) current.audio.removeEventListener('ended', current.endHandler);
-      if (current.timeoutId) clearTimeout(current.timeoutId);
-      current = { key:null, audio:null, endHandler:null, timeoutId:null };
-    }
-    function applyMeta(audio, key){
-      const m = SOUND_META[key] || {};
-      audio.volume = typeof m.volume === 'number' ? Math.max(0,Math.min(1,m.volume)) : (PLAYER.defaultVolume ?? 1.0);
-      if (current.timeoutId) clearTimeout(current.timeoutId);
-      if (typeof m.maxDuration === 'number' && m.maxDuration > 0){
-        current.timeoutId = setTimeout(()=>{ try{audio.pause();audio.currentTime=0;}catch(_){ } clearPlaying(); }, m.maxDuration*1000);
+      const local = getEffectiveLocalVersion();
+      if (compareVersions(rv, local) > 0){
+        if (!shouldSuppress(rv)){
+          safeShowBanner(rv, local);
+          toast(
+            `New version detected: v${rv}`,
+            [
+              {label:"Refresh", onClick:()=>location.reload()},
+              {label:"Later", onClick:()=>{ 
+                try{sessionStorage.setItem(SS_REFRESH_LATER,"1")}catch(_){}
+                markNotified(rv, SUPPRESS_HOURS);
+                hide(refreshNotice);
+              }}
+            ]
+          );
+        }
+      } else {
+        hide(refreshNotice);
       }
     }
+  }catch(_){}
+  scheduleNextPoll();
+}
 
-    document.getElementById('sbGrid').addEventListener('click', async (e)=>{
-      const btn = e.target.closest('.sb-btn'); if (!btn) return;
-      const raw = btn.getAttribute('data-sound') || btn.textContent || '';
-      const key = keyify(raw);
-      const file = SOUND_MAP[key];
-      if (!file){ alert('Sound not mapped in config: ' + raw); return; }
-      const url = `${SOUND_BASE}/${encodeURIComponent(file)}`;
+/* Banner buttons */
+refreshLater.addEventListener("click", ()=>{
+  try{ sessionStorage.setItem(SS_REFRESH_LATER, "1"); }catch(_){}
+  if (lastRemoteVer) markNotified(lastRemoteVer, SUPPRESS_HOURS);
+  hide(refreshNotice);
+});
+refreshNow.addEventListener("click", ()=>{
+  if (lastRemoteVer) markNotified(lastRemoteVer, SUPPRESS_HOURS);
+  location.reload();
+});
+document.addEventListener("DOMContentLoaded", ()=>{
+  if (localStorage.getItem(LS_BANNER_SEEN_VER)) hide(refreshNotice);
+});
 
-      // toggle same sound
-      if (current.audio && current.key === key){
-        if (current.audio.paused){ try{ await current.audio.play(); btn.classList.add('playing'); }catch(_){ alert('Could not play. Tap again.'); } }
-        else { current.audio.pause(); current.audio.currentTime = 0; btn.classList.remove('playing'); }
-        return;
-      }
+/* =========================================================================
+   PAGE / LOGIN / TERMS / INACTIVITY / SHORTCUTS / DEVTOOLS
+   ========================================================================= */
+function showPage(which){
+  document.getElementById("soundboardPage").style.display = (which==="soundboard")?"block":"none";
+  document.getElementById("gamesPage").style.display      = (which==="games")?"block":"none";
+  setDisplayVersion();
+}
+const curVerLbl = document.getElementById("curVerLbl");
+curVerLbl.textContent = getEffectiveLocalVersion();
+setDisplayVersion();
 
-      // stop previous
-      if (PLAYER.stopPrevious && current.audio){ current.audio.pause(); current.audio.currentTime = 0; clearPlaying(); }
+/* ===== Auth helpers from config.js ===== */
+function pinsValid(pin){
+  if (!pin) return {ok:false, role:null};
+  if ((PINS.admin||[]).includes(pin)) return {ok:true, role:"admin"};
+  if ((PINS.user||[]).includes(pin))  return {ok:true, role:"user"};
+  return {ok:false, role:null};
+}
+function accountValid(credOrUser, passMaybe){
+  let u,p;
+  if (typeof passMaybe === "string"){
+    u = String(credOrUser||""); p = passMaybe;
+  } else {
+    const s = String(credOrUser||""); const ix = s.indexOf(":");
+    if (ix<=0) return {ok:false, role:null};
+    u = s.slice(0,ix).trim(); p = s.slice(ix+1).trim();
+  }
+  const rec = ACCTS.find(a=>a.username.toLowerCase()===u.toLowerCase());
+  if (!rec) return {ok:false, role:null};
+  return (rec.password===p) ? {ok:true, role:(rec.role||"user")} : {ok:false, role:null};
+}
 
-      if (!(await fileExists(url))){ alert('Missing file: ' + url); return; }
+/* Login (PIN OR username:password) */
+async function checkPin(){
+  const raw = (document.getElementById("pinInput").value || "").trim();
+  let auth = {ok:false, role:null};
+  if (!raw){
+    document.getElementById("pinError").style.display="block";
+    return;
+  }
+  auth = raw.includes(":") ? accountValid(raw) : pinsValid(raw);
+  if (!auth.ok){
+    document.getElementById("pinError").style.display="block";
+    return;
+  }
+  document.getElementById("pinError").style.display="none";
+  hide(document.getElementById("pinScreen"));
 
-      const audio = new Audio(url);
-      audio.preload = 'auto'; audio.crossOrigin = 'anonymous';
-      applyMeta(audio, key);
+  const isAdmin = auth.role==="admin";
+  sessionStorage.setItem("mmh_isAdmin", isAdmin ? "1" : "0");
+  document.getElementById("adminPanel").style.display = isAdmin ? "block" : "none";
 
+  try {
+    const accepted = localStorage.getItem(LS_TERMS) === "yes";
+    if (accepted){
+      show(document.getElementById("mainContent"));
+      startInactivityTimer();
+      maybeShowUpdateLog();
+    } else {
+      show(document.getElementById("termsScreen"));
+    }
+  } catch(_){
+    show(document.getElementById("termsScreen"));
+  }
+}
+
+/* Terms */
+const termsBody = document.getElementById("termsBody");
+const termsChk  = document.getElementById("termsChk");
+const termsLbl  = document.getElementById("termsLbl");
+const acceptBtn = document.getElementById("acceptBtn");
+const declineBtn= document.getElementById("declineBtn");
+const scrollHint= document.getElementById("scrollHint");
+let hasScrolledToBottom=false, isLogging=false;
+function updateAcceptUI(){ acceptBtn.disabled = !(termsChk.checked && hasScrolledToBottom) || isLogging; }
+termsBody.addEventListener("scroll", () => {
+  const { scrollTop, scrollHeight, clientHeight } = termsBody;
+  if (scrollTop >= (scrollHeight - clientHeight - 5)) {
+    hasScrolledToBottom = true;
+    termsChk.disabled = false;
+    termsLbl.textContent = "I understand and accept that I am using this site at my own risk";
+    scrollHint.style.display = "none";
+    updateAcceptUI();
+  }
+});
+termsChk.addEventListener("change", updateAcceptUI);
+acceptBtn.addEventListener("click", async () => {
+  if (!hasScrolledToBottom || !termsChk.checked || isLogging) return;
+  isLogging = true; updateAcceptUI();
+  try{
+    await fetch("/api/terms/accept", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({ version: TERMS_VERSION, method:"web" })
+    }).catch(()=>{});
+  }catch(_){}
+  try{ localStorage.setItem(LS_TERMS,"yes"); }catch(_){}
+  hide(document.getElementById("termsScreen"));
+  show(document.getElementById("mainContent"));
+  startInactivityTimer();
+  isLogging=false; updateAcceptUI();
+  maybeShowUpdateLog();
+});
+declineBtn.addEventListener("click", () => {
+  hide(document.getElementById("termsScreen"));
+  hide(document.getElementById("mainContent"));
+  document.querySelector(".pg.red").style.display="block";
+});
+
+/* Footer link → open PIN/login & startup */
+document.addEventListener("DOMContentLoaded", () => {
+  const toMain = document.getElementById("toMainArea");
+  if (toMain){
+    toMain.addEventListener("click", (e) => {
+      e.preventDefault();
+      document.querySelector(".pg.red").style.display="none";
+      show(document.getElementById("pinScreen"));
+    });
+  }
+
+  // Admin open / unlock
+  document.getElementById("adminBtn").addEventListener("click", ()=>{
+    const already = sessionStorage.getItem("mmh_isAdmin")==="1";
+    if (already){
+      document.getElementById("adminPanel").style.display="block";
+      toast("Admin panel opened");
+      return;
+    }
+    const code = prompt("Enter Admin PIN (or username:password)");
+    if (!code) return;
+    const res = code.includes(":") ? accountValid(code) : pinsValid(code);
+    if (res.ok && res.role==="admin"){
+      sessionStorage.setItem("mmh_isAdmin","1");
+      document.getElementById("adminPanel").style.display="block";
+      toast("Admin unlocked");
+    }else{
+      toast("Invalid admin credentials");
+    }
+  });
+
+  // Init remote check & polling
+  checkRemoteVersionOnce();
+  scheduleNextPoll();
+
+  // Prefill editors
+  document.getElementById("toggleShowUpdate").checked = !!SHOW_UPDATE_LOG;
+  document.getElementById("notesEditor").value = UPDATE_NOTES_HTML;
+  document.getElementById("localVerOverride").value = sessionStorage.getItem("mmh_localOverride")||"";
+});
+
+/* ESC + T shortcut */
+let escPressed=false;
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape"){ escPressed = true; setTimeout(()=>{escPressed=false},1000); }
+  if (escPressed && (e.key === "t" || e.key === "T")) { window.location.href = "https://www.google.com"; }
+});
+
+/* Inactivity lock (10 min) */
+let inactivityTimer;
+function resetInactivity(){
+  clearTimeout(inactivityTimer);
+  inactivityTimer = setTimeout(() => {
+    hide(document.getElementById("mainContent"));
+    hide(document.getElementById("pinScreen"));
+    hide(document.getElementById("termsScreen"));
+    document.querySelector(".pg.red").style.display="block";
+  }, 10*60*1000);
+}
+function startInactivityTimer(){
+  resetInactivity();
+  document.addEventListener("mousemove", resetInactivity);
+  document.addEventListener("keydown", resetInactivity);
+}
+
+/* Block DevTools & View Source */
+document.addEventListener("keydown", (e) => {
+  if (e.key === "F12"){ e.preventDefault(); backToZscaler(); }
+  if (e.ctrlKey && e.shiftKey && (e.key.toLowerCase()==="i" || e.key.toLowerCase()==="j")){
+    e.preventDefault(); backToZscaler();
+  }
+  if (e.ctrlKey && e.key.toLowerCase()==="u"){ e.preventDefault(); backToZscaler(); }
+});
+function backToZscaler(){
+  hide(document.getElementById("mainContent"));
+  hide(document.getElementById("pinScreen"));
+  hide(document.getElementById("termsScreen"));
+  document.querySelector(".pg.red").style.display="block";
+}
+
+/* Expose for buttons */
+window.reopenTerms = () => show(document.getElementById("termsScreen"));
+window.showPage = showPage;
+
+/* =========================================================================
+   ADMIN PANEL HOOKS
+   ========================================================================= */
+function sanitizeVersionInput(v){ return (v||"").replace(/[^\d.]/g,"").trim(); }
+async function postJSON(url, body){
+  const res = await fetch(url, {
+    method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify(body)
+  });
+  if (!res.ok) throw new Error("HTTP "+res.status);
+  return res;
+}
+
+document.getElementById("toggleShowUpdate").addEventListener("change", (e)=>{
+  SHOW_UPDATE_LOG = !!e.target.checked; toast("Update log toggle: " + (SHOW_UPDATE_LOG?"ON":"OFF"));
+});
+document.getElementById("btnApplyNotes").addEventListener("click", ()=>{
+  UPDATE_NOTES_HTML = document.getElementById("notesEditor").value; toast("Update notes applied for this session.");
+});
+document.getElementById("btnShowUpdateLog").addEventListener("click", ()=>{
+  updateNotes.innerHTML = UPDATE_NOTES_HTML.replaceAll("${CURRENT_VERSION}", getEffectiveLocalVersion()).replaceAll("\\${CURRENT_VERSION}", getEffectiveLocalVersion());
+  show(updateScreen);
+});
+document.getElementById("btnAckVersion").addEventListener("click", ()=>{
+  localStorage.setItem(LS_SEEN_VERSION, getEffectiveLocalVersion());
+  toast("Marked this version as acknowledged.");
+});
+
+document.getElementById("btnSaveNotesServer").addEventListener("click", async ()=>{
+  const html = document.getElementById("notesEditor").value;
+  try{ await postJSON(ADMIN_NOTES_ENDPOINT, { notesHtml: html }); toast("Update log saved to server."); }
+  catch(e){ toast("Server save failed — downloading file instead."); downloadFile("update_notes.html", html, "text/html"); }
+});
+
+document.getElementById("btnApplyLocalOverride").addEventListener("click", ()=>{
+  const v = sanitizeVersionInput(document.getElementById("localVerOverride").value);
+  if (!v){ sessionStorage.removeItem("mmh_localOverride"); toast("Cleared override."); }
+  else { sessionStorage.setItem("mmh_localOverride", v); toast("Local version override set to v"+v); }
+  curVerLbl.textContent = getEffectiveLocalVersion(); setDisplayVersion();
+});
+document.getElementById("btnClearLocalOverride").addEventListener("click", ()=>{
+  sessionStorage.removeItem("mmh_localOverride");
+  document.getElementById("localVerOverride").value = "";
+  toast("Local version override cleared."); curVerLbl.textContent = getEffectiveLocalVersion(); setDisplayVersion();
+});
+
+document.getElementById("btnSaveRemoteVersion").addEventListener("click", async ()=>{
+  const input = document.getElementById("remoteVerEditor");
+  const v = sanitizeVersionInput(input.value);
+  if (!v){ toast("Enter a version like 2.14"); return; }
+  try{ await postJSON(ADMIN_VERSION_ENDPOINT, { version: v }); toast("version.txt updated on server to v"+v); clearSuppression(); checkRemoteVersionOnce(); }
+  catch(e){ toast("Server save failed — downloading version.txt instead."); downloadFile("version.txt", v+"\n", "text/plain"); }
+});
+document.getElementById("btnDownloadVersionTxt").addEventListener("click", ()=>{
+  const v = sanitizeVersionInput(document.getElementById("remoteVerEditor").value || lastRemoteVer || getEffectiveLocalVersion());
+  downloadFile("version.txt", (v||"").trim()+"\n", "text/plain");
+});
+document.getElementById("btnDownloadNotes").addEventListener("click", ()=>{
+  const html = document.getElementById("notesEditor").value || UPDATE_NOTES_HTML;
+  downloadFile("update_notes.html", html, "text/html");
+});
+document.getElementById("btnForceCheck").addEventListener("click", ()=>{ toast("Checking for updates…"); clearSuppression(); checkRemoteVersionOnce(); });
+document.getElementById("btnForceRefresh").addEventListener("click", ()=>location.reload());
+document.getElementById("btnDismissBanner").addEventListener("click", ()=>{
+  hide(refreshNotice); sessionStorage.setItem(SS_REFRESH_LATER,"1");
+  if (lastRemoteVer) markNotified(lastRemoteVer, SUPPRESS_HOURS); toast("Refresh banner dismissed.");
+});
+document.getElementById("btnTestToast").addEventListener("click", ()=>{ toast("This is a test notification", [{label:"OK"}]); });
+
+/* =========================================================================
+   SOUNDBOARD – REAL PLAYBACK (uses /Sounds + config.js mapping)
+   ========================================================================= */
+async function fileExists(url){
+  try{ const r = await fetch(url, {method:"HEAD", cache:"no-store"}); return r.ok; }
+  catch(_){ return false; }
+}
+let current = { key:null, audio:null, endHandler:null, timeoutId:null };
+function clearPlaying(){
+  document.querySelectorAll(".sb-btn.playing").forEach(b=>b.classList.remove("playing"));
+  if (current.audio && current.endHandler) current.audio.removeEventListener("ended", current.endHandler);
+  if (current.timeoutId) clearTimeout(current.timeoutId);
+  current = { key:null, audio:null, endHandler:null, timeoutId:null };
+}
+function applyMeta(audio, key){
+  const meta = SOUND_META[key] || {};
+  audio.volume = typeof meta.volume === "number" ? Math.max(0,Math.min(1,meta.volume)) : (PLAYER_DEF.defaultVolume ?? 1.0);
+  if (current.timeoutId) clearTimeout(current.timeoutId);
+  if (typeof meta.maxDuration === "number" && meta.maxDuration > 0){
+    current.timeoutId = setTimeout(()=>{
+      try{ audio.pause(); audio.currentTime = 0; }catch(_){}
       clearPlaying();
-      current.key = key; current.audio = audio;
-      btn.classList.add('playing');
+    }, meta.maxDuration*1000);
+  }
+}
+document.getElementById("sbGrid").addEventListener("click", async (e)=>{
+  const btn = e.target.closest(".sb-btn");
+  if(!btn) return;
+  const raw = btn.getAttribute("data-sound") || btn.textContent || "";
+  const key = keyify(raw);
+  const file = SOUND_FILES[key];
+  if (!file){ toast(`Sound not mapped in config: ${raw}`, [{label:"OK"}]); return; }
+  const url = `${SOUND_BASE}/${encodeURIComponent(file)}`;
 
-      const endHandler = ()=>{ if (current.key === key){ btn.classList.remove('playing'); clearPlaying(); } };
-      current.endHandler = endHandler;
-      audio.addEventListener('ended', endHandler);
+  if (current.audio && current.key === key){
+    if (current.audio.paused){
+      try{ await current.audio.play(); btn.classList.add("playing"); }catch(_){ toast("Couldn’t start audio. Tap again.", [{label:"OK"}]); }
+    } else {
+      current.audio.pause(); current.audio.currentTime = 0; btn.classList.remove("playing");
+    }
+    return;
+  }
 
-      try{ await audio.play(); }catch(_){ alert('Could not play. Tap again.'); }
-    });
-  </script>
+  if (PLAYER_DEF.stopPrevious && current.audio){
+    current.audio.pause(); current.audio.currentTime = 0; clearPlaying();
+  }
+
+  if (!(await fileExists(url))){
+    toast(`Missing file: ${url}`, [{label:"OK"}]); return;
+  }
+
+  const audio = new Audio(url);
+  audio.preload = "auto";
+  audio.crossOrigin = "anonymous";
+  applyMeta(audio, key);
+
+  clearPlaying();
+  current.key = key; current.audio = audio;
+  btn.classList.add("playing");
+
+  const onEnded = ()=>{ if (current.key === key){ btn.classList.remove("playing"); clearPlaying(); } };
+  current.endHandler = onEnded;
+  audio.addEventListener("ended", onEnded);
+
+  try{ await audio.play(); }
+  catch{ toast("Couldn’t start audio. Tap again.", [{label:"OK"}]); }
+});
+</script>
 </body>
 </html>
