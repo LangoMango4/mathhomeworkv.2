@@ -44,7 +44,7 @@ window.MMHC = {
     shutup:       "shutup.mp3",
     text:         "text.mp3",
     vineboom:     "vineboom.mp3",
-    whatthesigma: "whatthesigma.mp3"
+    whatthesigma: "what the sigma.mp3"
   },
 
   // Optional tuning
