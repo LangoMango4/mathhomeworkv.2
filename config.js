@@ -8,7 +8,7 @@ window.MMHC = {
     // Leave null to auto-detect.
     repoBaseOverride: null,
     showUpdateLog: true,
-    currentVersion: "2.17"
+    currentVersion: "2.18/1"
   },
 
   // Simple PINs
