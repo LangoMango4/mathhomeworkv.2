@@ -17,13 +17,13 @@ window.MMHC = {
     admin: ["14312"]
   },
 
-  // Accounts with PLAINTEXT passwords (front-end only)
+  // Accounts with PLAINTEXT passwords (front-end visible)
   accounts: [
     { username: "admin",   password: "admin123", role: "admin" },
     { username: "student", password: "user123",  role: "user"  }
   ],
 
-  // Map normalized button keys -> exact filename in /Sounds
+  // Map normalized key -> EXACT filename in /Sounds (case-sensitive on GitHub Pages)
   sounds: {
     androidbeep:  "androidbeep.mp3",
     backintheday: "backintheday.mp3",
@@ -47,7 +47,7 @@ window.MMHC = {
     whatthesigma: "whatthesigma.mp3"
   },
 
-  // Optional per-sound tuning
+  // Optional tuning
   soundMeta: {
     vineboom: { volume: 0.9 },
     metalpipe:{ volume: 0.9 },
