@@ -494,8 +494,10 @@ function acknowledgeUpdate(){
 updateOkayBtn.addEventListener("click", acknowledgeUpdate);
 updateSkipBtn.addEventListener("click", ()=>hide(updateScreen));
 
+  
 /* =========================================================================
    REMOTE VERSION POLLING — persistent banner + one-time toast
+   - Hides after refresh if local version has caught up to remote
    ========================================================================= */
 const refreshNotice = document.getElementById("refreshNotice");
 const refreshMsg    = document.getElementById("refreshMsg");
@@ -503,23 +505,27 @@ const refreshLater  = document.getElementById("refreshLaterBtn");
 const refreshNow    = document.getElementById("refreshNowBtn");
 let pollAbort       = false;
 
-/* Keyboard-aware banner behavior */
+/* Session flags */
+const SS_TOAST_SHOWN_VER = "mmh_toastShownVer";   // once-per-tab per version
+const SS_EXPECT_VER      = "mmh_expectRemoteVer"; // set before reload
+const SS_LOADED_CODE_VER = "mmh_loadedCodeVer";   // what code version this page loaded with
+
+// Record the code version that actually loaded this page
+try { sessionStorage.setItem(SS_LOADED_CODE_VER, getEffectiveLocalVersion()); } catch(_){}
+
+/* Keep banner visible while typing on mobile hidden (unchanged) */
 (function setupKeyboardHide(){
   const hideOnFocus = (e)=>{
-    const t = e.target;
-    if (!t) return;
+    const t = e.target; if (!t) return;
     const tag = (t.tagName||"").toUpperCase();
-    if (tag==="INPUT" || tag==="TEXTAREA" || t.isContentEditable){
-      document.body.classList.add("kb-open");
-    }
+    if (tag==="INPUT" || tag==="TEXTAREA" || t.isContentEditable){ document.body.classList.add("kb-open"); }
   };
   const showOnBlur = ()=> document.body.classList.remove("kb-open");
   window.addEventListener("focusin", hideOnFocus);
   window.addEventListener("focusout", showOnBlur);
 })();
 
-/* Session flag: toast shown once per detected version (per tab) */
-const SS_TOAST_SHOWN_VER = "mmh_toastShownVer";
+let lastRemoteVer = null;
 
 async function fetchRemoteVersion(){
   const res = await fetch(REMOTE_VERSION_URL+"?t="+Date.now(), {cache:"no-store"});
@@ -531,25 +537,25 @@ async function fetchRemoteVersion(){
 
 function showPersistentBanner(remoteVer, localVer){
   refreshMsg.textContent = `A newer version (v${remoteVer}) is available. You’re on v${localVer}.`;
-  show(refreshNotice); // stays visible until actual refresh
+  show(refreshNotice); // stays until refresh and code version catches up
+}
+
+function hideBanner(){
+  hide(refreshNotice);
 }
 
 function showUpdateToastOnce(remoteVer){
   try{
     const already = sessionStorage.getItem(SS_TOAST_SHOWN_VER);
     if (already === remoteVer) return;
-    toast(
-      `New version detected: v${remoteVer}`,
-      [{ label:"Refresh", onClick:()=>location.reload() }]
-    );
+    toast(`New version detected: v${remoteVer}`, [{ label:"Refresh", onClick:()=>handleRefreshClick() }]);
     sessionStorage.setItem(SS_TOAST_SHOWN_VER, remoteVer);
   }catch(_){}
 }
 
 function scheduleNextPoll(){
   if (pollAbort) return;
-  const next = randInt(5,10)*1000;
-  setTimeout(pollRemoteVersion, next);
+  setTimeout(pollRemoteVersion, Math.floor(Math.random()*6+5)*1000); // 5–10s
 }
 
 function updateRemoteVerLabel(){
@@ -557,26 +563,52 @@ function updateRemoteVerLabel(){
   if (rLbl && lastRemoteVer) rLbl.textContent = lastRemoteVer;
 }
 
+/* After any fetch, decide banner visibility.
+   Also honor "expected" version set before reload: if local >= expected, clear banner & flags. */
+function reconcileBanner(remoteVer){
+  const local = getEffectiveLocalVersion();
+  setDisplayVersion();
+
+  // If user reloaded expecting to get a specific remote version, and code is now >= that, clear banner & toast flags.
+  try{
+    const expect = sessionStorage.getItem(SS_EXPECT_VER);
+    if (expect && compareVersions(local, expect) >= 0){
+      hideBanner();
+      sessionStorage.removeItem(SS_EXPECT_VER);
+      sessionStorage.removeItem(SS_TOAST_SHOWN_VER); // allow future toasts for newer versions
+      return;
+    }
+  }catch(_){}
+
+  // Normal compare: show banner only if remote > local
+  if (remoteVer && compareVersions(remoteVer, local) > 0){
+    showPersistentBanner(remoteVer, local);
+  } else {
+    hideBanner();
+  }
+}
+
+/* Initial check */
 async function checkRemoteVersionOnce(){
   try{
     const rv = await fetchRemoteVersion();
     if (rv){
       lastRemoteVer = rv;
       updateRemoteVerLabel();
-      setDisplayVersion();
+      reconcileBanner(rv);
+
+      // If we are behind now, toast once
       const local = getEffectiveLocalVersion();
       if (compareVersions(rv, local) > 0){
-        showPersistentBanner(rv, local);
         showUpdateToastOnce(rv);
-      } else {
-        hide(refreshNotice);
       }
     } else {
-      hide(refreshNotice);
+      hideBanner();
     }
   }catch(_){}
 }
 
+/* Polling */
 async function pollRemoteVersion(){
   try{
     const rv = await fetchRemoteVersion();
@@ -584,29 +616,34 @@ async function pollRemoteVersion(){
       const changed = rv !== lastRemoteVer;
       lastRemoteVer = rv;
       updateRemoteVerLabel();
-      setDisplayVersion();
+      reconcileBanner(rv);
+
+      // If a new remote version appeared and we're behind, toast once for that new rv
       const local = getEffectiveLocalVersion();
-      if (compareVersions(rv, local) > 0){
-        showPersistentBanner(rv, local);
-        if (changed) showUpdateToastOnce(rv);
-      } else {
-        hide(refreshNotice);
+      if (changed && compareVersions(rv, local) > 0){
+        showUpdateToastOnce(rv);
       }
     }
   }catch(_){}
   scheduleNextPoll();
 }
 
-/* Bottom banner buttons */
+/* Refresh handling: mark the expected remote version so post-reload we can hide banner if caught up */
+function handleRefreshClick(){
+  try{ sessionStorage.setItem(SS_EXPECT_VER, lastRemoteVer || ""); }catch(_){}
+  location.reload();
+}
+
+/* Banner buttons */
 if (refreshLater){
-  // Make "Later" a no-op so the banner stays until refresh.
+  // No-op so the banner stays visible
   refreshLater.onclick = ()=>{};
 }
 if (refreshNow){
-  refreshNow.onclick = ()=>{ location.reload(); };
+  refreshNow.onclick = ()=>handleRefreshClick();
 }
 
-/* Initialize version checks */
+/* Boot the checker */
 document.addEventListener("DOMContentLoaded", ()=>{
   checkRemoteVersionOnce();
   scheduleNextPoll();
