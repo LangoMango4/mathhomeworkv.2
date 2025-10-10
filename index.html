@@ -73,7 +73,7 @@ hr{margin:0;border:0;border-top:0.5px solid #cfd0d1}
 #termsBody{padding:16px 20px;overflow:auto;font-size:14px;line-height:1.6;max-height:300px;position:relative}
 #scrollHint{position:sticky;bottom:0;display:flex;justify-content:center}
 #scrollHint>div{background:rgba(87,111,201,.15);color:#c7d2ff;border:1px solid rgba(87,111,201,.35);padding:6px 10px;border-radius:999px;font-size:12px;backdrop-filter:blur(2px)}
-#termsFoot{padding:14px 20px;border-top:1px solid #1d2a5;display:flex;gap:10px;justify-content:flex-end;align-items:center;flex-wrap:wrap}
+#termsFoot{padding:14px 20px;border-top:1px solid #1d2a55;display:flex;gap:10px;justify-content:flex-end;align-items:center;flex-wrap:wrap}
 .check-row{display:flex;align-items:center;gap:8px;margin-right:auto}
 .check-row input{width:16px;height:16px}
 .check-row label{font-size:13px}
@@ -89,7 +89,6 @@ iframe{margin:20px 0;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
 .sb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-top:10px}
 .sb-btn{padding:14px;border:1px solid #2a3a7a;background:#121a36;color:#e6ecff;border-radius:12px;cursor:pointer;font-weight:600}
 .sb-btn:hover{background:#1a244a}
-.sb-btn.playing{outline:2px solid #4a5bd1; box-shadow:0 0 0 3px rgba(74,91,209,.25) inset}
 
 /* ===== Admin Panel ===== */
 #adminPanel{display:none;margin-top:12px}
@@ -120,12 +119,18 @@ iframe{margin:20px 0;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
 #refreshInner .actions{display:flex;gap:8px;flex-wrap:wrap}
 #refreshInner .btn{border:1px solid #4a4e5a;background:#1b2a5c;padding:10px 14px;border-radius:10px;cursor:pointer}
 #refreshInner .btn-ghost{background:transparent;border:1px solid #37457a}
+
+/* Compact on phones */
 @media (max-width: 600px){
   #refreshInner{gap:10px}
   #refreshInner .msg{font-size:13px;flex:1 1 100%}
   #refreshInner .actions{width:100%}
-  #refreshInner .actions .btn, #refreshInner .actions .btn-ghost{flex:1 1 48%}
+  #refreshInner .actions .btn, #refreshInner .actions .btn-ghost{
+    flex:1 1 48%;
+  }
 }
+
+/* Hide banner when mobile keyboard is open */
 body.kb-open #refreshNotice{display:none!important}
 
 /* ===== Toasts ===== */
@@ -185,14 +190,14 @@ body.kb-open #refreshNotice{display:none!important}
 <!-- ===== PIN/Login Screen ===== -->
 <div id="pinScreen">
   <div id="pinBox">
-    <h2>Enter PIN or Username:Password</h2>
+    <h2>Enter PIN or Password</h2>
     <div class="eu_co st" style="background:#0f111a;border:0;color:#b9c2e8;padding:0 0 6px 0">
       Password is changed every week for security. - Last changed: Sept. 17th 2025
     </div>
-    <input id="pinInput" type="password" maxlength="128" placeholder="PIN  •  or  username:password">
+    <input id="pinInput" type="password" maxlength="64" placeholder="PIN / Password">
     <br />
     <button class="btn" onclick="checkPin()">Unlock</button>
-    <p id="pinError">Error! Do you have the correct PIN or account?</p>
+    <p id="pinError">Error! Do you have the correct PIN? Password is changed every week.</p>
   </div>
 </div>
 
@@ -308,6 +313,139 @@ body.kb-open #refreshNotice{display:none!important}
       <iframe src="https://scratch.mit.edu/projects/105500895/embed" allowtransparency="true" width="960" height="720" frameborder="0" scrolling="no" allowfullscreen></iframe>
       <iframe src="https://scratch.mit.edu/projects/12575620/embed" allowtransparency="true" width="960" height="720" frameborder="0" scrolling="no" allowfullscreen></iframe>
     </div>
+  </div>
+</div>
+
+<!-- ===== Soundboard playback (merged) ===== -->
+<script>
+  // Map data-sound keys to exact files inside /Sounds (case-sensitive!)
+  const SOUND_FILES = {
+    androidbeep:        "androidbeep.mp3",
+    backintheday:       "backintheday.mp3",
+    bingchilling:       "bingchilling.mp3",
+    clashroyal:         "clashroyal.mp3",
+    crickets:           "crickets.mp3",
+    fail:               "fail.mp3",
+    getout:             "getout.mp3",
+    goofyahhsounds:     "goofyahhsounds.mp3",
+    hogrida:            "hogrida.mp3",
+    incorrectbuzzer:    "incorrectbuzzer.mp3",
+    italianbrainrot:    "italianbrainrot.mp3",
+    legobreak:          "legobreak.mp3",
+    lionsleep:          "lionsleep.mp3",
+    metalpipe:          "metalpipe.mp3",
+    ohio:               "ohio.mp3",
+    rahhh:              "rahhh.mp3",
+    shutup:             "shutup.mp3",
+    text:               "text.mp3",
+    vineboom:           "vineboom.mp3",
+    whatthesigma:       "what the sigma.mp3"
+  };
+
+  // If you used different names/extensions, change them above to match your GitHub files.
+
+  // Detect GitHub Pages base (user site "" vs project site "/RepoName")
+  function ghBasePath(){
+    const segs = location.pathname.split("/").filter(Boolean);
+    return segs.length ? `/${segs[0]}` : "";
+  }
+  const SOUND_BASE = `${ghBasePath()}/Sounds`;
+
+  // Normalize keys like "what the sigma" -> "whatthesigma"
+  function keyify(s){
+    return String(s||"").toLowerCase().replace(/[^a-z0-9]+/g,"").trim();
+  }
+
+  // Safe toast (falls back to console if your toast() isn’t on the page yet)
+  const safeToast = (msg) => {
+    if (typeof toast === "function") toast(msg, [{label:"OK"}]);
+    else console.warn(msg);
+  };
+
+  // One active audio at a time
+  let current = { key: null, audio: null };
+
+  function makeAudio(src){
+    const a = new Audio(src);
+    a.preload = "auto";
+    a.crossOrigin = "anonymous";
+    return a;
+  }
+
+  async function fileExists(url){
+    try{
+      const res = await fetch(url, { method: "HEAD", cache: "no-store" });
+      return res.ok;
+    }catch(_){ return false; }
+  }
+
+  async function playToggleByKey(rawKey, button){
+    const key  = keyify(rawKey);
+    const file = SOUND_FILES[key];
+    if(!file){ safeToast(`Sound not mapped: ${rawKey}`); return; }
+
+    const url = `${SOUND_BASE}/${encodeURIComponent(file)}`;
+
+    // Toggle same sound
+    if (current.audio && current.key === key){
+      if (current.audio.paused){
+        await current.audio.play().catch(()=>{});
+        button.classList.add("playing");
+      } else {
+        current.audio.pause();
+        current.audio.currentTime = 0;
+        button.classList.remove("playing");
+      }
+      return;
+    }
+
+    // Stop previous
+    if (current.audio){
+      current.audio.pause();
+      current.audio.currentTime = 0;
+      document.querySelectorAll(".sb-btn.playing").forEach(b=>b.classList.remove("playing"));
+    }
+
+    // Check file exists to avoid silent 404s
+    if (!(await fileExists(url))){
+      safeToast(`Missing file: ${url}`);
+      return;
+    }
+
+    // Create + play
+    const audio = makeAudio(url);
+    current = { key, audio };
+
+    button.classList.add("playing");
+    audio.addEventListener("ended", () => {
+      if (current.key === key){
+        button.classList.remove("playing");
+        current.key = null; current.audio = null;
+      }
+    });
+
+    try{ await audio.play(); }
+    catch{ safeToast("Couldn’t start audio. Tap again."); }
+  }
+
+  // Wire the grid
+  (function(){
+    const sbGrid = document.getElementById("sbGrid");
+    if (!sbGrid) return;
+    sbGrid.addEventListener("click", (e)=>{
+      const btn = e.target.closest(".sb-btn");
+      if(!btn) return;
+      const name = btn.getAttribute("data-sound") || btn.textContent || "";
+      playToggleByKey(name, btn);
+    });
+
+    // Visual cue for playing buttons
+    const stylePlay = document.createElement("style");
+    stylePlay.textContent = `.sb-btn.playing{outline:2px solid #4a5bd1;box-shadow:0 0 0 3px rgba(74,91,209,.25) inset}`;
+    document.head.appendChild(stylePlay);
+  })();
+</script>
+
 
     <!-- Admin Panel -->
     <div id="adminPanel">
@@ -363,15 +501,12 @@ body.kb-open #refreshNotice{display:none!important}
   </div>
 </div>
 
-<!-- ===== Load plaintext config FIRST ===== -->
-<script src="config.js"></script>
-
 <script>
 /* =========================================================================
-   CONFIG (defaults; overridden by config.js)
+   CONFIG
    ========================================================================= */
-let SHOW_UPDATE_LOG = true;
-let CURRENT_VERSION = "2.18/1";
+let SHOW_UPDATE_LOG = true;              // show update log modal on entry (if not acknowledged)
+let CURRENT_VERSION = "2.13";            // your shipped version (can be session-overridden in Admin)
 let UPDATE_NOTES_HTML = `
    <p><b>MyMathsHomework v\${CURRENT_VERSION}</b></p>
    <p><b>Updates are useful to fix up known issues.</b></p>
@@ -383,36 +518,24 @@ let UPDATE_NOTES_HTML = `
   </ul>
 `;
 
-const ADMIN_VERSION_ENDPOINT = "/admin/version";
-const ADMIN_NOTES_ENDPOINT   = "/admin/update-log";
+/* Admin endpoints (adjust to match your backend) */
+const ADMIN_VERSION_ENDPOINT = "/admin/version";     // expects JSON: { version: "2.14" }
+const ADMIN_NOTES_ENDPOINT   = "/admin/update-log";  // expects JSON: { notesHtml: "<p>...</p>" }
 
-const VALID_PINS = ["24680"];   // fallback if config.js missing
-const ADMIN_PINS = ["14312"];   // fallback if config.js missing
+const VALID_PINS = ["24680"];      // Regular access
+const ADMIN_PINS = ["14312"];      // Admin access
 const LS_SEEN_VERSION = "mmh_seenVersion";
 const LS_TERMS = "termsAccepted_v2";
 const TERMS_VERSION = "Sept. 17 2025.";
+
+/* ===== Notification suppression keys ===== */
+const SS_REFRESH_LATER = "mmh_refreshLater";               // session flag
+const LS_LAST_NOTIFIED_VER = "mmh_lastNotifiedRemoteVer";  // last version we notified about
+const LS_SUPPRESS_UNTIL = "mmh_notifySuppressUntil";       // epoch ms
+const LS_BANNER_SEEN_VER = "mmh_bannerSeenVer";            // banner already shown for this version
+const SUPPRESS_HOURS = 12;
+
 const REMOTE_VERSION_URL = "/version.txt";
-
-/* =========================================================================
-   APPLY config.js OVERRIDES
-   ========================================================================= */
-const MM = window.MMHC || {};
-const APP   = MM.app || {};
-const PINS  = MM.pins || { user:VALID_PINS, admin:ADMIN_PINS };
-const ACCTS = Array.isArray(MM.accounts) ? MM.accounts : [];
-const SOUND_FILES = MM.sounds || {};
-const SOUND_META  = MM.soundMeta || {};
-const PLAYER_DEF  = MM.player || { defaultVolume:1.0, stopPrevious:true };
-
-if (typeof APP.showUpdateLog === "boolean") SHOW_UPDATE_LOG = APP.showUpdateLog;
-if (APP.currentVersion) CURRENT_VERSION = String(APP.currentVersion);
-
-function ghBasePath(){
-  if (APP.repoBaseOverride) return APP.repoBaseOverride;
-  const segs = location.pathname.split("/").filter(Boolean);
-  return segs.length ? `/${segs[0]}` : "";
-}
-const SOUND_BASE = `${ghBasePath()}/Sounds`;
 
 /* =========================================================================
    UTIL
@@ -424,7 +547,6 @@ function compareVersions(a,b){
   for(let i=0;i<len;i++){const va=pa[i]||0,vb=pb[i]||0;if(va>vb)return 1;if(va<vb)return -1;}
   return 0;
 }
-function keyify(s){ return String(s||"").toLowerCase().replace(/[^a-z0-9]+/g,"").trim(); }
 function show(el){ if(el) el.style.display = (el.id==="termsScreen"||el.id==="pinScreen"||el.id==="updateScreen") ? "flex" : "block"; }
 function hide(el){ if(el) el.style.display = "none"; }
 function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
@@ -446,7 +568,7 @@ function toast(message, actions=[]){
   setTimeout(()=>el.remove(), 10000);
 }
 
-/* File download helper */
+/* File download helper (fallback if server endpoints aren’t available) */
 function downloadFile(name, content, mime="text/plain"){
   const blob = new Blob([content], {type: mime});
   const url = URL.createObjectURL(blob);
@@ -455,7 +577,7 @@ function downloadFile(name, content, mime="text/plain"){
   setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 0);
 }
 
-/* Display version helper */
+/* Display version helper: prefer remote if it’s >= local */
 let lastRemoteVer = null;
 function getEffectiveLocalVersion(){
   const override = sessionStorage.getItem("mmh_localOverride");
@@ -465,8 +587,8 @@ function setDisplayVersion(){
   const local = getEffectiveLocalVersion();
   const v = (lastRemoteVer && compareVersions(lastRemoteVer, local) >= 0) ? lastRemoteVer : local;
   const lbl = document.getElementById("curVerLbl");
-  if (lbl) lbl.textContent = local;
-  document.title = `MyMathsHomework Version ${v}`;
+  if (lbl) lbl.textContent = local; // show local code version here
+  document.title = `Version ${v}`;
 }
 
 /* =========================================================================
@@ -494,10 +616,8 @@ function acknowledgeUpdate(){
 updateOkayBtn.addEventListener("click", acknowledgeUpdate);
 updateSkipBtn.addEventListener("click", ()=>hide(updateScreen));
 
-  
 /* =========================================================================
-   REMOTE VERSION POLLING — persistent banner + one-time toast
-   - Hides after refresh if local version has caught up to remote
+   REMOTE VERSION POLLING (every 5–10s) + STRONG SUPPRESSION
    ========================================================================= */
 const refreshNotice = document.getElementById("refreshNotice");
 const refreshMsg    = document.getElementById("refreshMsg");
@@ -505,28 +625,22 @@ const refreshLater  = document.getElementById("refreshLaterBtn");
 const refreshNow    = document.getElementById("refreshNowBtn");
 let pollAbort       = false;
 
-/* Session flags */
-const SS_TOAST_SHOWN_VER = "mmh_toastShownVer";   // once-per-tab per version
-const SS_EXPECT_VER      = "mmh_expectRemoteVer"; // set before reload
-const SS_LOADED_CODE_VER = "mmh_loadedCodeVer";   // what code version this page loaded with
-
-// Record the code version that actually loaded this page
-try { sessionStorage.setItem(SS_LOADED_CODE_VER, getEffectiveLocalVersion()); } catch(_){}
-
-/* Keep banner visible while typing on mobile hidden (unchanged) */
+/* Mobile keyboard: hide banner while typing */
 (function setupKeyboardHide(){
   const hideOnFocus = (e)=>{
-    const t = e.target; if (!t) return;
+    const t = e.target;
+    if (!t) return;
     const tag = (t.tagName||"").toUpperCase();
-    if (tag==="INPUT" || tag==="TEXTAREA" || t.isContentEditable){ document.body.classList.add("kb-open"); }
+    if (tag==="INPUT" || tag==="TEXTAREA" || t.isContentEditable){
+      document.body.classList.add("kb-open");
+    }
   };
   const showOnBlur = ()=> document.body.classList.remove("kb-open");
   window.addEventListener("focusin", hideOnFocus);
   window.addEventListener("focusout", showOnBlur);
 })();
 
-let lastRemoteVer = null;
-
+/* Clean remote version: strips non-digits/dots (e.g., 'v2.14' -> '2.14') */
 async function fetchRemoteVersion(){
   const res = await fetch(REMOTE_VERSION_URL+"?t="+Date.now(), {cache:"no-store"});
   if(!res.ok) return null;
@@ -535,57 +649,48 @@ async function fetchRemoteVersion(){
   return cleaned || null;
 }
 
-function showPersistentBanner(remoteVer, localVer){
-  refreshMsg.textContent = `A newer version (v${remoteVer}) is available. You’re on v${localVer}.`;
-  show(refreshNotice); // stays until refresh and code version catches up
-}
-
-function hideBanner(){
-  hide(refreshNotice);
-}
-
-function showUpdateToastOnce(remoteVer){
+/* Suppression helpers */
+function shouldSuppress(remoteVer){
   try{
-    const already = sessionStorage.getItem(SS_TOAST_SHOWN_VER);
-    if (already === remoteVer) return;
-    toast(`New version detected: v${remoteVer}`, [{ label:"Refresh", onClick:()=>handleRefreshClick() }]);
-    sessionStorage.setItem(SS_TOAST_SHOWN_VER, remoteVer);
+    if (sessionStorage.getItem(SS_REFRESH_LATER)==="1") return true;
+    const until = parseInt(localStorage.getItem(LS_SUPPRESS_UNTIL)||"0",10);
+    if (until && Date.now() < until) return true;
+    if (localStorage.getItem(LS_LAST_NOTIFIED_VER) === remoteVer) return true;
+    if (localStorage.getItem(LS_BANNER_SEEN_VER) === remoteVer) return true;
+  }catch(_){}
+  return false;
+}
+function markNotified(remoteVer, withDurationHours=null){
+  try{
+    localStorage.setItem(LS_LAST_NOTIFIED_VER, remoteVer);
+    localStorage.setItem(LS_BANNER_SEEN_VER, remoteVer); // prevents re-show on reload for same version
+    if (withDurationHours && withDurationHours>0){
+      const ms = withDurationHours*60*60*1000;
+      localStorage.setItem(LS_SUPPRESS_UNTIL, String(Date.now()+ms));
+    }
+  }catch(_){}
+}
+function clearSuppression(){
+  try{
+    sessionStorage.removeItem(SS_REFRESH_LATER);
+    localStorage.removeItem(LS_SUPPRESS_UNTIL);
+    localStorage.removeItem(LS_LAST_NOTIFIED_VER);
+    localStorage.removeItem(LS_BANNER_SEEN_VER);
   }catch(_){}
 }
 
 function scheduleNextPoll(){
   if (pollAbort) return;
-  setTimeout(pollRemoteVersion, Math.floor(Math.random()*6+5)*1000); // 5–10s
+  const next = randInt(5,10)*1000;
+  setTimeout(pollRemoteVersion, next);
 }
 
-function updateRemoteVerLabel(){
-  const rLbl = document.getElementById("remoteVerLbl");
-  if (rLbl && lastRemoteVer) rLbl.textContent = lastRemoteVer;
-}
-
-/* After any fetch, decide banner visibility.
-   Also honor "expected" version set before reload: if local >= expected, clear banner & flags. */
-function reconcileBanner(remoteVer){
-  const local = getEffectiveLocalVersion();
-  setDisplayVersion();
-
-  // If user reloaded expecting to get a specific remote version, and code is now >= that, clear banner & toast flags.
-  try{
-    const expect = sessionStorage.getItem(SS_EXPECT_VER);
-    if (expect && compareVersions(local, expect) >= 0){
-      hideBanner();
-      sessionStorage.removeItem(SS_EXPECT_VER);
-      sessionStorage.removeItem(SS_TOAST_SHOWN_VER); // allow future toasts for newer versions
-      return;
-    }
-  }catch(_){}
-
-  // Normal compare: show banner only if remote > local
-  if (remoteVer && compareVersions(remoteVer, local) > 0){
-    showPersistentBanner(remoteVer, local);
-  } else {
-    hideBanner();
-  }
+function safeShowBanner(ver, localVer){
+  if (shouldSuppress(ver)) { hide(refreshNotice); return; }
+  refreshMsg.textContent = `A newer version (v${ver}) is available. You’re on v${localVer}.`;
+  show(refreshNotice);
+  // Mark as seen immediately so a reload doesn't re-show the same version
+  markNotified(ver);
 }
 
 /* Initial check */
@@ -594,16 +699,18 @@ async function checkRemoteVersionOnce(){
     const rv = await fetchRemoteVersion();
     if (rv){
       lastRemoteVer = rv;
-      updateRemoteVerLabel();
-      reconcileBanner(rv);
+      const rLbl = document.getElementById("remoteVerLbl");
+      if (rLbl) rLbl.textContent = rv;
+      setDisplayVersion();
 
-      // If we are behind now, toast once
       const local = getEffectiveLocalVersion();
       if (compareVersions(rv, local) > 0){
-        showUpdateToastOnce(rv);
+        safeShowBanner(rv, local);
+      } else {
+        hide(refreshNotice);
       }
     } else {
-      hideBanner();
+      hide(refreshNotice);
     }
   }catch(_){}
 }
@@ -613,40 +720,49 @@ async function pollRemoteVersion(){
   try{
     const rv = await fetchRemoteVersion();
     if (rv){
-      const changed = rv !== lastRemoteVer;
       lastRemoteVer = rv;
-      updateRemoteVerLabel();
-      reconcileBanner(rv);
+      const rLbl = document.getElementById("remoteVerLbl");
+      if (rLbl) rLbl.textContent = rv;
+      setDisplayVersion();
 
-      // If a new remote version appeared and we're behind, toast once for that new rv
       const local = getEffectiveLocalVersion();
-      if (changed && compareVersions(rv, local) > 0){
-        showUpdateToastOnce(rv);
+      if (compareVersions(rv, local) > 0){
+        if (!shouldSuppress(rv)){
+          safeShowBanner(rv, local);
+          toast(
+            `New version detected: v${rv}`,
+            [
+              {label:"Refresh", onClick:()=>location.reload()},
+              {label:"Later", onClick:()=>{ 
+                try{sessionStorage.setItem(SS_REFRESH_LATER,"1")}catch(_){}
+                markNotified(rv, SUPPRESS_HOURS);
+                hide(refreshNotice);
+              }}
+            ]
+          );
+        }
+      } else {
+        hide(refreshNotice);
       }
     }
   }catch(_){}
   scheduleNextPoll();
 }
 
-/* Refresh handling: mark the expected remote version so post-reload we can hide banner if caught up */
-function handleRefreshClick(){
-  try{ sessionStorage.setItem(SS_EXPECT_VER, lastRemoteVer || ""); }catch(_){}
-  location.reload();
-}
-
 /* Banner buttons */
-if (refreshLater){
-  // No-op so the banner stays visible
-  refreshLater.onclick = ()=>{};
-}
-if (refreshNow){
-  refreshNow.onclick = ()=>handleRefreshClick();
-}
+refreshLater.addEventListener("click", ()=>{
+  try{ sessionStorage.setItem(SS_REFRESH_LATER, "1"); }catch(_){}
+  if (lastRemoteVer) markNotified(lastRemoteVer, SUPPRESS_HOURS);
+  hide(refreshNotice);
+});
+refreshNow.addEventListener("click", ()=>{
+  if (lastRemoteVer) markNotified(lastRemoteVer, SUPPRESS_HOURS);
+  location.reload();
+});
 
-/* Boot the checker */
+/* On first paint, proactively hide banner if a version was already seen */
 document.addEventListener("DOMContentLoaded", ()=>{
-  checkRemoteVersionOnce();
-  scheduleNextPoll();
+  if (localStorage.getItem(LS_BANNER_SEEN_VER)) hide(refreshNotice);
 });
 
 /* =========================================================================
@@ -661,44 +777,25 @@ const curVerLbl = document.getElementById("curVerLbl");
 curVerLbl.textContent = getEffectiveLocalVersion();
 setDisplayVersion();
 
-/* Auth helpers from config.js */
-function pinsValid(pin){
-  if (!pin) return {ok:false, role:null};
-  if ((PINS.admin||[]).includes(pin)) return {ok:true, role:"admin"};
-  if ((PINS.user||[]).includes(pin))  return {ok:true, role:"user"};
-  return {ok:false, role:null};
-}
-function accountValid(credOrUser, passMaybe){
-  let u,p;
-  if (typeof passMaybe === "string"){
-    u = String(credOrUser||""); p = passMaybe;
-  } else {
-    const s = String(credOrUser||""); const ix = s.indexOf(":");
-    if (ix<=0) return {ok:false, role:null};
-    u = s.slice(0,ix).trim(); p = s.slice(ix+1).trim();
-  }
-  const rec = ACCTS.find(a=>a.username.toLowerCase()===u.toLowerCase());
-  if (!rec) return {ok:false, role:null};
-  return (rec.password===p) ? {ok:true, role:(rec.role||"user")} : {ok:false, role:null};
-}
+/* Soundboard placeholders */
+document.getElementById("sbGrid").addEventListener("click",(e)=>{
+  const btn = e.target.closest(".sb-btn");
+  if(!btn) return;
+  const name = btn.getAttribute("data-sound");
+  console.log("[Soundboard]", name, "(placeholder)");
+});
 
-/* Login (PIN OR username:password) */
-async function checkPin(){
-  const raw = (document.getElementById("pinInput").value || "").trim();
-  let auth = {ok:false, role:null};
-  if (!raw){
-    document.getElementById("pinError").style.display="block";
-    return;
-  }
-  auth = raw.includes(":") ? accountValid(raw) : pinsValid(raw);
-  if (!auth.ok){
+/* Login */
+function checkPin(){
+  const pin = (document.getElementById("pinInput").value || "").trim();
+  if (!pin || (!VALID_PINS.includes(pin) && !ADMIN_PINS.includes(pin))){
     document.getElementById("pinError").style.display="block";
     return;
   }
   document.getElementById("pinError").style.display="none";
   hide(document.getElementById("pinScreen"));
 
-  const isAdmin = auth.role==="admin";
+  const isAdmin = ADMIN_PINS.includes(pin);
   sessionStorage.setItem("mmh_isAdmin", isAdmin ? "1" : "0");
   document.getElementById("adminPanel").style.display = isAdmin ? "block" : "none";
 
@@ -757,52 +854,19 @@ declineBtn.addEventListener("click", () => {
   hide(document.getElementById("mainContent"));
   document.querySelector(".pg.red").style.display="block";
 });
+function reopenTerms(){ show(document.getElementById("termsScreen")); }
 
-/* Footer link → open PIN/login & startup (FIXED ROUTER) */
+/* Footer link → open PIN/login & startup */
 document.addEventListener("DOMContentLoaded", () => {
   const toMain = document.getElementById("toMainArea");
-  const pgBlock = document.querySelector(".pg.red");
-  const pinScreen = document.getElementById("pinScreen");
-  const termsScreen = document.getElementById("termsScreen");
-  const mainContent = document.getElementById("mainContent");
-
-  // Always keep showPage global
-  window.showPage = showPage;
-
-  // Click on the footer email link still opens the login
   if (toMain){
     toMain.addEventListener("click", (e) => {
       e.preventDefault();
-      if (pgBlock) pgBlock.style.display = "none";
-      show(pinScreen);
+      document.querySelector(".pg.red").style.display="none";
+      show(document.getElementById("pinScreen"));
     });
   }
-
-  // --- STARTUP ROUTER (new) ---
-  // If Terms already accepted → go straight to app.
-  // Else → show the PIN screen automatically (so you don’t rely on the footer link).
-  try {
-    const accepted = localStorage.getItem(LS_TERMS) === "yes";
-    if (accepted) {
-      if (pgBlock) pgBlock.style.display = "none";
-      hide(pinScreen);
-      hide(termsScreen);
-      show(mainContent);
-      startInactivityTimer();
-      maybeShowUpdateLog();
-    } else {
-      // Terms not accepted yet: show the PIN screen by default
-      if (pgBlock) pgBlock.style.display = "none";
-      hide(termsScreen);
-      show(pinScreen);
-    }
-  } catch(_) {
-    // If LS fails, at least show the PIN screen so the user can proceed
-    if (pgBlock) pgBlock.style.display = "none";
-    show(pinScreen);
-  }
-
-  // Admin open / unlock
+  // Admin open
   document.getElementById("adminBtn").addEventListener("click", ()=>{
     const already = sessionStorage.getItem("mmh_isAdmin")==="1";
     if (already){
@@ -810,19 +874,18 @@ document.addEventListener("DOMContentLoaded", () => {
       toast("Admin panel opened");
       return;
     }
-    const code = prompt("Enter Admin PIN (or username:password)");
+    const code = prompt("Enter Admin PIN:");
     if (!code) return;
-    const res = code.includes(":") ? accountValid(code) : pinsValid(code);
-    if (res.ok && res.role==="admin"){
+    if (ADMIN_PINS.includes(code)){
       sessionStorage.setItem("mmh_isAdmin","1");
       document.getElementById("adminPanel").style.display="block";
       toast("Admin unlocked");
     }else{
-      toast("Invalid admin credentials");
+      toast("Invalid admin PIN");
     }
   });
 
-  // Init remote check & polling for version banner
+  // Init remote check & polling
   checkRemoteVersionOnce();
   scheduleNextPoll();
 
@@ -831,7 +894,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("notesEditor").value = UPDATE_NOTES_HTML;
   document.getElementById("localVerOverride").value = sessionStorage.getItem("mmh_localOverride")||"";
 });
-
 
 /* ESC + T shortcut */
 let escPressed=false;
@@ -873,26 +935,32 @@ function backToZscaler(){
 }
 
 /* Expose for buttons */
-window.reopenTerms = () => show(document.getElementById("termsScreen"));
+window.reopenTerms = reopenTerms;
 window.showPage = showPage;
 
 /* =========================================================================
-   ADMIN PANEL HOOKS
+   ADMIN PANEL HOOKS (server save + local fallbacks)
    ========================================================================= */
 function sanitizeVersionInput(v){ return (v||"").replace(/[^\d.]/g,"").trim(); }
+
 async function postJSON(url, body){
   const res = await fetch(url, {
-    method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify(body)
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify(body)
   });
   if (!res.ok) throw new Error("HTTP "+res.status);
   return res;
 }
 
+/* Toggles and notes apply (session) */
 document.getElementById("toggleShowUpdate").addEventListener("change", (e)=>{
-  SHOW_UPDATE_LOG = !!e.target.checked; toast("Update log toggle: " + (SHOW_UPDATE_LOG?"ON":"OFF"));
+  SHOW_UPDATE_LOG = !!e.target.checked;
+  toast("Update log toggle: " + (SHOW_UPDATE_LOG?"ON":"OFF"));
 });
 document.getElementById("btnApplyNotes").addEventListener("click", ()=>{
-  UPDATE_NOTES_HTML = document.getElementById("notesEditor").value; toast("Update notes applied for this session.");
+  UPDATE_NOTES_HTML = document.getElementById("notesEditor").value;
+  toast("Update notes applied for this session.");
 });
 document.getElementById("btnShowUpdateLog").addEventListener("click", ()=>{
   updateNotes.innerHTML = UPDATE_NOTES_HTML.replaceAll("${CURRENT_VERSION}", getEffectiveLocalVersion()).replaceAll("\\${CURRENT_VERSION}", getEffectiveLocalVersion());
@@ -903,31 +971,52 @@ document.getElementById("btnAckVersion").addEventListener("click", ()=>{
   toast("Marked this version as acknowledged.");
 });
 
+/* Save Update Log to server (fallback → download file) */
 document.getElementById("btnSaveNotesServer").addEventListener("click", async ()=>{
   const html = document.getElementById("notesEditor").value;
-  try{ await postJSON(ADMIN_NOTES_ENDPOINT, { notesHtml: html }); toast("Update log saved to server."); }
-  catch(e){ toast("Server save failed — downloading file instead."); downloadFile("update_notes.html", html, "text/html"); }
+  try{
+    await postJSON(ADMIN_NOTES_ENDPOINT, { notesHtml: html });
+    toast("Update log saved to server.");
+  }catch(e){
+    toast("Server save failed — downloading file instead.");
+    downloadFile("update_notes.html", html, "text/html");
+  }
 });
 
+/* Local (session) version overrides */
 document.getElementById("btnApplyLocalOverride").addEventListener("click", ()=>{
   const v = sanitizeVersionInput(document.getElementById("localVerOverride").value);
   if (!v){ sessionStorage.removeItem("mmh_localOverride"); toast("Cleared override."); }
   else { sessionStorage.setItem("mmh_localOverride", v); toast("Local version override set to v"+v); }
-  curVerLbl.textContent = getEffectiveLocalVersion(); setDisplayVersion();
+  curVerLbl.textContent = getEffectiveLocalVersion();
+  setDisplayVersion();
 });
 document.getElementById("btnClearLocalOverride").addEventListener("click", ()=>{
   sessionStorage.removeItem("mmh_localOverride");
   document.getElementById("localVerOverride").value = "";
-  toast("Local version override cleared."); curVerLbl.textContent = getEffectiveLocalVersion(); setDisplayVersion();
+  toast("Local version override cleared.");
+  curVerLbl.textContent = getEffectiveLocalVersion();
+  setDisplayVersion();
 });
 
+/* Remote version editing (server save + fallback) */
 document.getElementById("btnSaveRemoteVersion").addEventListener("click", async ()=>{
   const input = document.getElementById("remoteVerEditor");
   const v = sanitizeVersionInput(input.value);
   if (!v){ toast("Enter a version like 2.14"); return; }
-  try{ await postJSON(ADMIN_VERSION_ENDPOINT, { version: v }); toast("version.txt updated on server to v"+v); /* no suppress; banner logic is persistent now */ }
-  catch(e){ toast("Server save failed — downloading version.txt instead."); downloadFile("version.txt", v+"\n", "text/plain"); }
+  try{
+    await postJSON(ADMIN_VERSION_ENDPOINT, { version: v });
+    toast("version.txt updated on server to v"+v);
+    // Immediately reflect in UI by forcing a check:
+    clearSuppression();
+    checkRemoteVersionOnce();
+  }catch(e){
+    toast("Server save failed — downloading version.txt instead.");
+    downloadFile("version.txt", v+"\n", "text/plain");
+  }
 });
+
+/* Direct download actions */
 document.getElementById("btnDownloadVersionTxt").addEventListener("click", ()=>{
   const v = sanitizeVersionInput(document.getElementById("remoteVerEditor").value || lastRemoteVer || getEffectiveLocalVersion());
   downloadFile("version.txt", (v||"").trim()+"\n", "text/plain");
@@ -936,83 +1025,22 @@ document.getElementById("btnDownloadNotes").addEventListener("click", ()=>{
   const html = document.getElementById("notesEditor").value || UPDATE_NOTES_HTML;
   downloadFile("update_notes.html", html, "text/html");
 });
+
+/* Version check & misc admin utilities */
 document.getElementById("btnForceCheck").addEventListener("click", ()=>{
   toast("Checking for updates…");
-  checkRemoteVersionOnce(); // immediate check; persistent banner logic handles visibility
+  clearSuppression();
+  checkRemoteVersionOnce();
 });
 document.getElementById("btnForceRefresh").addEventListener("click", ()=>location.reload());
 document.getElementById("btnDismissBanner").addEventListener("click", ()=>{
-  // With persistent banner requirement, we won't hide it; just nudge user.
-  toast("The update banner stays until you refresh.", [{label:"OK"}]);
+  hide(refreshNotice);
+  sessionStorage.setItem(SS_REFRESH_LATER,"1");
+  if (lastRemoteVer) markNotified(lastRemoteVer, SUPPRESS_HOURS);
+  toast("Refresh banner dismissed.");
 });
-document.getElementById("btnTestToast").addEventListener("click", ()=>{ toast("This is a test notification", [{label:"OK"}]); });
-
-/* =========================================================================
-   SOUNDBOARD – REAL PLAYBACK (uses /Sounds + config.js mapping)
-   ========================================================================= */
-async function fileExists(url){
-  try{ const r = await fetch(url, {method:"HEAD", cache:"no-store"}); return r.ok; }
-  catch(_){ return false; }
-}
-let current = { key:null, audio:null, endHandler:null, timeoutId:null };
-function clearPlaying(){
-  document.querySelectorAll(".sb-btn.playing").forEach(b=>b.classList.remove("playing"));
-  if (current.audio && current.endHandler) current.audio.removeEventListener("ended", current.endHandler);
-  if (current.timeoutId) clearTimeout(current.timeoutId);
-  current = { key:null, audio:null, endHandler:null, timeoutId:null };
-}
-function applyMeta(audio, key){
-  const meta = SOUND_META[key] || {};
-  audio.volume = typeof meta.volume === "number" ? Math.max(0,Math.min(1,meta.volume)) : (PLAYER_DEF.defaultVolume ?? 1.0);
-  if (current.timeoutId) clearTimeout(current.timeoutId);
-  if (typeof meta.maxDuration === "number" && meta.maxDuration > 0){
-    current.timeoutId = setTimeout(()=>{
-      try{ audio.pause(); audio.currentTime = 0; }catch(_){}
-      clearPlaying();
-    }, meta.maxDuration*1000);
-  }
-}
-document.getElementById("sbGrid").addEventListener("click", async (e)=>{
-  const btn = e.target.closest(".sb-btn");
-  if(!btn) return;
-  const raw = btn.getAttribute("data-sound") || btn.textContent || "";
-  const key = keyify(raw);
-  const file = SOUND_FILES[key];
-  if (!file){ toast(`Sound not mapped in config: ${raw}`, [{label:"OK"}]); return; }
-  const url = `${SOUND_BASE}/${encodeURIComponent(file)}`;
-
-  if (current.audio && current.key === key){
-    if (current.audio.paused){
-      try{ await current.audio.play(); btn.classList.add("playing"); }catch(_){ toast("Couldn’t start audio. Tap again.", [{label:"OK"}]); }
-    } else {
-      current.audio.pause(); current.audio.currentTime = 0; btn.classList.remove("playing");
-    }
-    return;
-  }
-
-  if (PLAYER_DEF.stopPrevious && current.audio){
-    current.audio.pause(); current.audio.currentTime = 0; clearPlaying();
-  }
-
-  if (!(await fileExists(url))){
-    toast(`Missing file: ${url}`, [{label:"OK"}]); return;
-  }
-
-  const audio = new Audio(url);
-  audio.preload = "auto";
-  audio.crossOrigin = "anonymous";
-  applyMeta(audio, key);
-
-  clearPlaying();
-  current.key = key; current.audio = audio;
-  btn.classList.add("playing");
-
-  const onEnded = ()=>{ if (current.key === key){ btn.classList.remove("playing"); clearPlaying(); } };
-  current.endHandler = onEnded;
-  audio.addEventListener("ended", onEnded);
-
-  try{ await audio.play(); }
-  catch{ toast("Couldn’t start audio. Tap again.", [{label:"OK"}]); }
+document.getElementById("btnTestToast").addEventListener("click", ()=>{
+  toast("This is a test notification", [{label:"OK"}]);
 });
 </script>
 </body>
