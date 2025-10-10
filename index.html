@@ -371,13 +371,14 @@ body.kb-open #refreshNotice{display:none!important}
    CONFIG (defaults; overridden by config.js)
    ========================================================================= */
 let SHOW_UPDATE_LOG = true;
-let CURRENT_VERSION = "2.17";
+let CURRENT_VERSION = "2.13";
 let UPDATE_NOTES_HTML = `
    <p><b>MyMathsHomework v\${CURRENT_VERSION}</b></p>
    <p><b>Updates are useful to fix up known issues.</b></p>
   <ul>
     <li>Fixed: Issues with backend code</li>
-    <li>Added: Soundboards</li>
+    <li>Soon: Soundboards</li>
+    <li>Soon: More games.</li>
     <li>NOTE: Games DON'T save if you refresh. (Known issue)</li>
   </ul>
 `;
@@ -390,11 +391,6 @@ const ADMIN_PINS = ["14312"];   // fallback if config.js missing
 const LS_SEEN_VERSION = "mmh_seenVersion";
 const LS_TERMS = "termsAccepted_v2";
 const TERMS_VERSION = "Sept. 17 2025.";
-const SS_REFRESH_LATER = "mmh_refreshLater";
-const LS_LAST_NOTIFIED_VER = "mmh_lastNotifiedRemoteVer";
-const LS_SUPPRESS_UNTIL = "mmh_notifySuppressUntil";
-const LS_BANNER_SEEN_VER = "mmh_bannerSeenVer";
-const SUPPRESS_HOURS = 12;
 const REMOTE_VERSION_URL = "/version.txt";
 
 /* =========================================================================
@@ -499,7 +495,7 @@ updateOkayBtn.addEventListener("click", acknowledgeUpdate);
 updateSkipBtn.addEventListener("click", ()=>hide(updateScreen));
 
 /* =========================================================================
-   REMOTE VERSION POLLING
+   REMOTE VERSION POLLING — persistent banner + one-time toast
    ========================================================================= */
 const refreshNotice = document.getElementById("refreshNotice");
 const refreshMsg    = document.getElementById("refreshMsg");
@@ -507,6 +503,7 @@ const refreshLater  = document.getElementById("refreshLaterBtn");
 const refreshNow    = document.getElementById("refreshNowBtn");
 let pollAbort       = false;
 
+/* Keyboard-aware banner behavior */
 (function setupKeyboardHide(){
   const hideOnFocus = (e)=>{
     const t = e.target;
@@ -521,6 +518,9 @@ let pollAbort       = false;
   window.addEventListener("focusout", showOnBlur);
 })();
 
+/* Session flag: toast shown once per detected version (per tab) */
+const SS_TOAST_SHOWN_VER = "mmh_toastShownVer";
+
 async function fetchRemoteVersion(){
   const res = await fetch(REMOTE_VERSION_URL+"?t="+Date.now(), {cache:"no-store"});
   if(!res.ok) return null;
@@ -528,57 +528,46 @@ async function fetchRemoteVersion(){
   const cleaned = raw.replace(/[^\d.]/g, "").trim();
   return cleaned || null;
 }
-function shouldSuppress(remoteVer){
-  try{
-    if (sessionStorage.getItem(SS_REFRESH_LATER)==="1") return true;
-    const until = parseInt(localStorage.getItem(LS_SUPPRESS_UNTIL)||"0",10);
-    if (until && Date.now() < until) return true;
-    if (localStorage.getItem(LS_LAST_NOTIFIED_VER) === remoteVer) return true;
-    if (localStorage.getItem(LS_BANNER_SEEN_VER) === remoteVer) return true;
-  }catch(_){}
-  return false;
+
+function showPersistentBanner(remoteVer, localVer){
+  refreshMsg.textContent = `A newer version (v${remoteVer}) is available. You’re on v${localVer}.`;
+  show(refreshNotice); // stays visible until actual refresh
 }
-function markNotified(remoteVer, withDurationHours=null){
+
+function showUpdateToastOnce(remoteVer){
   try{
-    localStorage.setItem(LS_LAST_NOTIFIED_VER, remoteVer);
-    localStorage.setItem(LS_BANNER_SEEN_VER, remoteVer);
-    if (withDurationHours && withDurationHours>0){
-      const ms = withDurationHours*60*60*1000;
-      localStorage.setItem(LS_SUPPRESS_UNTIL, String(Date.now()+ms));
-    }
+    const already = sessionStorage.getItem(SS_TOAST_SHOWN_VER);
+    if (already === remoteVer) return;
+    toast(
+      `New version detected: v${remoteVer}`,
+      [{ label:"Refresh", onClick:()=>location.reload() }]
+    );
+    sessionStorage.setItem(SS_TOAST_SHOWN_VER, remoteVer);
   }catch(_){}
 }
-function clearSuppression(){
-  try{
-    sessionStorage.removeItem(SS_REFRESH_LATER);
-    localStorage.removeItem(LS_SUPPRESS_UNTIL);
-    localStorage.removeItem(LS_LAST_NOTIFIED_VER);
-    localStorage.removeItem(LS_BANNER_SEEN_VER);
-  }catch(_){}
-}
+
 function scheduleNextPoll(){
   if (pollAbort) return;
   const next = randInt(5,10)*1000;
   setTimeout(pollRemoteVersion, next);
 }
-function safeShowBanner(ver, localVer){
-  if (shouldSuppress(ver)) { hide(refreshNotice); return; }
-  refreshMsg.textContent = `A newer version (v${ver}) is available. You’re on v${localVer}.`;
-  show(refreshNotice);
-  markNotified(ver);
+
+function updateRemoteVerLabel(){
+  const rLbl = document.getElementById("remoteVerLbl");
+  if (rLbl && lastRemoteVer) rLbl.textContent = lastRemoteVer;
 }
+
 async function checkRemoteVersionOnce(){
   try{
     const rv = await fetchRemoteVersion();
     if (rv){
       lastRemoteVer = rv;
-      const rLbl = document.getElementById("remoteVerLbl");
-      if (rLbl) rLbl.textContent = rv;
+      updateRemoteVerLabel();
       setDisplayVersion();
-
       const local = getEffectiveLocalVersion();
       if (compareVersions(rv, local) > 0){
-        safeShowBanner(rv, local);
+        showPersistentBanner(rv, local);
+        showUpdateToastOnce(rv);
       } else {
         hide(refreshNotice);
       }
@@ -587,31 +576,19 @@ async function checkRemoteVersionOnce(){
     }
   }catch(_){}
 }
+
 async function pollRemoteVersion(){
   try{
     const rv = await fetchRemoteVersion();
     if (rv){
+      const changed = rv !== lastRemoteVer;
       lastRemoteVer = rv;
-      const rLbl = document.getElementById("remoteVerLbl");
-      if (rLbl) rLbl.textContent = rv;
+      updateRemoteVerLabel();
       setDisplayVersion();
-
       const local = getEffectiveLocalVersion();
       if (compareVersions(rv, local) > 0){
-        if (!shouldSuppress(rv)){
-          safeShowBanner(rv, local);
-          toast(
-            `New version detected: v${rv}`,
-            [
-              {label:"Refresh", onClick:()=>location.reload()},
-              {label:"Later", onClick:()=>{ 
-                try{sessionStorage.setItem(SS_REFRESH_LATER,"1")}catch(_){}
-                markNotified(rv, SUPPRESS_HOURS);
-                hide(refreshNotice);
-              }}
-            ]
-          );
-        }
+        showPersistentBanner(rv, local);
+        if (changed) showUpdateToastOnce(rv);
       } else {
         hide(refreshNotice);
       }
@@ -620,18 +597,19 @@ async function pollRemoteVersion(){
   scheduleNextPoll();
 }
 
-/* Banner buttons */
-refreshLater.addEventListener("click", ()=>{
-  try{ sessionStorage.setItem(SS_REFRESH_LATER, "1"); }catch(_){}
-  if (lastRemoteVer) markNotified(lastRemoteVer, SUPPRESS_HOURS);
-  hide(refreshNotice);
-});
-refreshNow.addEventListener("click", ()=>{
-  if (lastRemoteVer) markNotified(lastRemoteVer, SUPPRESS_HOURS);
-  location.reload();
-});
+/* Bottom banner buttons */
+if (refreshLater){
+  // Make "Later" a no-op so the banner stays until refresh.
+  refreshLater.onclick = ()=>{};
+}
+if (refreshNow){
+  refreshNow.onclick = ()=>{ location.reload(); };
+}
+
+/* Initialize version checks */
 document.addEventListener("DOMContentLoaded", ()=>{
-  if (localStorage.getItem(LS_BANNER_SEEN_VER)) hide(refreshNotice);
+  checkRemoteVersionOnce();
+  scheduleNextPoll();
 });
 
 /* =========================================================================
@@ -646,7 +624,7 @@ const curVerLbl = document.getElementById("curVerLbl");
 curVerLbl.textContent = getEffectiveLocalVersion();
 setDisplayVersion();
 
-/* ===== Auth helpers from config.js ===== */
+/* Auth helpers from config.js */
 function pinsValid(pin){
   if (!pin) return {ok:false, role:null};
   if ((PINS.admin||[]).includes(pin)) return {ok:true, role:"admin"};
@@ -774,10 +752,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Init remote check & polling
-  checkRemoteVersionOnce();
-  scheduleNextPoll();
-
   // Prefill editors
   document.getElementById("toggleShowUpdate").checked = !!SHOW_UPDATE_LOG;
   document.getElementById("notesEditor").value = UPDATE_NOTES_HTML;
@@ -876,7 +850,7 @@ document.getElementById("btnSaveRemoteVersion").addEventListener("click", async 
   const input = document.getElementById("remoteVerEditor");
   const v = sanitizeVersionInput(input.value);
   if (!v){ toast("Enter a version like 2.14"); return; }
-  try{ await postJSON(ADMIN_VERSION_ENDPOINT, { version: v }); toast("version.txt updated on server to v"+v); clearSuppression(); checkRemoteVersionOnce(); }
+  try{ await postJSON(ADMIN_VERSION_ENDPOINT, { version: v }); toast("version.txt updated on server to v"+v); /* no suppress; banner logic is persistent now */ }
   catch(e){ toast("Server save failed — downloading version.txt instead."); downloadFile("version.txt", v+"\n", "text/plain"); }
 });
 document.getElementById("btnDownloadVersionTxt").addEventListener("click", ()=>{
@@ -887,11 +861,14 @@ document.getElementById("btnDownloadNotes").addEventListener("click", ()=>{
   const html = document.getElementById("notesEditor").value || UPDATE_NOTES_HTML;
   downloadFile("update_notes.html", html, "text/html");
 });
-document.getElementById("btnForceCheck").addEventListener("click", ()=>{ toast("Checking for updates…"); clearSuppression(); checkRemoteVersionOnce(); });
+document.getElementById("btnForceCheck").addEventListener("click", ()=>{
+  toast("Checking for updates…");
+  checkRemoteVersionOnce(); // immediate check; persistent banner logic handles visibility
+});
 document.getElementById("btnForceRefresh").addEventListener("click", ()=>location.reload());
 document.getElementById("btnDismissBanner").addEventListener("click", ()=>{
-  hide(refreshNotice); sessionStorage.setItem(SS_REFRESH_LATER,"1");
-  if (lastRemoteVer) markNotified(lastRemoteVer, SUPPRESS_HOURS); toast("Refresh banner dismissed.");
+  // With persistent banner requirement, we won't hide it; just nudge user.
+  toast("The update banner stays until you refresh.", [{label:"OK"}]);
 });
 document.getElementById("btnTestToast").addEventListener("click", ()=>{ toast("This is a test notification", [{label:"OK"}]); });
 
